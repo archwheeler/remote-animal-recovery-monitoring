@@ -7,3 +7,4 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 ## TODO
 
 - [ ] Agree on a more memorable app name
+- [ ] Decide structure of app
