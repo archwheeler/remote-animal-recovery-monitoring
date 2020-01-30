@@ -12,14 +12,16 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 
 
 ## Core Features
-- Ability to login
-- Wiki system
-- Chat client - supports images and videos
+- Ability to login (Tom)
+- CMS (Agni)
+- Chat client - supports images and videos (Andreea)
 - Verified questionnares
-- Sending out surveys (anonoymous)
+- Sending out surveys
 - Discharge information
 - Weekly checkups
-- Exporting to excel & pdf
+- Exporting to excel & pdf (Masha)
+- Database (Masha)
+- Front end (Archie & Dominic)
 
 ## Technologies
 - JavaScript
