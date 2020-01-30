@@ -7,4 +7,16 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 ## TODO
 
 - [ ] Agree on a more memorable app name
-- [ ] Decide structure of app
+- [ ] Decide core technologies for app
+- [ ] Design scketches
+- [ ] 
+
+
+## Core Features
+- Ability to login
+- Wiki system
+- Chat client - supports images and videos
+- Verified questionnares
+- Sending out surveys (anonoymous)
+- Discharge information
+- Weekly checkups
