@@ -27,3 +27,11 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 - JavaScript
 - Node.js (Back-End)
 - React (Front-End)
+
+## Setup
+Clone the git repository, change into the created directory and enter the following into a terminal:
+```shell
+npm install
+npm start
+```
+You can then access the app at [localhost:3000](localhost:3000)
