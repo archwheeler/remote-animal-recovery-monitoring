@@ -8,7 +8,7 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 
 - [ ] Agree on a more memorable app name
 - [ ] Decide core technologies for app
-- [ ] Design scketches
+- [ ] Design sketches
 
 
 ## Core Features
@@ -20,3 +20,7 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 - Discharge information
 - Weekly checkups
 - Exporting to excel & pdf
+
+## Technologies
+- JavaScript
+- idk
