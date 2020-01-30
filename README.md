@@ -23,4 +23,5 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 
 ## Technologies
 - JavaScript
-- idk
+- Node.js (Back-End)
+- React (Front-End)
