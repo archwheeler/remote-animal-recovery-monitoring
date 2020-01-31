@@ -34,4 +34,4 @@ Clone the git repository, change into the created directory and enter the follow
 npm install
 npm start
 ```
-You can then access the app at [localhost:3000](localhost:3000)
+You can then access the app at [localhost:3000](http://localhost:3000)
