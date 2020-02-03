@@ -9,7 +9,7 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 - [ ] Agree on a more memorable app name
 - [ ] Decide core technologies for app
 - [ ] Design sketches
-
+- [ ] Create an app icon
 
 ## Core Features
 - Ability to login (Tom)
