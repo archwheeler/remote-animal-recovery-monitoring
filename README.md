@@ -31,7 +31,7 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 ## Setup
 Clone the git repository, change into the created directory and enter the following into a terminal:
 ```shell
-npm install
-npm start
+yarn install
+yarn start
 ```
-You can then access the app at [localhost:8081](http://localhost:8081)
+You can then access the app at [localhost:8080](http://localhost:8080)
