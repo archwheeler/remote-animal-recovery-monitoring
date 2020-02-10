@@ -16,11 +16,18 @@ function routeContact(s, cb) {
 	});
 }
 
+function routeLoadForm(s, cb) {
+	System.import('./components/LoadForm').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="users" getComponent={routeUsers}/>
 		<Route path="users/:id" getComponent={routeUsers}/>
 		<Route path="contact" getComponent={routeContact}/>
+		<Route path="loadform" getComponent={routeLoadForm}/>
 	</Route>
 );
