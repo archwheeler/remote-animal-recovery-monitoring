@@ -22,6 +22,24 @@ function routeLoadForm(s, cb) {
 	});
 }
 
+function routeDischargeInfo(s, cb) {
+	System.import('./components/DischargeInfo').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
+function routeDogProfileTemplate(s, cb) {
+	System.import('./components/DogProfileTemplate').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
+function routeSurveyTemplate(s, cb) {
+	System.import('./components/SurveyTemplate').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
@@ -29,5 +47,8 @@ export default (
 		<Route path="users/:id" getComponent={routeUsers}/>
 		<Route path="contact" getComponent={routeContact}/>
 		<Route path="loadform" getComponent={routeLoadForm}/>
+		<Route path="dischargeinfo" getComponent={routeDischargeInfo}/>
+		<Route path="dogprofiletemplate" getComponent={routeDogProfileTemplate}/>
+		<Route path="surveytemplate" getComponent={routeSurveyTemplate}/>
 	</Route>
 );

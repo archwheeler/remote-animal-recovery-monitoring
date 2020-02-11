@@ -3,9 +3,8 @@ import React from 'react';
 class LoadForm extends React.Component {
 	render() {
 		return (
-			<div>
-				<h1>Load Form</h1>
-			</div>
+			<iframe src = "Printable_LOAD_Form.pdf" width="100%" height="600"></iframe>
+
 		);
 	}
 }

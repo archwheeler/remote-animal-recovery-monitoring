@@ -7,7 +7,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<MuiThemeProvider muiTheme={getMuiTheme(Theme)}>
-				<AppShell title="PWA with React">
+				<AppShell title="RARM">
 					{this.props.children}
 				</AppShell>
 			</MuiThemeProvider>
