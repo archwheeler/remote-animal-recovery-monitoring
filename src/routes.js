@@ -39,6 +39,11 @@ function routeSurveyTemplate(s, cb) {
 		cb(null, component.default || component);
 	});
 }
+function routeChat(s, cb) {
+	System.import('./components/Chat').then(component => {
+		cb(null, component.default || component);
+	});
+}
 
 export default (
 	<Route path="/" component={App}>
@@ -50,5 +55,6 @@ export default (
 		<Route path="dischargeinfo" getComponent={routeDischargeInfo}/>
 		<Route path="dogprofiletemplate" getComponent={routeDogProfileTemplate}/>
 		<Route path="surveytemplate" getComponent={routeSurveyTemplate}/>
+		<Route path="chat" getComponent={routeChat}/>
 	</Route>
 );
