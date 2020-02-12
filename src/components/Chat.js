@@ -1,6 +1,15 @@
 import React from 'react';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import Card from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
 
 class Chat extends React.Component {
+    constructor() {
+        super();
+        this.state = {messages: []};
+    }
+
     sendMessage(e) {
         e.preventDefault();
         const input = document.getElementById("message-text");
@@ -10,6 +19,10 @@ class Chat extends React.Component {
         });
         input.value = "";
     }
+
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+      }
 
     componentDidMount() {
         let chatManager = new window.Chatkit.ChatManager({
@@ -22,21 +35,15 @@ class Chat extends React.Component {
 
         chatManager
         .connect()
-        .then(currentUser => { 
+        .then(currentUser => {
             this.currentUser = currentUser;
             this.currentUser.subscribeToRoomMultipart({
                 roomId: this.currentUser.rooms[0].id,
                 hooks: {
                     onMessage: message => {
-                        const ul = document.getElementById("message-list");
-                        const li = document.createElement("li");
-                        li.appendChild(
-                            document.createTextNode(`${message.senderId}: ${
-                                // TODO: check the partType here.
-                                message.parts[0].payload.content
-                            }`)
-                        );
-                        ul.appendChild(li);
+                        this.setState(state => {
+                            return {messages: state.messages.concat(message)};
+                        });
                     }
                 }
             });
@@ -47,7 +54,12 @@ class Chat extends React.Component {
         .catch(error => {
             console.error("error:", error);
         });
-            
+
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+        this.scrollToBottom();
     }
 
     componentWillUnmount() {
@@ -57,12 +69,23 @@ class Chat extends React.Component {
 
 	render() {
 		return (
-			<div>
-                <ul id="message-list"></ul>
-                <form id="message-form">
-                    <input type='text' id='message-text' />
-                    <input type="submit" />
-                </form>
+            <div>
+			<Card>
+                    <List style={{maxHeight: '575px', overflow: 'auto'}} >
+                        {this.state.messages.map(message => 
+                        <ListItem key={message.id} disabled={true}>
+                                {message.senderId + "> " + message.parts[0].payload.content}
+                        </ListItem>)}
+                        <div style={{ float:"left", clear: "both" }}
+                             ref={(el) => { this.messagesEnd = el; }}>
+                        </div>
+                    </List>
+                </Card>
+                <Card style={{padding: "5px"}}>
+                    <form id="message-form">
+                        <TextField id='message-text' fullWidth={true} autoComplete={"off"} hintText="Enter a message..."/>
+                    </form>
+                </Card>
             </div>
 		);
 	}
