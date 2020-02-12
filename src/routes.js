@@ -16,11 +16,18 @@ function routeContact(s, cb) {
 	});
 }
 
+function routeAccount(s, cb) {
+	System.import('./components/Account').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="users" getComponent={routeUsers}/>
 		<Route path="users/:id" getComponent={routeUsers}/>
 		<Route path="contact" getComponent={routeContact}/>
+		<Route path="my_account" getComponent={routeAccount}/>
 	</Route>
 );
