@@ -70,7 +70,7 @@ class Chat extends React.Component {
 	render() {
 		return (
             <div>
-			<Card>
+                <Card>
                     <List style={{maxHeight: '575px', overflow: 'auto'}} >
                         {this.state.messages.map(message => 
                         <ListItem key={message.id} disabled={true}>
