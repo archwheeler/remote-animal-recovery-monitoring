@@ -5,6 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import ContentLink from 'material-ui/svg-icons/content/link';
+import { FlatButton, BottomNavigation, BottomNavigationItem } from 'material-ui';
 
 export default class AppShell extends React.Component {
 	constructor(props) {
@@ -52,7 +53,10 @@ export default class AppShell extends React.Component {
 					title={this.state.title}
 					onLeftIconButtonTouchTap={this.handleToggleDrawer}
 					iconClassNameRight="muidocs-icon-navigation-expand-more"
+					iconElementRight={<FlatButton backgroundColor="red" label="Emergency Contact" href="/#/contact" />}
 					/>
+				
+
 				<div id="content" style={{width: '90%', margin: 'auto', marginTop: '30px'}}>
 					{this.props.children}
 				</div>

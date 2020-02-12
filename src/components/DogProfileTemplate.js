@@ -11,7 +11,7 @@ class Main extends React.Component {
 								avatar={<Avatar>N</Avatar>}
 					/>
 					<CardText>
-					Animal’s name was presented to the Queen’s Veterinary School Hospital on date for further investigation into mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration. Progression of lameness. Other medical issues. Current exercise regime and current medication. You reported that animal’s name was otherwise well at the time of presentation.
+					Animal’s name was presented to the Queen’s Veterinary School Hospital on date for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*. *Current exercise regime and current medication. You reported that animal’s name was otherwise well at the time of presentation.
 					</CardText>
 				</Card>
 				
