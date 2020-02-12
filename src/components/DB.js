@@ -141,12 +141,14 @@ function addDog(con, name, surgery, target_area, operation_date, uid){
 // add carer
 function addCarer(con, email, password, name){
     var sql = "INSERT INTO accounts (email, password, type, name) VALUES ?";
-    var values = [[email, password, 1, vet_team_name]]; // 1 represents carer type
+    var values = [[email, password, 1, name]]; // 1 represents carer type
     con.query(sql, [values], function(err, result){
         if (err) throw err;
-        console.log("Added vet team " + vet_team_name);
+        console.log("Added user " + name);
     });
 }
+
+//
 
 
 var connection = createConnection();
