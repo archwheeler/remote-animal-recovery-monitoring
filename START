@@ -1,0 +1,4 @@
+#! /bin/bash
+clear
+cd "${0%/*}"
+yarn start

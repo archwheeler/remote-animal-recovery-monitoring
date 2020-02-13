@@ -22,6 +22,12 @@ function routeLoadForm(s, cb) {
 	});
 }
 
+function routeAccount(s, cb) {
+	System.import('./components/Account').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 function routeSurveyTemplate(s, cb) {
 	System.import('./components/SurveyTemplate').then(component => {
 		cb(null, component.default || component);
@@ -29,6 +35,18 @@ function routeSurveyTemplate(s, cb) {
 }
 function routeChat(s, cb) {
 	System.import('./components/Chat').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
+function routeLogin(s, cb) {
+	System.import('./components/Login').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
+function routeRegister(s, cb) {
+	System.import('./components/Register').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -42,5 +60,8 @@ export default (
 		<Route path="loadform" getComponent={routeLoadForm}/>
 		<Route path="surveytemplate" getComponent={routeSurveyTemplate}/>
 		<Route path="chat" getComponent={routeChat}/>
+		<Route path="account" getComponent={routeAccount}/>
+		<Route path="login" getComponent={routeLogin}/>
+		<Route path="register" getComponent={routeRegister}/>
 	</Route>
 );
