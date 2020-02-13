@@ -7,8 +7,8 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 ## TODO
 
 - [ ] Agree on a more memorable app name
-- [ ] Decide core technologies for app
-- [ ] Design sketches
+- [x] Decide core technologies for app
+- [x] Design sketches
 - [ ] Create an app icon
 
 ## Core Features
@@ -34,4 +34,5 @@ Clone the git repository, change into the created directory and enter the follow
 yarn install
 yarn start
 ```
+(Can also use npm in place of yarn!)
 You can then access the app at [localhost:8080](http://localhost:8080)
