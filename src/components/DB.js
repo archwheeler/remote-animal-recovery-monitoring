@@ -18,6 +18,8 @@ function createConnection(){
     return con;
 }
 
+// TODO: make email have unique requirement
+// TODO: add chat client table (keep track of chat topics)
 // create all necessary tables if they don't exist
 function createTables(con){
 
@@ -109,6 +111,8 @@ function showTables(con, callback){
     });
 }
 
+// ADD FUNCTIONS
+
 // add vet to system
 function addVetTeam(con, email, password, vet_team_name){
     var sql = "INSERT INTO accounts (email, password, type, name) VALUES ?";
@@ -148,15 +152,82 @@ function addCarer(con, email, password, name){
     });
 }
 
-//
+// add dog-user relation
+function addDogUserRelation(con, dog_id, uid){
+}
+
+// add survey
+function addSurvey(con, uid, creation_date, link, target_areas){
+}
+
+// add target_area
+function addTargetArea(con, target_area){
+}
 
 
+// GET FUNCTIONS
+
+// get user id from email
+function getUserID(con, email, callback){
+    var sql = "SELECT uid FROM accounts WHERE email='" + email + "'";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        var uid = JSON.parse(JSON.stringify(result[0])).uid;
+        callback(uid);
+    });
+}
+
+// get user info
+function getUserInfo(con, email, callback){
+    var sql = "SELECT * FROM accounts WHERE email='" + email + "'";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        var user_info = JSON.parse(JSON.stringify(result[0]));
+        if (user_info.type == 0){
+            user_info.type = 'vet';
+        }
+        else {
+            user_info.type = 'carer';
+        }
+        callback(user_info);
+    });
+}
+
+// get dogs of carer
+function getDogsOfCarer(con, carer_id, callback){
+}
+
+// get dogs of vet team
+function getDogsOfVetTeam(con, vet_id, callback){
+}
+
+// get user contacts
+function getUserContacts(con, email, callback){
+}
+
+// get operations
+function getOperations(con, callback){
+}
+
+// get operation info for a given operation (dog, carer, date, link)
+function getOperationInfo(con, surgery, callback){
+}
+
+// TODO: update functions?
+// TODO: delete functions
+
+
+
+// TESTING
 var connection = createConnection();
 createTables(connection);
 showTables(connection, function(result){
     console.log(result);
 });
-clearDB(connection);
-showTables(connection, function(result){
+//addCarer(connection, 'test@example.com', 'test_pass', 'test');
+getUserInfo(connection, 'test@example.com', function(result){
+    console.log(result);
+});
+getUserID(connection, 'test@example.com', function(result){
     console.log(result);
 });
