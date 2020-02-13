@@ -44,8 +44,8 @@ export default class AppShell extends React.Component {
 					open={this.state.open}
 					onRequestChange={this.handleRequestChange}
 					>
-					<MenuItem primaryText="Users" leftIcon={<ContentLink/>} containerElement={<Link to="/users"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/contact"/>} onTouchTap={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onTouchTap={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onTouchTap={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/LoadForm"/>} onTouchTap={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/SurveyTest"/>} onTouchTap={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onTouchTap={this.handleToggleDrawer}/>
