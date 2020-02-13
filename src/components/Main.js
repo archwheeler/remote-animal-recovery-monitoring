@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardText, CardTitle} from 'material-ui/Card';
+import {Card, CardHeader, CardText, CardActions} from 'material-ui/Card';
 import {
 	Step,
 	Stepper,
@@ -65,12 +65,12 @@ class Main extends React.Component {
 		return (
 			<div>
 				<Card>
-					<CardHeader title= "NAME"
-								subtitle="Age, Sex, Breed, QVSH Ref"
-								avatar={<Avatar>N</Avatar>}
+					<CardHeader title= "George"
+								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
+								avatar={<Avatar>G</Avatar>}
 					/>
 					<CardText>
-					Animal’s name was presented to the Queen’s Veterinary School Hospital on date for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*. *Current exercise regime and current medication. You reported that animal’s name was otherwise well at the time of presentation.
+					George was presented to the Queen’s Veterinary School Hospital on date for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*. *Current exercise regime and current medication. You reported that animal’s name was otherwise well at the time of presentation.
 					</CardText>
 				</Card>
 				<Card>
@@ -168,6 +168,22 @@ class Main extends React.Component {
 						<li>For hydrotherapy, underwater treadmill hydrotherapy is recommended. This should not be started until after the surgical wound has healed and the skin sutures have been removed. Free swimming hydrotherapy is not allowed until after the recheck at QVSH. We suggest that you look for a member of the <a href="https://www.canine-hydrotherapy.org">Canine Hydrotherapy Association</a>.</li>
 					</ul>
 					</CardText>
+				</Card>
+				<Card>
+					<CardHeader
+						title="Further  Appointments"
+						actAsExpander={true}
+						showExpandableButton={true}
+					/>
+					<CardText expandable={true}>
+						<ul>
+							<li>Animal’s name has skin stitches/staples that will need to be removed 10-14 days after surgery. Please arrange an appointment with your local vets for this.</li>
+							<li>We would like to re-examine animal’s name at the QVSH in XX weeks. An appointment has been booked on XX/XX/XX at XX.XX. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
+						</ul>
+					</CardText>
+					<CardActions expandable={true}>
+						<FlatButton label="Contact Us" href="/#/Contact"/>
+					</CardActions>
 				</Card>
 			</div>
 		);
