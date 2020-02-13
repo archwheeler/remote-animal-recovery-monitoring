@@ -1,6 +1,6 @@
 {
-	"name": "pwa-react-boilerplate",
-	"short_name": "pwa-react-boilerplate",
+	"name": "Remote Animal Recovery Monitoring",
+	"short_name": "RARM",
 	"icons": [
 		{
 			"src": "chrome-touch-icon-192x192.png",
@@ -15,7 +15,7 @@
 	],
 	"start_url": "./?utm_source=web_app_manifest",
 	"display": "standalone",
-	"background_color": "#1A1A1A",
-	"theme_color": "#0A0A0A",
+	"background_color": "transparent",
+	"theme_color": "#422E5D",
 	"orientation": "portrait"
 }
