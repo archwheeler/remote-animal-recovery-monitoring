@@ -10,3 +10,6 @@ tramp
 
 # Node.js
 node_modules/
+
+# Project
+build/
