@@ -31,6 +31,20 @@ export function AccountReducer(state = initial_state, action) {
       state.user = {};
       return state;
     
+    case "REGISTER":
+      
+      // TODO: add to database
+      
+      // Success
+      return {
+        loggedIn: true,
+        user: {
+          name: action.user.name,
+          pass: action.user.pass,
+          age: action.user.age
+        }
+      };
+    
     // Something else happened
     default:
       return state;

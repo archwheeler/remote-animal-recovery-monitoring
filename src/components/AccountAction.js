@@ -14,3 +14,14 @@ export function LogoutAction() {
     type: "LOGOUT",
   };
 }
+
+export function RegisterAction(username, password, age) {
+  return {
+    type: "REGISTER",
+    user: {
+      name: username,
+      pass: password,
+      age: age
+    }
+  }
+}
