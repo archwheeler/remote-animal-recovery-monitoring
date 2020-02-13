@@ -1,54 +1,70 @@
-import React from 'react';
+import React, {forceUpdate} from 'react';
+import {connect} from 'react-redux';
+import {LoginAction} from './LoginAction';
+import {store} from '../store';
 
 class Account extends React.Component {
   
-  constructor(props) {
-    super(props);
-    this.loggedIn = false;
-    this.user = { name: "default" };
+  constructor() {
+    super();
+    this.mode = "Login";
   }
-        
-	render() {
-	  if (this.loggedIn) {
-	    // TODO: doesn't change for some reason
-		  return (
-        <div>
-          <p>
-            My Account
-            <br/>
-            
-            Name: {this.user.name}
-          </p>
-        </div>
-		  );
-    } else {
-	    return (
-        <div>
-          <p>
-            Log in to the system below.
-            <br/>
 
-            <input type="text" id="username_box" placeholder="Username"/>
-            <br/>
+	render() {	  
+	  switch (this.mode) {
+      case "My account":
+        return (
+          <div>
+            <p>
+              My Account
+            </p>
+          </div>
+        );
+      
+      case "Login":
+        return (
+          <div>
+            <p>
+              Log in to the system below.
+              <br/>
 
-            <input type="password" id="password_box" placeholder="Password"/>
-            <br/>
+              <input type="text" id="username_box" placeholder="Username"/>
+              <br/>
 
-            <input type="checkbox" onClick={this.showPassword}/>
-            Show password?
-            <br/>
+              <input type="password" id="password_box" placeholder="Password"/>
+              <br/>
 
-            <button onClick={this.login}> Log in </button>
-            <br/>
+              <input type="checkbox" onClick={this.showPassword}/>
+              Show password?
+              <br/>
 
-            <a href="/"> Register (todo) </a>
-          </p>
-        </div>
-	    );
-	  }
+              <button onClick={this.login}> Log in </button>
+              <br/>
+
+              <button onClick={() => this.mode = "Register"}> Register </button>
+            </p>
+          </div>
+        );
+      
+      case "Register":
+        return (
+          <div>
+            Register
+          </div>
+        );
+      
+      default:
+        return (
+          <div>
+            Yeah, something went wrong.
+            mode is currently '{this.mode}'
+          </div>
+        );
+    }
 	}
 	
 	showPassword() {
+	  console.log(this.mode);
 	  var passBox = document.getElementById("password_box");
     if (passBox.type == "password") {
       passBox.type = "text";
@@ -62,11 +78,11 @@ class Account extends React.Component {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     
-    alert(username + ": " + password);
+    store.dispatch(LoginAction(username, password));
     
-    // TODO: null ptr exceptions here. (user is null?)
-    this.user.name = "tom";
-    this.loggedIn = true;
+    if (store.getState().loggedIn) {
+      this.mode = "My account";// TODO: null pointer exception here ?!??!?!!
+    }
   }
 }
 
