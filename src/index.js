@@ -12,4 +12,7 @@ injectTapEventPlugin();
 
 const history = useRouterHistory(createHashHistory)();
 
-render(<Router history={history} routes={routes}/>, document.getElementById('app'));
+render(
+  <Router history={history} routes={routes}/>,
+  document.getElementById('app')
+);
