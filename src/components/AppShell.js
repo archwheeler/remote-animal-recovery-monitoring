@@ -54,7 +54,6 @@ export default class AppShell extends React.Component {
 				<AppBar
 					title={this.state.title}
 					onLeftIconButtonTouchTap={this.handleToggleDrawer}
-					iconClassNameRight="muidocs-icon-navigation-expand-more"
 					iconElementRight={<FlatButton backgroundColor="red" label="Emergency Contact" href="/#/contact" />}
 					/>
 				
