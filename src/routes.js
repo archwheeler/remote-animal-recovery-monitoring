@@ -22,12 +22,26 @@ function routeAccount(s, cb) {
 	});
 }
 
+function routeLogin(s, cb) {
+	System.import('./components/Login').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
+function routeRegister(s, cb) {
+	System.import('./components/Register').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="users" getComponent={routeUsers}/>
 		<Route path="users/:id" getComponent={routeUsers}/>
 		<Route path="contact" getComponent={routeContact}/>
-		<Route path="my_account" getComponent={routeAccount}/>
+		<Route path="account" getComponent={routeAccount}/>
+		<Route path="login" getComponent={routeLogin}/>
+		<Route path="register" getComponent={routeRegister}/>
 	</Route>
 );

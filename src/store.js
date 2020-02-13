@@ -1,5 +1,4 @@
 import {createStore, combineReducers} from 'redux';
-import {LoginAction} from "./components/LoginAction";
-import {LoginReducer, initial_state} from "./components/LoginReducer";
+import {AccountReducer} from "./components/AccountReducer";
 
-export const store = createStore(LoginReducer);
+export const store = createStore(AccountReducer);
