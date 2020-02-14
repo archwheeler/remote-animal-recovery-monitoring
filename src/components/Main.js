@@ -88,10 +88,10 @@ class Main extends React.Component {
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						You have a new questionnaire to fill in!
+						You have a new questionnaire to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
-						<FlatButton label="Weeks 1-2" href="/#/SurveyTemplate"/>
+						<FlatButton label="Weeks 1-2 Questionnaire" href="/#/SurveyTemplate"/>
 					</CardActions>
 				</Card>
 				<Card>

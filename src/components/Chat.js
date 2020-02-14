@@ -1,7 +1,8 @@
 import React from 'react';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
-import Card from 'material-ui/Card';
+import {Card, CardHeader} from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -75,7 +76,11 @@ class Chat extends React.Component {
             <div>
                 {this.connected ? (
                     <Card>
-                        <List style={{maxHeight: '575px', overflow: 'auto'}} >
+                        <CardHeader title= "George"
+								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
+								avatar={<Avatar>G</Avatar>}
+					    />  
+                        <List style={{maxHeight: '380px', overflow: 'auto'}} >
                             {this.state.messages.map(message => 
                                 <ListItem key={message.id} disabled={true}>
                                     {message.senderId + "> " + message.parts[0].payload.content}
@@ -92,6 +97,7 @@ class Chat extends React.Component {
                     </Card>
                     )}
                 <Card style={{padding: "5px"}}>
+                    
                     <form id="message-form">
                         <TextField id='message-text' fullWidth={true} autoComplete={"off"} hintText="Enter a message..."/>
                     </form>
