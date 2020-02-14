@@ -13,7 +13,7 @@ class Main extends React.Component {
 								avatar={<Avatar>G</Avatar>}
 					/>
 					<CardText>
-						Please complete the following questionnare to help monitor your dogs progress:
+						Please complete the following questionnare to help monitor your dog's progress:
 					</CardText>
 					<CardMedia>
 					<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true" width="100%" height="400" frameBorder="0">Loading…</iframe>
