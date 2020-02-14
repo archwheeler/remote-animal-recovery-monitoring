@@ -3,11 +3,13 @@ import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Card from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class Chat extends React.Component {
     constructor() {
         super();
         this.state = {messages: []};
+        this.connected = false;
     }
 
     sendMessage(e) {
@@ -50,6 +52,7 @@ class Chat extends React.Component {
 
             this.form = document.getElementById("message-form");
             this.form.addEventListener("submit", this.sendMessage.bind(this));
+            this.connected = true;
         })
         .catch(error => {
             console.error("error:", error);
@@ -70,17 +73,24 @@ class Chat extends React.Component {
 	render() {
 		return (
             <div>
-                <Card>
-                    <List style={{maxHeight: '575px', overflow: 'auto'}} >
-                        {this.state.messages.map(message => 
-                        <ListItem key={message.id} disabled={true}>
-                                {message.senderId + "> " + message.parts[0].payload.content}
-                        </ListItem>)}
-                        <div style={{ float:"left", clear: "both" }}
-                             ref={(el) => { this.messagesEnd = el; }}>
+                {this.connected ? (
+                    <Card>
+                        <List style={{maxHeight: '575px', overflow: 'auto'}} >
+                            {this.state.messages.map(message => 
+                                <ListItem key={message.id} disabled={true}>
+                                    {message.senderId + "> " + message.parts[0].payload.content}
+                                </ListItem>)}
+                            <div style={{ float:"left", clear: "both" }}
+                                ref={(el) => { this.messagesEnd = el; }}>
+                            </div>
+                        </List>
+                    </Card>) : (
+                    <Card style={{padding: "15px"}}>
+                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                            <CircularProgress/>
                         </div>
-                    </List>
-                </Card>
+                    </Card>
+                    )}
                 <Card style={{padding: "5px"}}>
                     <form id="message-form">
                         <TextField id='message-text' fullWidth={true} autoComplete={"off"} hintText="Enter a message..."/>
