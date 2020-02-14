@@ -9,6 +9,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
 import FlatButton from 'material-ui/FlatButton';
+import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
@@ -72,6 +73,26 @@ class Main extends React.Component {
 					<CardText>
 					George was presented to the Queen’s Veterinary School Hospital on date for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*. *Current exercise regime and current medication. You reported that animal’s name was otherwise well at the time of presentation.
 					</CardText>
+				</Card>
+
+				<Card>
+					<CardHeader title={<Badge
+						badgeContent={1}
+						primary={true}
+						style={{padding: 0}}
+						badgeStyle={{top:-10, right: -28}}>
+							Questionnaires
+
+					</Badge>}
+								actAsExpander={true}
+								showExpandableButton={true}
+					/>
+					<CardText expandable={true}>
+						You have a new questionnaire to fill in!
+					</CardText>
+					<CardActions expandable={true}>
+						<FlatButton label="Weeks 1-2" href="/#/SurveyTemplate"/>
+					</CardActions>
 				</Card>
 				<Card>
 					<CardHeader title= "Wound Care"
