@@ -3,9 +3,9 @@ var mysql = require('mysql');
 // function to establish the database connection : returns the connection (for querying)
 function createConnection(){
     var con = mysql.createConnection({
-      host: "localhost",
+      host: "localhost", //TODO
       user: "root",
-      password: "Oracle1!",
+      password: "Oracle1!", //TODO: don't leave this in plain text!
       database: "app" //specify database
     });
 
@@ -24,7 +24,7 @@ function createConnection(){
 function createTables(con){
 
     // account table
-    var sql = "CREATE TABLE IF NOT EXISTS accounts (uid INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), type INT, name VARCHAR(255))";
+    var sql = "CREATE TABLE IF NOT EXISTS accounts (uid INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255) UNIQUE, password VARCHAR(255), type INT, name VARCHAR(255))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Account table created");
@@ -38,7 +38,7 @@ function createTables(con){
     });
 
     // dog table
-    sql = "CREATE TABLE IF NOT EXISTS dogs (dog_id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), surgery VARCHAR(255), target_area INT, operation_date DATE)";
+    sql = "CREATE TABLE IF NOT EXISTS dogs (dog_id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), op_id INT, target_area INT, operation_date DATE)";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Dog table created");
@@ -71,6 +71,28 @@ function createTables(con){
         if (err) throw err;
         console.log("target_area table created");
     });
+
+    // table of questionnaires
+    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255))";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("questionnaires table created");
+    });
+
+    // table of operations
+    sql = "CREATE TABLE IF NOT EXISTS operations (op_id INT AUTO_INCREMENT PRIMARY KEY, op_name VARCHAR(255))";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("operations table created");
+    });
+
+    // table of the questionnaire-operation relation
+    sql = "CREATE TABLE IF NOT EXISTS questionnaire_op (op_id INT, questionnaire_id INT)";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("questionnaire_op table created");
+    });
+
 }
 
 // make any alterations to a table
@@ -124,19 +146,40 @@ function addVetTeam(con, email, password, vet_team_name){
 }
 
 // add name as vet subaccounts
-function addVetToTeam(con, uid, name){
+function addVetToTeam(con, email, name){
+    con.query("SELECT uid FROM accounts WHERE email = '" + email + "'", function (err, result){
+        if (err) throw err;
+        if (result.length != 0){
+            var uid = JSON.parse(JSON.stringify(result[0]));
+            var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + uid + ", " + name + ")";
+            con.query(sql, function(err, result){
+                if (err) throw err;
+                console.log("Added " + name + " to account " + email)
+            });
+        }
+        else {
+            console.log("Failed"); // TODO: change
+        }
+    });
 }
 
 // add dog
-function addDog(con, name, surgery, target_area, operation_date, uid){
+// operation_date must be in format "yyyy-mm-dd"
+function addDog(con, name, operation, target_area, operation_date, uid){
     con.query("SELECT target_id FROM target_area WHERE target_name = '" + target_area + "'", function (err, target_id_res, fields){
         if (err) throw err;
-        var sql_dog = "INSERT INTO dogs (name, surgery, target_area, operation_date) VALUES (" + name + ", " + surgery + ", " + target_id_res[0].target_id + ", " + operation_date +")";
-        con.query(sql_dog, function(err, dog_result){
-            if (err) throw err;
-            var sql_dog_user = "INSERT INTO dog_user (dog_id, uid) VALUES (" + dog_result.dog_id + ", " + uid + ")";
-            con.query(sql_dog_user, function(err, dog_user_result){
+        var target_id = target_id_res[0].target_id;
+        con.query("SELECT op_id FROM operations WHERE op_name = '" + operation  + "'", function (err, op_id_res, fields){
+            var op_id = op_id_res[0].op_id;
+            var sql_dog = "INSERT INTO dogs (name, op_id, target_area, operation_date) VALUES ?";
+            var values = [[name, op_id, target_id, operation_date]];
+            con.query(sql_dog, [values], function(err, dog_result){
                 if (err) throw err;
+                var sql_dog_user = "INSERT INTO dog_user (dog_id, uid) VALUES (" + dog_result.insertId + ", " + uid + ")";
+                con.query(sql_dog_user, function(err, dog_user_result){
+                    if (err) throw err;
+                    console.log("Added dog user relationship.");
+                });
             });
         });
     });
@@ -154,64 +197,108 @@ function addCarer(con, email, password, name){
 
 // add dog-user relation
 function addDogUserRelation(con, dog_id, uid){
+    var sql = "INSERT INTO dog_user (dog_id, uid) VALUES (" + dog_id + ", " + uid + ")";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("Added connection to dog with id " + dog_id);
+    });
 }
 
 // add survey
+// TODO: need to complete - will also get list of users to send survey to here (it  needs to  be  done in one function)
 function addSurvey(con, uid, creation_date, link, target_areas){
+    var sql1 = "INSERT INTO survey (uid, created, link) VALUES (" + uid + ", " + creation_date + ", "  + link + ")";
+    con.query(sql1, function(err, result){
+        if (err) throw err;
+        console.log("Added new survey.");
+    });
+    // insert into survey-target table (need to discuss how to handle target areas - is there a predetermined list?)
 }
 
 // add target_area
+// TODO
 function addTargetArea(con, target_area){
 }
+
+// add questionnaire
+function addQuestionnaire(con, uid, creation_date, link, operation){
+}
+
+// add operation
+function addOperation(con, operation){
+}
+
 
 
 // GET FUNCTIONS
 
 // get user id from email
+// if email not found, return -1
 function getUserID(con, email, callback){
     var sql = "SELECT uid FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
-        var uid = JSON.parse(JSON.stringify(result[0])).uid;
-        callback(uid);
+        if (result.length == 0){ callback(-1); }
+        else{
+            var uid = JSON.parse(JSON.stringify(result[0])).uid;
+            callback(uid);
+        }
     });
 }
 
 // get user info
+// if email not found, return null
 function getUserInfo(con, email, callback){
     var sql = "SELECT * FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
-        var user_info = JSON.parse(JSON.stringify(result[0]));
-        if (user_info.type == 0){
-            user_info.type = 'vet';
+        if (result.length == 0) {
+            callback(null);
         }
         else {
-            user_info.type = 'carer';
+            var user_info = JSON.parse(JSON.stringify(result[0]));
+            if (user_info.type == 0){
+                user_info.type = 'vet';
+            }
+            else {
+                user_info.type = 'carer';
+            }
+            callback(user_info);
         }
-        callback(user_info);
     });
 }
 
-// get dogs of carer
-function getDogsOfCarer(con, carer_id, callback){
+// get dogs of user (carer or vet team)
+function getDogsOfUser(con, uid, callback){
+    var sql = "SELECT dog_id FROM dog_user JOIN accounts WHERE dog_user.uid = accounts.uid"
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        if (result.length == 0) {
+            callback(null);
+        }
+        else{
+            var dog_list = JSON.parse(JSON.stringify(result));
+            callback(dog_list);
+        }
+    });
 }
 
-// get dogs of vet team
-function getDogsOfVetTeam(con, vet_id, callback){
-}
-
-// get user contacts
+// get user contacts - connections between carers and vets through dogs
 function getUserContacts(con, email, callback){
 }
 
-// get operations
+// get list of all operations
 function getOperations(con, callback){
 }
 
 // get operation info for a given operation (dog, carer, date, link)
 function getOperationInfo(con, surgery, callback){
 }
+
+// get list of all target areas in system
+function getTargetAreas(con, callback){
+}
+
 
 // TODO: update functions?
 // TODO: delete functions
@@ -220,6 +307,7 @@ function getOperationInfo(con, surgery, callback){
 
 // TESTING
 var connection = createConnection();
+//clearDB(connection);
 createTables(connection);
 showTables(connection, function(result){
     console.log(result);
@@ -229,5 +317,20 @@ getUserInfo(connection, 'test@example.com', function(result){
     console.log(result);
 });
 getUserID(connection, 'test@example.com', function(result){
+    console.log(result);
+});
+
+//connection.query('INSERT INTO target_area (target_name) VALUES ("test target")', function(err, result){
+//    if (err) throw err;
+//    console.log("Added test target");
+//});
+
+//connection.query('INSERT INTO operations (op_name) VALUES ("test surgery")', function(err, result){
+//    if (err) throw err;
+//    console.log("Added test surgery");
+//});
+//
+//addDog(connection, 'doggo', 'test surgery', 'test target', "2020-02-18", 1);
+getDogsOfUser(connection, 1, function(result){
     console.log(result);
 });
