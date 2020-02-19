@@ -18,7 +18,6 @@ function createConnection(){
     return con;
 }
 
-// TODO: make email have unique requirement
 // TODO: add chat client table (keep track of chat topics)
 // create all necessary tables if they don't exist
 function createTables(con){
@@ -31,28 +30,35 @@ function createTables(con){
     });
 
     // sub_account table
-    sql = "CREATE TABLE IF NOT EXISTS sub_accounts (uid INT, name VARCHAR(255))";
+    sql = "CREATE TABLE IF NOT EXISTS sub_accounts (uid INT, name VARCHAR(255), FOREIGN KEY (uid) REFERENCES accounts(uid))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Sub-account table created");
     });
 
-    // dog table
-    sql = "CREATE TABLE IF NOT EXISTS dogs (dog_id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), op_id INT, target_area INT, operation_date DATE)";
+    // table of operations
+    sql = "CREATE TABLE IF NOT EXISTS operations (op_id INT AUTO_INCREMENT PRIMARY KEY, op_name VARCHAR(255), op_date DATE, body_condition INT, injury TEXT, surgery TEXT, procedure_info TEXT, abnormalities TEXT, location VARCHAR(255), stitch_staple BOOLEAN, rest_len INT, cage_or_room BOOLEAN, next_appointment DATETIME, meds TEXT)";
     con.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Dog table created");
+        console.log("operations table created");
+    });
+
+    // animal table
+    sql = "CREATE TABLE IF NOT EXISTS animals (aid INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), sex VARCHAR(1), species VARCHAR(255), bodyweight INT, owner_id INT, op_id INT, FOREIGN KEY (owner_id) REFERENCES accounts(uid), FOREIGN KEY (op_id) REFERENCES operations(op_id))";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Animal table created");
     });
 
     // dog-user relation table
-    sql = "CREATE TABLE IF NOT EXISTS dog_user (dog_id INT, uid INT)";
+    sql = "CREATE TABLE IF NOT EXISTS animal_vet (aid INT, uid INT, FOREIGN KEY(aid) REFERENCES animals(aid), FOREIGN KEY (uid) REFERENCES accounts(uid))";
     con.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Dog-user relation table created");
+        console.log("Animal-user relation table created");
     });
 
     // survey info table
-    sql = "CREATE TABLE IF NOT EXISTS survey (survey_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255))";
+    sql = "CREATE TABLE IF NOT EXISTS survey (survey_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255), FOREIGN KEY (uid) REFERENCES accounts(uid))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Survey info table created");
@@ -65,13 +71,6 @@ function createTables(con){
         console.log("survey-target relation table created");
     });
 
-    // target_area table
-    sql = "CREATE TABLE IF NOT EXISTS target_area (target_id INT AUTO_INCREMENT PRIMARY KEY, target_name VARCHAR(255))";
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("target_area table created");
-    });
-
     // table of questionnaires
     sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255))";
     con.query(sql, function (err, result) {
@@ -79,15 +78,8 @@ function createTables(con){
         console.log("questionnaires table created");
     });
 
-    // table of operations
-    sql = "CREATE TABLE IF NOT EXISTS operations (op_id INT AUTO_INCREMENT PRIMARY KEY, op_name VARCHAR(255))";
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("operations table created");
-    });
-
     // table of the questionnaire-operation relation
-    sql = "CREATE TABLE IF NOT EXISTS questionnaire_op (op_id INT, questionnaire_id INT)";
+    sql = "CREATE TABLE IF NOT EXISTS questionnaire_op (op_id INT, questionnaire_id INT)"; // TODO: foreign key this
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaire_op table created");
@@ -106,17 +98,12 @@ function alterTable(con, table_name, alteration_sql){
 
 //clear database function (FOR TESTING ONLY - WILL DELETE ALL DATA)
 function  clearDB(con){
-    var sql  = '';
-    var table = '';
-    showTables(connection, function(result){
-        for (i = 0; i < result.length; i ++){
-            table = result[i];
-            sql = "DROP TABLE IF EXISTS " + table;
-            con.query(sql, function(err, res){
-                if (err) throw err;
-                console.log("Table " + table + " dropped.");
-            });
-        }
+    con.query("DROP DATABASE app", function(err, result){
+        if (err) throw err;
+        con.query("CREATE DATABASE app", function (err, result) {
+            if (err) throw err;
+            console.log("Database cleared.");
+        });
     });
 }
 
@@ -150,8 +137,8 @@ function addVetToTeam(con, email, name){
     con.query("SELECT uid FROM accounts WHERE email = '" + email + "'", function (err, result){
         if (err) throw err;
         if (result.length != 0){
-            var uid = JSON.parse(JSON.stringify(result[0]));
-            var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + uid + ", " + name + ")";
+            var uid = JSON.parse(JSON.stringify(result[0])).uid;
+            var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + uid + ", '" + name + "')";
             con.query(sql, function(err, result){
                 if (err) throw err;
                 console.log("Added " + name + " to account " + email)
@@ -163,25 +150,14 @@ function addVetToTeam(con, email, name){
     });
 }
 
-// add dog
-// operation_date must be in format "yyyy-mm-dd"
-function addDog(con, name, operation, target_area, operation_date, uid){
-    con.query("SELECT target_id FROM target_area WHERE target_name = '" + target_area + "'", function (err, target_id_res, fields){
+// add animal
+// arguments: connection, name:string, sex:string(f/m), species:string, bodyweight:int, owner_id:int, op_id:int)
+function addAnimal(con, name, sex, species, bodyweight, owner_id, op_id){
+    var sql = "INSERT INTO animals (name, sex, species, bodyweight, owner_id, op_id) VALUES ?";
+    values =  [[name, sex, species, bodyweight, owner_id, op_id]];
+    con.query(sql, [values], function(err, result){
         if (err) throw err;
-        var target_id = target_id_res[0].target_id;
-        con.query("SELECT op_id FROM operations WHERE op_name = '" + operation  + "'", function (err, op_id_res, fields){
-            var op_id = op_id_res[0].op_id;
-            var sql_dog = "INSERT INTO dogs (name, op_id, target_area, operation_date) VALUES ?";
-            var values = [[name, op_id, target_id, operation_date]];
-            con.query(sql_dog, [values], function(err, dog_result){
-                if (err) throw err;
-                var sql_dog_user = "INSERT INTO dog_user (dog_id, uid) VALUES (" + dog_result.insertId + ", " + uid + ")";
-                con.query(sql_dog_user, function(err, dog_user_result){
-                    if (err) throw err;
-                    console.log("Added dog user relationship.");
-                });
-            });
-        });
+        console.log("Added animal " + result.insertId);
     });
 }
 
@@ -195,29 +171,35 @@ function addCarer(con, email, password, name){
     });
 }
 
-// add dog-user relation
-function addDogUserRelation(con, dog_id, uid){
-    var sql = "INSERT INTO dog_user (dog_id, uid) VALUES (" + dog_id + ", " + uid + ")";
-    con.query(sql, function(err, result){
+// add animal to vet team
+function addAnimalToVetTeam(con, aid, uid){
+    // first check that uid is a vet
+    var sql1 = "SELECT type FROM accounts WHERE uid=" + uid;
+    con.query(sql1, function(err, result){
         if (err) throw err;
-        console.log("Added connection to dog with id " + dog_id);
+        var type = JSON.parse(JSON.stringify(result[0])).type;
+        if (type){
+            console.log("This is a carer, not vet - aborting.")
+        }
+        else{
+            var sql2 = "INSERT INTO animal_vet (aid, uid) VALUES (" + aid + ", "  + uid + ")";
+            con.query(sql2, function(err, result){
+                if (err) throw err;
+                console.log("Added animal-vet relation.");
+            });
+        }
     });
 }
 
 // add survey
 // TODO: need to complete - will also get list of users to send survey to here (it  needs to  be  done in one function)
-function addSurvey(con, uid, creation_date, link, target_areas){
+function addSurveyGetReceivers(con, uid, creation_date, link, target_areas){
     var sql1 = "INSERT INTO survey (uid, created, link) VALUES (" + uid + ", " + creation_date + ", "  + link + ")";
     con.query(sql1, function(err, result){
         if (err) throw err;
         console.log("Added new survey.");
     });
-    // insert into survey-target table (need to discuss how to handle target areas - is there a predetermined list?)
-}
 
-// add target_area
-// TODO
-function addTargetArea(con, target_area){
 }
 
 // add questionnaire
@@ -225,7 +207,13 @@ function addQuestionnaire(con, uid, creation_date, link, operation){
 }
 
 // add operation
-function addOperation(con, operation){
+function addOperation(con, op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds){
+    var sql = "INSERT INTO operations (op_name, op_date, body_condition, injury, surgery, procedure_info, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds) VALUES ?";
+    var values = [[op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds]];
+    con.query(sql, [values], function(err, result){
+        if (err) throw err;
+        console.log('Added operation ' + result.insertId);
+    });
 }
 
 
@@ -248,8 +236,8 @@ function getUserID(con, email, callback){
 
 // get user info
 // if email not found, return null
-function getUserInfo(con, email, callback){
-    var sql = "SELECT * FROM accounts WHERE email='" + email + "'";
+function getUserInfo(con, uid, callback){
+    var sql = "SELECT * FROM accounts WHERE uid='" + uid + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length == 0) {
@@ -268,9 +256,24 @@ function getUserInfo(con, email, callback){
     });
 }
 
-// get dogs of user (carer or vet team)
-function getDogsOfUser(con, uid, callback){
-    var sql = "SELECT dog_id FROM dog_user JOIN accounts WHERE dog_user.uid = accounts.uid"
+// get animal info
+function getAnimalInfo(con, aid, callback){
+    var sql = "SELECT * FROM animals WHERE aid='" + aid + "'";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        if (result.length == 0){
+            callback(null);
+        }
+        else{
+            var animal_info = JSON.parse(JSON.stringify(result[0]));
+            callback(animal_info);
+        }
+    });
+}
+
+// get animals of vet team
+function getAnimalsOfVetTeam(con, uid, callback){
+    var sql = "SELECT aid FROM animal_vet JOIN accounts WHERE animal_vet.uid = accounts.uid AND animal_vet.uid =" + uid;
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length == 0) {
@@ -284,7 +287,7 @@ function getDogsOfUser(con, uid, callback){
 }
 
 // get user contacts - connections between carers and vets through dogs
-function getUserContacts(con, email, callback){
+function getUserContacts(con, uid, callback){
 }
 
 // get list of all operations
@@ -295,9 +298,6 @@ function getOperations(con, callback){
 function getOperationInfo(con, surgery, callback){
 }
 
-// get list of all target areas in system
-function getTargetAreas(con, callback){
-}
 
 
 // TODO: update functions?
@@ -313,24 +313,26 @@ showTables(connection, function(result){
     console.log(result);
 });
 //addCarer(connection, 'test@example.com', 'test_pass', 'test');
-getUserInfo(connection, 'test@example.com', function(result){
+//addVetTeam(connection, 'vet@example.com', 'test_pass', 'test_vet_team');
+//addVetToTeam(connection, 'vet@example.com', 'vet1');
+//addVetToTeam(connection, 'vet@example.com', 'vet2');
+
+var today = new Date().toISOString().slice(0, 10);
+//addOperation(connection, 'test_op', today, 6, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 3, false, new Date(), 'some_JSON');
+//addAnimal(connection, 'doggo', 'f', 'dog', 20, 1, 1);
+addAnimalToVetTeam(connection, 4, 1);
+
+getUserInfo(connection, 2, function(result){
     console.log(result);
 });
 getUserID(connection, 'test@example.com', function(result){
     console.log(result);
 });
 
-//connection.query('INSERT INTO target_area (target_name) VALUES ("test target")', function(err, result){
-//    if (err) throw err;
-//    console.log("Added test target");
-//});
+getAnimalInfo(connection, 4, function(result){
+    console.log(result);
+});
 
-//connection.query('INSERT INTO operations (op_name) VALUES ("test surgery")', function(err, result){
-//    if (err) throw err;
-//    console.log("Added test surgery");
-//});
-//
-//addDog(connection, 'doggo', 'test surgery', 'test target', "2020-02-18", 1);
-getDogsOfUser(connection, 1, function(result){
+getAnimalsOfVetTeam(connection, 2, function(result){
     console.log(result);
 });
