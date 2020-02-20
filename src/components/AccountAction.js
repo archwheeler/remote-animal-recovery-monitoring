@@ -2,7 +2,7 @@ export function LoginAction(username, password, feedback) {
   return {
     type: "LOGIN",
     label: feedback,
-    user: {
+    data: {
       name: username,
       pass: password
     }
@@ -18,10 +18,18 @@ export function LogoutAction() {
 export function RegisterAction(username, password, age) {
   return {
     type: "REGISTER",
-    user: {
+    data: {
       name: username,
+      // DON'T SAVE PASSWORD ANYWHERE PLAINTEXT THIS IS JUST A PLACEHOLDER FOR TESTING PURPOSES
       pass: password,
       age: age
     }
   }
+}
+
+export function SelectAccountAction(ID) {
+  return {
+    type: "SELECT_ID",
+    id: ID
+  };
 }

@@ -5,6 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import ContentLink from 'material-ui/svg-icons/content/link';
+import { FlatButton, BottomNavigation, BottomNavigationItem } from 'material-ui';
 
 export default class AppShell extends React.Component {
 	constructor(props) {
@@ -43,8 +44,7 @@ export default class AppShell extends React.Component {
 					open={this.state.open}
 					onRequestChange={this.handleRequestChange}
 					>
-					<MenuItem primaryText="Users" leftIcon={<ContentLink/>} containerElement={<Link to="/users"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/contact"/>} onTouchTap={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onTouchTap={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Github" leftIcon={<ContentLink/>} target="_blank" href="https://github.com/" onTouchTap={this.handleToggleDrawer}/>
 					
 					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onTouchTap={this.handleToggleDrawer}/>
@@ -53,8 +53,9 @@ export default class AppShell extends React.Component {
 				<AppBar
 					title={this.state.title}
 					onLeftIconButtonTouchTap={this.handleToggleDrawer}
-					iconClassNameRight="muidocs-icon-navigation-expand-more"
+					iconElementRight={<FlatButton backgroundColor="red" label="Emergency Contact" href="/#/contact" />}
 					/>
+				
 				<div id="content" style={{width: '90%', margin: 'auto', marginTop: '30px'}}>
 					{this.props.children}
 				</div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {LoginAction} from './AccountAction';
+import {SelectAccountAction, LoginAction} from './AccountAction';
 
 class Account extends React.Component {
 
@@ -10,10 +10,31 @@ class Account extends React.Component {
   }
 
 	render() {
-	  if (store.getState().loggedIn) {
+	  if (store.getState().choseId) {
       window.location.href = "/#/account";
       return null;
       
+    } else if (store.getState().loggedIn) {
+      return (
+        <div>
+          Please select an account from below: <br/>
+          {
+            Object.entries(store.getState().data).map(function([key, value]) {
+              return (
+                <div>
+                  <button key={key} onClick={function() {
+                    store.dispatch(SelectAccountAction(key))
+                  }}>
+                    {value}
+                  </button>
+                  <br/>
+                </div>
+              )
+            }
+          )}
+        </div>
+      );
+    
     } else {
       return (
         <div>
@@ -37,6 +58,7 @@ class Account extends React.Component {
             <br/>
 
             <button onClick={() => window.location.href='/#/register'}> Register </button>
+            <br/>
           </p>
         </div>
       );
@@ -53,7 +75,6 @@ class Account extends React.Component {
   }
 
   login() {
-    // verify from database :) @Masha collab needed
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var feedback = document.getElementById("feedback");

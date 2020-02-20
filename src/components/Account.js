@@ -20,10 +20,10 @@ class Account extends React.Component {
             My Account
             <br/>
             
-            Name: {store.getState().user.name}
+            Name: {store.getState().data.name}
             <br/>
             
-            Age: {store.getState().user.age}
+            Age: {store.getState().data.age}
           </p>
         </div>
       );

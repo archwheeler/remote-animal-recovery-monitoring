@@ -1,24 +1,31 @@
 export const initial_state = {
   loggedIn: false,
-  user: {}
+  choseId: false,
+  vetAccount: false,
+  data: {}
 }
+
+// get from database
+var names = {
+  user1: "tom",
+  user2: "masha"
+};
 
 // previous state, action => next state
 export function AccountReducer(state = initial_state, action) {
   switch (action.type) {
     case "LOGIN":
       state.loggedIn = false;
+      state.choseId = false;
       
       // TODO: lookup name / pass from database, not just hardcoded
-      if (action.user.name == "tom" && action.user.pass == "hello") {
+      if (action.data.name == "tom" && action.data.pass == "hello") {
         action.label.innerHTML = "Log in successful";
         
         return {
           loggedIn: true,
-          user: {
-            name: "tom",
-            age: 19
-          }
+          vetAccount: true,
+          data: names
         };
       
       } else {
@@ -28,7 +35,8 @@ export function AccountReducer(state = initial_state, action) {
     
     case "LOGOUT":
       state.loggedIn = false;
-      state.user = {};
+      state.choseId = false;
+      state.data = {};
       return state;
     
     case "REGISTER":
@@ -38,13 +46,34 @@ export function AccountReducer(state = initial_state, action) {
       // Success
       return {
         loggedIn: true,
-        user: {
-          name: action.user.name,
-          pass: action.user.pass,
-          age: action.user.age
+        choseId: true,
+        data: {
+          name: action.data.name,
+          pass: action.data.pass,
+          age: action.data.age
         }
       };
     
+    case "SELECT_ID":
+      state.choseId = true;
+      // TODO: send to database
+      if (state.vetAccount) {
+        state.data = {
+          id: action.id,
+          type: "human",
+          name: names[action.id],
+          age: 19
+        };
+      } else {
+        state.data = {
+          id: action.id,
+          type: "dog",
+          name: names[action.id],
+          age: 1
+        };
+      }
+      return state;
+      
     // Something else happened
     default:
       return state;
