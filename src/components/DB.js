@@ -64,25 +64,18 @@ function createTables(con){
         console.log("Survey info table created");
     });
 
-    // survey-target area relation table
-    sql = "CREATE TABLE IF NOT EXISTS survey_target (survey_id INT, target_area INT)";
+    // survey-location relation table
+    sql = "CREATE TABLE IF NOT EXISTS survey_location (survey_id INT, location VARCHAR(255), FOREIGN KEY (survey_id) REFERENCES survey(survey_id))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("survey-target relation table created");
     });
 
     // table of questionnaires
-    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255))";
+    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link VARCHAR(255))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
-    });
-
-    // table of the questionnaire-operation relation
-    sql = "CREATE TABLE IF NOT EXISTS questionnaire_op (op_id INT, questionnaire_id INT)"; // TODO: foreign key this
-    con.query(sql, function (err, result) {
-        if (err) throw err;
-        console.log("questionnaire_op table created");
     });
 
 }
@@ -192,18 +185,30 @@ function addAnimalToVetTeam(con, aid, uid){
 }
 
 // add survey
-// TODO: need to complete - will also get list of users to send survey to here (it  needs to  be  done in one function)
-function addSurveyGetReceivers(con, uid, creation_date, link, target_areas){
+// callback gets the id of the survey created
+function addSurvey(con, uid, creation_date, link, target_location, callback){
     var sql1 = "INSERT INTO survey (uid, created, link) VALUES (" + uid + ", " + creation_date + ", "  + link + ")";
     con.query(sql1, function(err, result){
         if (err) throw err;
-        console.log("Added new survey.");
+        var sql2 = "INSERT INTO survey_location (survey_id, location) VALUES ?"
+        var values = [[result.insertId, target_location]];
+        con.query(sql2, [values], function(err, res){
+            if (err) throw err;
+            console.log("Added new survey.");
+            callback(result.insertId);
+        });
     });
 
 }
 
 // add questionnaire
-function addQuestionnaire(con, uid, creation_date, link, operation){
+function addQuestionnaire(con, time_to_send, link){
+    var sql = "INSERT INTO questionnaires (time, link) VALUES ?";
+    var values = [[time_to_send, link]];
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("Added questionnaire " + result.insertId);
+    });
 }
 
 // add operation
@@ -235,7 +240,7 @@ function getUserID(con, email, callback){
 }
 
 // get user info
-// if email not found, return null
+// if uid  not found, return null
 function getUserInfo(con, uid, callback){
     var sql = "SELECT * FROM accounts WHERE uid='" + uid + "'";
     con.query(sql, function(err, result){
@@ -287,15 +292,77 @@ function getAnimalsOfVetTeam(con, uid, callback){
 }
 
 // get user contacts - connections between carers and vets through dogs
+// TODO: test this
 function getUserContacts(con, uid, callback){
-}
-
-// get list of all operations
-function getOperations(con, callback){
+    var sql1 = "SELECT type FROM accounts WHERE uid=" + uid;
+    con.query(sql1, function(err, result){
+        if (err) throw err;
+        if (result.length == 0){
+            callback(null);
+        }
+        else{
+            var type = JSON.parse(JSON.stringify(result[0])).type;
+            // if carer
+            if (type){
+                var sql2 = "SELECT uid FROM animal_vet JOIN animals WHERE animal_vet.aid = animals.aid AND animals.owner_id=" + uid;
+                con.query(sql2, function(err, result2){
+                    if (err) throw err;
+                    var contacts = JSON.parse(JSON.stringify(result2));
+                    callback(contacts);
+                });
+            }
+            // if vet
+            else{
+            var sql2 = "SELECT owner_id FROM animals JOIN animal_vet WHERE animal_vet.aid = animals.aid AND animal_vet.uid=" + uid;
+                con.query(sql2, function(err, result2){
+                    if (err) throw err;
+                    var contacts = JSON.parse(JSON.stringify(result2));
+                    callback(contacts);
+                });
+            }
+        }
+    });
 }
 
 // get operation info for a given operation (dog, carer, date, link)
-function getOperationInfo(con, surgery, callback){
+// TODO: test
+function getOperationInfo(con, op_id, callback){
+    var sql = "SELECT * FROM operations WHERE op_id="  + op_id;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        if (result.length == 0){
+            callback(null);
+        }
+        else{
+            var op_info = JSON.parse(JSON.stringify(result[0]));
+            callback(op_info);
+        }
+    });
+}
+
+// get list of users to receive survey
+function getSurveyReceivers(con, survey_id, callback){
+    var sql1 = "SELECT location FROM survey_location WHERE survey_id=" + survey_id;
+    con.query(sql1, function(err, result){
+        if (err) throw err;
+        if (result.length == 0){
+            callback(null);
+        }
+        else{
+            var location = JSON.parse(JSON.stringify(result[0])).location;
+            var sql2 = "SELECT aid FROM animals WHERE location='" + location + "'";
+            con.query(sql2, function(err, result2){
+                if (err) throw err;
+                if (result2.length == 0){
+                    callback(null);
+                }
+                else{
+                    var animal_list = JSON.parse(JSON.stringify(result));
+                    callback(animal_list);
+                }
+            });
+        }
+    });
 }
 
 
