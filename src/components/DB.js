@@ -58,7 +58,7 @@ function createTables(con){
     });
 
     // survey info table
-    sql = "CREATE TABLE IF NOT EXISTS survey (survey_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link VARCHAR(255), FOREIGN KEY (uid) REFERENCES accounts(uid))";
+    sql = "CREATE TABLE IF NOT EXISTS survey (survey_id INT AUTO_INCREMENT PRIMARY KEY, uid INT, created DATE, link TEXT, FOREIGN KEY (uid) REFERENCES accounts(uid))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Survey info table created");
@@ -72,7 +72,7 @@ function createTables(con){
     });
 
     // table of questionnaires
-    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link VARCHAR(255))";
+    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link TEXT)";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
@@ -412,7 +412,7 @@ function getSurveyReceivers(con, survey_id, callback){
 // TESTING
 var connection = createConnection();
 //clearDB(connection);
-createTables(connection);
+//createTables(connection);
 showTables(connection, function(result){
     console.log(result);
 });
@@ -425,7 +425,7 @@ var today = new Date().toISOString().slice(0, 10);
 //addOperation(connection, 'test_op', today, 6, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 3, false, new Date(), 'some_JSON');
 //addAnimal(connection, 'doggo', 'f', 'dog', 20, 1, 1);
 //addAnimalToVetTeam(connection, 1, 2);
-
+//
 //addSurvey(connection, 2, today, 'test_link1', 'test_loc', function(result){
 //    console.log(result);
 //});
