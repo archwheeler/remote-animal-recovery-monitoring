@@ -7,9 +7,9 @@ import MenuItem from 'material-ui/MenuItem';
 class VetInformationInput extends React.Component {
 	state = {
 		value: null,
-	  };
-	
-	  handleChange = (event, index, value) => this.setState({value});
+	};
+
+	handleChange = (event, index, value) => this.setState({value});
 	
 	render() {
 		return (
@@ -17,19 +17,19 @@ class VetInformationInput extends React.Component {
 			<Card>
 				<CardTitle title="Discharge Information Input"/>
 				 <CardText>
-					<TextField
-					floatingLabelText="Owner Name"
-					defaultValue="Albert"
-					/><br />
-					<br />
-					<TextField
+				 	<TextField
 					floatingLabelText="Animal Name"
 					defaultValue="George"
 					/><br />
-					<TextField
-					floatingLabelText="Bodyweight"
-					defaultValue=""
-					/><br />
+					<SelectField
+					floatingLabelText="Sex"
+					value={this.state.value}
+					onChange={this.handleChange}
+					>
+						<MenuItem value={1} primaryText="Male" />
+       					<MenuItem value={2} primaryText="Female" />
+          			</SelectField>
+					<br />
 					<SelectField
 					floatingLabelText="Animal Type"
 					value={this.state.value}
@@ -39,20 +39,60 @@ class VetInformationInput extends React.Component {
        					<MenuItem value={2} primaryText="Cat" />
           			</SelectField>
 					<br />
-					<DatePicker 
-						floatingLabelText="Date of Birth"/>
+					<TextField
+					floatingLabelText="Bodyweight"
+					defaultValue=""
+					/><br />
+					<TextField
+					floatingLabelText="Owner Name"
+					defaultValue="Albert"
+					/><br />
 					<br />
 					<TextField
-					hintText="Password Field"
-					floatingLabelText="Password"
-					type="password"
+					floatingLabelText="Operation Name"
+					defaultValue=""
 					/><br />
+					<br />
+					<DatePicker 
+						floatingLabelText="Operation Date"/>
+					<br />
 					<TextField
-					hintText="MultiLine with rows: 2 and rowsMax: 4"
-					multiLine={true}
-					rows={2}
-					rowsMax={4}
+					floatingLabelText="Abnormalities"
+					defaultValue=""
 					/><br />
+					<br />
+					<TextField
+					floatingLabelText="Location"
+					defaultValue=""
+					/><br />
+					<br />
+					<SelectField
+					floatingLabelText="Stitches or Staples"
+					value={this.state.value}
+					onChange={this.handleChange}
+					>
+						<MenuItem value={1} primaryText="Stitches" />
+       					<MenuItem value={2} primaryText="Staples" />
+          			</SelectField>
+					<br />
+					<TextField
+					floatingLabelText="Length of rest"
+					defaultValue=""
+					/><br />
+					<br />
+					<SelectField
+					floatingLabelText="Cage or Room"
+					value={this.state.value}
+					onChange={this.handleChange}
+					>
+						<MenuItem value={1} primaryText="Cage" />
+       					<MenuItem value={2} primaryText="Small Room" />
+          			</SelectField>
+					<br />
+					<DatePicker 
+						floatingLabelText="Next Appointment"/>
+					<br />
+
 					<RaisedButton label="Submit" primary={true} />
 				</CardText>
 			</Card>
