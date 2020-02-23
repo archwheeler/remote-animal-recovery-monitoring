@@ -14,7 +14,6 @@ import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
-
 	information = {
 		name: "George",
 		firstLetterOfName: "G",
