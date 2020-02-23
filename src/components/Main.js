@@ -10,12 +10,12 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.callApi()
-            .then(res => this.setState({ response: res.test_field }))
+            .then(res => this.setState({ response: res.animals }))
             .catch(err => console.log(err));
     }
 
     callApi = async () => {
-        const response = await fetch('http://localhost:5000/getAnimalInfo/123');
+        const response = await fetch('http://localhost:5000/getAnimals/123');
         const body = await response.json();
         if (response.status !== 200) throw Error(body.message);
 
@@ -24,17 +24,17 @@ class Main extends React.Component {
 
     handleClick = async e => {
         e.preventDefault();
-        const response = await fetch('http://localhost:5000/addNewAnimal', {
+        const response = await fetch('http://localhost:5000/registerUser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             //Maybe have some state to store the required fields
-            body: JSON.stringify({'textTest' : 'Hey'})
+            body: JSON.stringify({'username' : 'Test1', 'password':'Test1Password','email':'something'})
         });
-        const body = await response.text();
+        const body = await response.json();
 
-        this.setState({ responseToPost: body });
+        this.setState({ responseToPost: body.uid });
     };
 
     render() {
