@@ -4,7 +4,7 @@ import { Card, CardTitle, CardText, SelectField, DatePicker } from 'material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 import MenuItem from 'material-ui/MenuItem';
 
-class Contact extends React.Component {
+class VetInformationInput extends React.Component {
 	state = {
 		value: null,
 	  };
@@ -61,4 +61,4 @@ class Contact extends React.Component {
 	}
 }
 
-export default Contact;
+export default VetInformationInput;

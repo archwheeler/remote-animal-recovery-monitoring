@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'react-router/lib/Link';
-// import {Layout, Header, Navigation, Content, Textfield, Drawer} from 'react-mdl';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
