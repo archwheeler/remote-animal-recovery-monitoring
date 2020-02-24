@@ -490,8 +490,16 @@ function completeSurvey(con, aid, survey_id){
     });
 }
 
-// TODO: delete functions
+// update  animal info
+function updateAnimal(con, aid, name, sex, species, bodyweight, owner_id, op_id){
+    var sql = "UPDATE animals SET name = '" + name + "', sex = '" + sex + "', species = '" + species + "', bodyweight = " + bodyweight + ", owner_id=" + owner_id + ", op_id="  + op_id + " WHERE aid=" + aid;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("Updated animal " + aid);
+    });
+}
 
+// TODO: delete functions
 
 
 // TESTING
@@ -591,5 +599,37 @@ getCarersAskingAboutLabel(connection, 'test_vet_label', function(result){
 
 
 //completeSurvey(connection, 1,  3);
+//updateAnimal(connection, 1, 'kitty', 'f', 'cat', 20, 1, 1);
+
+module.exports = {
+    createConnection,
+    createTables,
+    showTables,
+    addCarer,
+    addVetTeam,
+    addVetToTeam,
+    addOperation,
+    addAnimal,
+    addAnimalToVetTeam,
+    addSurvey,
+    addQuestionnaire,
+    addChatLabel,
+    getUserID,
+    getUserInfo,
+    getUserContacts,
+    getVetList,
+    getAnimalInfo,
+    getCarerOfAnimal,
+    getAnimalsOfVetTeam,
+    getOperationInfo,
+    getQuestionnaires,
+    getSurveysOfAnimal,
+    getCarersAskingAboutLabel,
+    getNumberOfChatsForLabel,
+    getSurveyReceivers,
+    authenticateUser,
+    completeSurvey,
+    updateAnimal
+};
 
 
