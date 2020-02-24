@@ -44,17 +44,17 @@ export default class AppShell extends React.Component {
 					open={this.state.open}
 					onRequestChange={this.handleRequestChange}
 					>
-					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/LoadForm"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/SurveyTemplate"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onTouchTap={this.handleToggleDrawer}/>
-					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onTouchTap={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/LoadForm"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/SurveyTemplate"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onClick={this.handleToggleDrawer}/>
 					
 				</Drawer>
 				<AppBar
 					title={this.state.title}
-					onLeftIconButtonTouchTap={this.handleToggleDrawer}
+					onLeftIconButtonClick={this.handleToggleDrawer}
 					iconElementRight={<FlatButton backgroundColor="red" label="Emergency Contact" href="/#/contact" />}
 					/>
 				
