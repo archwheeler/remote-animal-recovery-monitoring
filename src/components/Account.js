@@ -15,15 +15,18 @@ class Account extends React.Component {
       if (store.getState().choseId) {
         return (
           <div>
-            <p>
-              <button onClick={() => store.dispatch(LogoutAction())}> Log out </button>
-              <br/>
-            
-              My Account
-              <br/>
-            
-              Name: {store.getState().data.name}
-              <br/>
+            <button onClick={() => store.dispatch(LogoutAction())}> Log out </button>
+            <br/>
+          
+            My Account
+            <br/>
+          
+            Name: {store.getState().data.name}
+            <br/>
+          
+            Change user:
+            <button onClick={() => store.dispatch(ChooseIdAction())}> click </button>
+            <br/>
             
             {/* For debugging only */}
             {JSON.stringify(store.getState())}
