@@ -12,7 +12,7 @@ class LoadForm extends React.Component {
 								avatar={<Avatar>G</Avatar>}
 					/>
 					<CardText>
-					Please fill in the form below. To send it too us after filling in click the print button and print to "Save as PDF". Then email this attachment to the <a href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
+					Please fill in the form below. To send it to us after filling in click the print button and print to "Save as PDF". Then email this attachment to the <a href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
 					</CardText>
 					<CardMedia>
 						<object data = "Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600" frameBorder="none">
