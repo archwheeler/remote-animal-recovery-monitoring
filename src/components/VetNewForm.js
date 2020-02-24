@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardHeader, CardText, CardMedia, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
-class VetNewForm extends React.Component {
+class VetNewSurvey extends React.Component {
 	render() {
 		return (
 			<Card>
@@ -19,4 +19,4 @@ class VetNewForm extends React.Component {
 	}
 }
 
-export default VetNewForm;
+export default VetNewSurvey;
