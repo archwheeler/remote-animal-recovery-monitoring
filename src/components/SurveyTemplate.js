@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 
-class Main extends React.Component {
+class Survey extends React.Component {
 	render() {
 		return (
 			
@@ -24,4 +24,4 @@ class Main extends React.Component {
 	}
 }
 
-export default Main;
+export default Survey;

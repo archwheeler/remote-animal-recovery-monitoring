@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardText, CardActions} from 'material-ui/Card';
+import {Card, CardHeader, CardText, CardActions, CardMedia} from 'material-ui/Card';
 import {
 	Step,
 	Stepper,
@@ -136,6 +136,34 @@ class Main extends React.Component {
 					</CardText>
 				</Card>
 
+				<Card>
+					<CardHeader title= "Load Form"
+								actAsExpander={true}
+								showExpandableButton={true}
+					/>
+					<CardText expandable={true}>
+					Please fill in the form below. To send it too us after filling in click the print button and print to "Save as PDF". Then email this attachment to the <a href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
+					</CardText>
+					<CardMedia expandable={true}>
+						<object data = "Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600" frameBorder="none">
+							<div style={{margin:15}}><p>Unfortunately this browser does not support PDFs. Please download the PDF using the button below, we recommend using Adobe Acrobat to fill in the form.</p>
+							</div>
+							<FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
+						
+						</object>
+					</CardMedia>
+				</Card>
+
+				<Card>
+					<CardHeader title= "Vet Metrica Questionnare"
+								actAsExpander={true}
+								showExpandableButton={true}
+					/>
+					<CardText expandable={true}>
+						Please complete the Vet Metrica Questionnare by clicking <a href="https://www.vetmetrica.com/Auth/Login">here</a>.
+					</CardText>
+				</Card>
+
 				
 				<Card>
 					<CardHeader title= "Exercise"
@@ -238,7 +266,7 @@ class Main extends React.Component {
 					<CardText expandable={true}>
 						<ul>
 							<li>{this.information.name} has skin {this.information.stitches_or_staples} that will need to be removed 10-14 days after surgery. Please arrange an appointment with your local vets for this.</li>
-							<li>We would like to re-examine animal’s name at the QVSH in {this.information} weeks. An appointment has been booked on {this.information.next_appt} at XX.XX. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
+							<li>We would like to re-examine {this.information.name} at the QVSH. An appointment has been booked on {this.information.next_appt} at XX.XX. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
 						</ul>
 					</CardText>
 					<CardActions expandable={true}>
