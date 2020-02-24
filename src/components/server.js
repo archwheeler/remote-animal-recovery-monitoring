@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors')
+const cors = require('cors');
 
 //const DB = require('./DB.js');
 //var connection = DB.createConnection();
@@ -142,7 +142,7 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
     res.send(
         {noOfSurveys : 7, surveys: [{survey_id : 1, link: 'link1'}]}
     );
-    /*
+    /* TODO
     DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
         // I will just send a list of links - alternatively we could include a 'done' field?
         const arr = [];
@@ -258,9 +258,15 @@ app.post('/addNewAnimal', (req, res) => {
 });
 
 app.post('/modifyAnimal/:animalID', (req, res) => {
+    /*
+    Expecting same format as addAnimal
+     */
     console.log(req.body);
+    /*
+    //TODO : DB.modifyAnimal
+     */
     res.send(
-        `I received your POST request. This is what you sent me: ${req.body.textTest}`,
+        `I received your POST request. This is what you sent me: ${req.body.next_appt}`,
     );
 });
 
