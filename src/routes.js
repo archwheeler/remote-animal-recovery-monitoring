@@ -2,7 +2,7 @@ import React from 'react';
 import Route from 'react-router/lib/Route';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import App from './components/App';
-import Main from './components/Main';
+import Main from './components/Main2';
 
 function routeUsers(s, cb) {
 	System.import('./components/Users').then(component => {

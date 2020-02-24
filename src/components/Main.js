@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {Card, CardHeader, CardText, CardActions, CardMedia} from 'material-ui/Card';
 import {
 	Step,
@@ -256,7 +255,6 @@ class Main extends React.Component {
 						{this.information.meds.name}: Please give {this.information.meds.amount} capsules/tablets {this.information.meds.frequency} times daily with food starting {this.information.meds.start} for {this.information.meds.length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
 					</CardText>
 				</Card>
-
 				<Card>
 					<CardHeader
 						title="Further  Appointments"
