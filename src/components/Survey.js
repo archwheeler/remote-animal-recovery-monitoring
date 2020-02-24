@@ -3,7 +3,7 @@ import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 
-class Main extends React.Component {
+class Survey extends React.Component {
 	constructor() {
 		super();
 		this.state = {loading: true};
@@ -44,4 +44,4 @@ class Main extends React.Component {
 	}
 }
 
-export default Main;
+export default Survey;

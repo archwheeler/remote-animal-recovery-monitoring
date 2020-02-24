@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'react-router/lib/Link';
-// import {Layout, Header, Navigation, Content, Textfield, Drawer} from 'react-mdl';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
@@ -47,7 +46,7 @@ export default class AppShell extends React.Component {
 					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/LoadForm"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/SurveyTemplate"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/survey"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onClick={this.handleToggleDrawer}/>
 					
