@@ -5,7 +5,7 @@ function createConnection(){
     var con = mysql.createConnection({
       host: "localhost", //TODO
       user: "root",
-      password: "Oracle1!", //TODO: don't leave this in plain text!
+      password: "Oracle1!",
       database: "app" //specify database
     });
 
@@ -18,7 +18,6 @@ function createConnection(){
     return con;
 }
 
-// TODO: add chat client table (keep track of chat topics)
 // create all necessary tables if they don't exist
 function createTables(con){
 
@@ -76,6 +75,13 @@ function createTables(con){
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
+    });
+
+    // chat client table
+    sql = "CREATE TABLE IF NOT EXISTS chat_labels (vet_id INT, carer_id INT, label VARCHAR(255), label_type BOOLEAN, FOREIGN KEY (vet_id) REFERENCES accounts(uid), FOREIGN KEY (carer_id) REFERENCES accounts(uid))";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("chat_labels table created");
     });
 
 }
@@ -221,6 +227,16 @@ function addOperation(con, op_name, op_date, condition, injury_text, surgery_tex
     });
 }
 
+
+// add label for chat
+function addChatLabel(con, vet_id, carer_id, label, label_type){
+    var sql = "INSERT INTO chat_labels (vet_id, carer_id, label, label_type) VALUES ?";
+    var values = [[vet_id, carer_id, label, label_type]];
+    con.query(sql, [values], function(err, result){
+        if (err) throw err;
+        console.log('Added chat label.');
+    });
+}
 
 
 // GET FUNCTIONS
@@ -402,6 +418,25 @@ function getSurveyReceivers(con, survey_id, callback){
     });
 }
 
+// get the number of chats associated with a certain label
+function getNumberOfChatsForLabel(con, label, callback){
+    var sql = "SELECT * FROM chat_labels WHERE label='" + label + "'";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        callback(result.length);
+    });
+}
+
+// get a list of ids of carers that chatted with a certain label
+function getCarersAskingAboutLabel(con, label, callback){
+    var sql = "SELECT carer_id FROM chat_labels WHERE label ='" + label + "'";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        var carers = JSON.parse(JSON.stringify(result));
+        callback(carers);
+    });
+}
+
 
 
 // TODO: update functions?
@@ -412,7 +447,7 @@ function getSurveyReceivers(con, survey_id, callback){
 // TESTING
 var connection = createConnection();
 //clearDB(connection);
-//createTables(connection);
+createTables(connection);
 showTables(connection, function(result){
     console.log(result);
 });
@@ -430,6 +465,9 @@ var today = new Date().toISOString().slice(0, 10);
 //    console.log(result);
 //});
 //addQuestionnaire(connection, 1, 'test_link2');
+//addChatLabel(connection, 2, 1, 'test_vet_label', true);
+//addChatLabel(connection, 2, 1, 'test_carer_label', false);
+//addChatLabel(connection, 2, 1, 'test_vet_label', true);
 
 getUserInfo(connection, 2, function(result){
     console.log(result);
@@ -474,6 +512,18 @@ authenticateUser(connection, 'test', 'test_pass', function(result){
 
 getSurveyReceivers(connection, 2, function(result){
     console.log("Receivers of survey 2: " + JSON.stringify(result));
+});
+
+getNumberOfChatsForLabel(connection, 'test_vet_label', function(result){
+    console.log("Number of chats for 'test_vet_label': " + result)
+});
+
+getNumberOfChatsForLabel(connection, 'test_carer_label', function(result){
+    console.log("Number of chats for 'test_carer_label': " + result)
+});
+
+getCarersAskingAboutLabel(connection, 'test_vet_label', function(result){
+    console.log(result);
 });
 
 
