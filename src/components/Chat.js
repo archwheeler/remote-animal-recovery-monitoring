@@ -80,7 +80,7 @@ class Chat extends React.Component {
 								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
 								avatar={<Avatar>G</Avatar>}
 					    />  
-                        <List style={{maxHeight: '380px', overflow: 'auto'}} >
+                        <List style={{maxHeight: '60vh', overflow: 'auto'}} >
                             {this.state.messages.map(message => 
                                 <ListItem key={message.id} disabled={true}>
                                     {message.senderId + "> " + message.parts[0].payload.content}
