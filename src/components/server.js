@@ -37,7 +37,7 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
     What response looks like:
     {
         name: ,
-        firstLetterOfName: ,
+        first_letter_of_name: ,
         sex: ,
         species: ,
         bodyweight: , //this should be an integer (perhaps kg?)
@@ -67,33 +67,36 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
     /*
     DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
 
-        //The result should contain id, name, sex, species, owner_id, bodyweight, op_id
+        //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
         //Should we merge with accounts table?
         response_object = AnResult;
-        response_object.firstLetterOfName = AnResult.name[0];
+        response_object.first_letter_of_name = AnResult.name[0];
 
         //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
         //table?
-        DB.getOperationInfo(connection,result.op_id, function(OpResult){
+        DB.getOperationInfo(connection,AnResult.op_id, function(OpResult){
 
             //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
             //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
-            response_object.operationName = opResult.name;
-            response_object.operationDate = opResult.op_date;
+            response_object.op_name = opResult.op_name;
+            response_object.op_date = opResult.op_date;
+            response_object.body_condition = opResult.body_condition;
 
             //Potential problem with JSON parsing of TEXT fields??
             response_object.injury_info = opResult.injury;
             response_object.surgery_data = opResult.surgery;
             response_object.abnormalities = opResult.abnormalities;
-            response_object.procedure_details = opResult.procedure;
+            response_object.procedure_info = opResult.procedure_info;
 
             response_object.location = opResult.location;
-            response_object.stitchesOrStaples = opResult.stitches_or_staples;
-            response_object.lengthOfRest = opResult.length_of_rest;
-            response_object.confinement = opResult.cage_or_small_room;
-            response_object.nextAppt = opResult.next_appt;
+            response_object.stitches_or_staples = opResult.stitch_staple;
+            response_object.length_of_rest = opResult.rest_len;
+            response_object.cage_or_room = opResult.cage_or_room;
+            response_object.next_appt = opResult.next_appt;
 
             response_object.weeksAfterSurgery = dateDiffInWeeks(opResult.op_date, new Date());
+
+            response_object.meds = JSON.parse(OpResult.meds);
 
         });
 
@@ -109,8 +112,50 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
     res.send(
-        {noOfQuestionnaires : 7}
+        {noOfQuestionnaires : 7, questionnaires: [{questionnaire_id : 1, link: 'link1'}]}
     );
+    // TODO : DB.getQuestionnaires() which will give me a list of all the questionnaire rows
+    /*
+    DB.getAnimalInfo(connection, req.params.animalID, function(AnimalInfo){
+        DB.getOperationInfo(connection, AnimalInfo.op_id, function(OpInfo){
+            const op_date = OpInfo.op_date;
+            DB.getQuestionnaires(connection, function(questionnaire_list){
+                const arr = [];
+                const c = 0;
+                for (questionnaire in questionnaire_list){
+                    if (dateDiffInWeeks(op_date, new Date()) == questionnaire.time){
+                        arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
+                        c = c + 1;
+                    }
+                }
+                res.send(
+                    {noOfQuestionnaires : c, questionnaires : arr}
+                );
+            });
+        });
+    });
+     */
+});
+
+app.get('/checkForSurveys/:animalID', (req, res) => {
+    console.log(req.body);
+    res.send(
+        {noOfSurveys : 7, surveys: [{survey_id : 1, link: 'link1'}]}
+    );
+    /*
+    DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
+        // I will just send a list of links - alternatively we could include a 'done' field?
+        const arr = [];
+        const c = 0;
+        for (survey in survey_list){
+            arr.push({survey_id : survey.survey_id, link: survey.link});
+            c = c + 1;
+        }
+        res.send(
+            {noOfSurveys : c, surveys : arr}
+        );
+    });
+     */
 });
 
 app.get('/getAnimals/:vetTeamID', (req, res) => {
@@ -145,10 +190,28 @@ app.get('/getListOfVets/:vetTeamID', (req, res) => {
     */
 });
 
+//Include a checkbox beside survey to indicate that the survey is done
+app.post('/surveyComplete', (req, res) => {
+    /*
+    Send
+    {
+        aid: , //Animal ID
+        surveyId: , //Survey ID
+    }
+     */
+    console.log(req.body);
+    /* // Should be in (survey_id, aid, done) - result is just string indicating 'success' or 'failure'
+    DB.markSurveyDone(connection, req.body.survey_id, req.body.aid, function(result){
+        res.send(result);
+    });
+     */
+});
+
 app.post('/addNewAnimal', (req, res) => {
     /*
     Here's what req.body should look like:
     {
+        vetTeamID: ,
         name: ,
         sex: ,
         species: ,
@@ -178,18 +241,19 @@ app.post('/addNewAnimal', (req, res) => {
     console.log(req.body);
     /*
     // This function needs to return the op_id
-    DB.addOperation(connection, req.params.op_name, req.params.op_date, req.params.body_condition,
-    req.params.injury_info, req.params.surgery_data, req.params.procedure_details, req.params.abnormalities,
-    req.params.location, req.params.stitches_or_staples, req.params.length_of_rest, req.params.cage_or_room,
-    req.params.next_appointment, JSON.stringify(req.params.meds), function(OpIdResult){
+    DB.addOperation(connection, req.body.op_name, req.body.op_date, req.body.body_condition,
+    req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
+    req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
+    req.body.next_appt, JSON.stringify(req.body.meds), function(OpIdResult){
         DB.addAnimal(connection, req.params.name, req.params.sex, req.params.species, req.params.bodyweight,
-        req.params.owner_id, OpIdResult, function(AnIdResult){
+        req.body.owner_id, OpIdResult, function(AnIdResult){
+            DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
             res.send({aid: AnIdResult});
         });
     });
      */
     res.send(
-        `I received your POST request. This is what you sent me: ${req.body.textTest}`,
+        `I received your POST request. This is what you sent me: ${req.body.name}`,
     );
 });
 
@@ -201,16 +265,55 @@ app.post('/modifyAnimal/:animalID', (req, res) => {
 });
 
 app.post('/addNewQuestionnaire', (req, res) => {
+    /*
+    Here's what req.body should look like:
+    {
+        vetTeamID: , //User ID of the vet team
+        link: , //Link to the survey
+        time_to_send: , //In no of weeks
+    }
+     */
+
     console.log(req.body);
+
+    /*
+    DB.addQuestionnaire(connection, req.body.time_to_send, req.body.link);
+     */
+
     res.send(
-        `I received your POST request. This is what you sent me: ${req.body.textTest}`,
+        `I received your POST request. This is what you sent me: ${req.body.link}`,
     );
 });
 
 app.post('/addNewSurvey', (req, res) => {
+    /*
+    Here's what req.body should look like:
+    {
+        vetTeamID: , //User ID of the vet team
+        link: , //Link to the survey
+        location: , //Location being targeted
+    }
+     */
+
     console.log(req.body);
+
+    /*
+    DB.addSurvey(connection, req.body.vetTeamID, new Date(), req.body.link, req.body.location, function(AddResult){
+    //Instead of a (survey_id, location) table, we need a (survey_id, aid) relation
+        DB.getSurveyReceivers(connection, AddResult, function(animal_list){
+            const arr = [];
+            for (animal in animal_list){
+                arr.push(animal.aid);
+            }
+            res.send(
+                {animals : arr}
+            );
+        });
+    });
+     */
+
     res.send(
-        `I received your POST request. This is what you sent me: ${req.body.textTest}`,
+        `I received your POST request. This is what you sent me: ${req.body.link}`,
     );
 });
 
