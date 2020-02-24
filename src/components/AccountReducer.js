@@ -35,6 +35,8 @@ export function AccountReducer(state = initial_state, action) {
       }
     
     case "LOGOUT":
+      window.location.href = "/#/login";
+      
       state.loggedIn = false;
       state.choseId = false;
       state.data = {};
@@ -75,6 +77,12 @@ export function AccountReducer(state = initial_state, action) {
           name: names[action.id],
         };
       }
+      return state;
+    
+    case "FORGOT_PASSWORD":
+      // action.data.email is the email
+      alert("Password reset. Please check your emails.");
+      window.location.href = "/#/login";
       return state;
       
     // Something else happened

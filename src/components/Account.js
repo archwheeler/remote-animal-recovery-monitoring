@@ -14,8 +14,8 @@ class Account extends React.Component {
     if (store.getState().loggedIn) {
       if (store.getState().choseId) {
         return (
-          <div>
-            <button onClick={() => store.dispatch(LogoutAction())}> Log out </button>
+          <div className="center">
+            <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}> Log out </button>
             <br/>
           
             My Account
@@ -25,7 +25,7 @@ class Account extends React.Component {
             <br/>
           
             Change user:
-            <button onClick={() => store.dispatch(ChooseIdAction())}> click </button>
+            <button className="text" onClick={() => store.dispatch(ChooseIdAction())}> Click here </button>
             <br/>
             
             {/* For debugging only */}
@@ -34,14 +34,12 @@ class Account extends React.Component {
         );
       } else {
         return (
-          <div>
+          <div className="center">
             Please select an account from below: <br/>
             {
               Object.entries(store.getState().data).map( ([key, value]) =>
                 <div>
-                  <button key={key} onClick={() => store.dispatch(SelectAccountAction(key))}>
-                    {value}
-                  </button>
+                  <input type="text" key={key} value={value} onClick={() => store.dispatch(SelectAccountAction(key))} readOnly/>
                   <br/>
                 </div>
               )
@@ -51,11 +49,11 @@ class Account extends React.Component {
       }
     } else {
       return (
-        <div>
+        <div className="center">
           You are not logged in.
           <br/>
           
-          <button onClick={() => window.location.href = "/#/login"}> Log in </button> 
+          <button className="blueButton" onClick={() => window.location.href = "/#/login"}> Log in </button> 
         </div>
       );
     }

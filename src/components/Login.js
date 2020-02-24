@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {LoginAction} from './AccountAction';
+import {LoginAction, LogoutAction} from './AccountAction';
 
 class Account extends React.Component {
 
@@ -12,37 +12,53 @@ class Account extends React.Component {
 	render() {
 	  if (store.getState().loggedIn) {
       return (
-        <div>
+        <div className="center">
           You are already logged in.
           <br/>
           
-          <button onClick={() => window.location.href = "/#/account"}> Return </button> 
+          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
+            My Account
+          </button>
+          <br/>
+          
+          <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}>
+            Log out
+          </button>
         </div>
       );
     } else {
       return (
-        <div>
+        <div className="center">
           <form onSubmit={this.login}>
             <label id="feedback">
             Log in to the system below.
             </label>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username"/>
+            <input type="text" id="username_box" placeholder="Username*" required/>
             <br/>
 
-            <input type="password" id="password_box" placeholder="Password"/>
+            <input type="password" id="password_box" placeholder="Password*" required/>
             <br/>
 
-            <input type="checkbox" onClick={this.showPassword}/>
-            Show password?
+            <label>
+              <input type="checkbox" onClick={this.showPassword}/>
+              Show password?
+            </label>
             <br/>
 
-            <button type="submit"> Log in </button>
+            <input type="submit" value="Log in"/>
             <br/>
           </form>
           
-          <button onClick={() => window.location.href='/#/register'}> Register </button>
+          <button className="text" onClick={() => window.location.href='/#/register'}> 
+            Don't have an account? Register here
+          </button>
+          <br/>
+          
+          <button className="text" onClick={() => window.location.href='/#/forgot'}> 
+            Forgot password? Reset here
+          </button>
         </div>
       );
     }

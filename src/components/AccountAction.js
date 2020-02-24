@@ -11,7 +11,7 @@ export function LoginAction(username, password, feedback) {
 
 export function LogoutAction() {
   return {
-    type: "LOGOUT",
+    type: "LOGOUT"
   };
 }
 
@@ -21,7 +21,7 @@ export function RegisterAction(username, password) {
     data: {
       name: username,
       // DON'T SAVE PASSWORD ANYWHERE PLAINTEXT THIS IS JUST A PLACEHOLDER FOR TESTING PURPOSES
-      pass: password,
+      pass: password
     }
   };
 }
@@ -36,5 +36,14 @@ export function SelectAccountAction(ID) {
 export function ChooseIdAction() {
   return {
     type: "CHOOSE_ID"
+  };
+}
+
+export function ForgotAction(email) {
+  return {
+    type: "FORGOT_PASSWORD",
+    data: {
+      email: email
+    }
   };
 }

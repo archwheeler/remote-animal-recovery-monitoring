@@ -28,6 +28,12 @@ function routeRegister(s, cb) {
 	});
 }
 
+function routeForgot(s, cb) {
+	System.import('./components/Forgot').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
@@ -35,5 +41,6 @@ export default (
 		<Route path="account" getComponent={routeAccount}/>
 		<Route path="login" getComponent={routeLogin}/>
 		<Route path="register" getComponent={routeRegister}/>
+		<Route path="forgot" getComponent={routeForgot}/>
 	</Route>
 );
