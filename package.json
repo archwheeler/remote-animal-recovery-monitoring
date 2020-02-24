@@ -5,12 +5,16 @@
     "node": ">=6.0"
   },
   "dependencies": {
+    "@pusher/chatkit-client": "^1.13.4",
     "@react-pdf/renderer": "^1.6.8",
+    "axios": "^0.19.2",
     "history": "^3.0.0",
     "material-ui": "^0.20.0",
     "react": "15.4.2",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "15.4.2",
+    "react-feather": "^2.0.3",
+    "react-images-upload": "^1.2.8",
     "react-pdf": "^4.1.0",
     "react-redux": "5",
     "react-router": "^3.0.2",
