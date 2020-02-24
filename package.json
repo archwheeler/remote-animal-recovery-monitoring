@@ -8,6 +8,7 @@
     "@react-pdf/renderer": "^1.6.8",
     "history": "^3.0.0",
     "material-ui": "^0.16.7",
+    "mysql": "^2.18.1",
     "react": "15.4.2",
     "react-dom": "15.4.2",
     "react-pdf": "^4.1.0",
