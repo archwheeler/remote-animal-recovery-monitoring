@@ -18,7 +18,8 @@
     "react-pdf": "^4.1.0",
     "react-redux": "5",
     "react-router": "^3.0.2",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "url-loader": "^3.0.0"
   },
   "scripts": {
     "start": "webpack-dev-server",
@@ -38,7 +39,7 @@
     "eslint-config-xo": "^0.17.0",
     "eslint-config-xo-react": "^0.10.0",
     "eslint-plugin-react": "^6.9.0",
-    "file-loader": "0.9.0",
+    "file-loader": "^0.9.0",
     "gh-pages": "^0.12.0",
     "html-webpack-plugin": "^2.26.0",
     "minimist": "^1.2.0",
