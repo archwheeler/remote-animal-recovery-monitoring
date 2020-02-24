@@ -6,11 +6,32 @@ import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import { Image } from "react-feather";
+import {
+    // [..]
+    onDrop,
+    openImageUploadDialog,
+    closeImageUploadDialog,
+    sendFile
+} from "../chat-methods";
+
+import ImageUploadDialog from "./ImageUploadDialog";
+
 class Chat extends React.Component {
     constructor() {
         super();
-        this.state = {messages: []};
+        this.state = {
+            messages: [],
+            pictures: [],
+            showImageUploadDialog: false,
+            fileUploadMessage: ""};
+
         this.connected = false;
+
+        this.onDrop = onDrop.bind(this);
+        this.openImageUploadDialog = openImageUploadDialog.bind(this);
+        this.closeImageUploadDialog = closeImageUploadDialog.bind(this);
+        this.sendFile = sendFile.bind(this);
     }
 
     sendMessage(e) {
@@ -72,6 +93,11 @@ class Chat extends React.Component {
     }
 
 	render() {
+        const {
+            showImageUploadDialog,
+            fileUploadMessage
+          } = this.state;
+
 		return (
             <div>
                 {this.connected ? (
@@ -101,6 +127,11 @@ class Chat extends React.Component {
                     <form id="message-form">
                         <TextField id='message-text' fullWidth={true} autoComplete={"off"} hintText="Enter a message..."/>
                     </form>
+                    <button
+                        onClick={this.openImageUploadDialog}
+                        type="button"
+                        className="btn image-picker"
+                    />
                 </Card>
             </div>
 		);
