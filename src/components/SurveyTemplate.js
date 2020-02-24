@@ -1,12 +1,20 @@
 import React from 'react';
 import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
-import { CircularProgress } from 'material-ui';
+import CircularProgress from 'material-ui/CircularProgress';
 
-class Survey extends React.Component {
+class Main extends React.Component {
+	constructor() {
+		super();
+		this.state = {loading: true};
+	}
+
+	stopLoading = () => {
+		this.setState({loading: false});
+	}
+
 	render() {
 		return (
-			
 			<div>
 				<Card>
 					<CardHeader title= "George"
@@ -22,7 +30,7 @@ class Survey extends React.Component {
 						</div>) : null
 					}
 					<CardMedia>
-					<iframe src="https://docs.google.com/forms/u/0/"
+					<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true"
 							width="100%"
 							height="400"
 							frameBorder="0"
