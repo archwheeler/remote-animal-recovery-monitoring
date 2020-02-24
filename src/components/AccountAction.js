@@ -15,14 +15,13 @@ export function LogoutAction() {
   };
 }
 
-export function RegisterAction(username, password, age) {
+export function RegisterAction(username, password) {
   return {
     type: "REGISTER",
     data: {
       name: username,
       // DON'T SAVE PASSWORD ANYWHERE PLAINTEXT THIS IS JUST A PLACEHOLDER FOR TESTING PURPOSES
       pass: password,
-      age: age
     }
   };
 }

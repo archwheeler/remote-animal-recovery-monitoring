@@ -22,28 +22,25 @@ class Account extends React.Component {
     } else {
       return (
         <div>
-          <p>
+          <form onSubmit={this.register}>
             Register
             <br/>
-          
+        
             <input type="text" id="username_box" placeholder="Username"/>
             <br/>
-          
+        
             <input type="password" id="password_box" placeholder="Password"/>
             <br/>
-          
-            <input type="text" id="age_box" placeholder="Age"/>
-            <br/>
-          
+        
             <input type="checkbox" onClick={this.showPassword}/>
             Show password?
             <br/>
-          
-            <button onClick={this.register}> Register </button>
+        
+            <button type="submit"> Register </button>
             <br/>
+          </form>
           
-            <button onClick={() => window.location.href = "/#/login"}> go back to login </button>
-          </p>
+          <button onClick={() => window.location.href = "/#/login"}> Already have an account? </button>
         </div>
       );
     }
@@ -52,9 +49,8 @@ class Account extends React.Component {
   register() {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
-    var age = document.getElementById("age_box").value;
     
-    store.dispatch(RegisterAction(username, password, age));
+    store.dispatch(RegisterAction(username, password));
   }
   
   showPassword() {

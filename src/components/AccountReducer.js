@@ -45,12 +45,13 @@ export function AccountReducer(state = initial_state, action) {
       // TODO: add to database
       
       // Success
+      window.location.href = "/#/account";
+      
       state.loggedIn = true;
       state.choseId = true;
       state.data = {
         name: action.data.name,
         pass: action.data.pass,
-        age: action.data.age
       };
       
       return state;
@@ -66,16 +67,12 @@ export function AccountReducer(state = initial_state, action) {
       if (state.vetAccount) {
         state.data = {
           id: action.id,
-          type: "human",
           name: names[action.id],
-          age: 19
         };
       } else {
         state.data = {
           id: action.id,
-          type: "dog",
           name: names[action.id],
-          age: 1
         };
       }
       return state;

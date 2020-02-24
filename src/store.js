@@ -12,15 +12,15 @@ Usage:
 
 Format:
 
-    {
-      loggedIn: false,
-      choseId: false,
-      vetAccount: false,
-      data: {
-        name: "tom",
-        age: 19
-      }
-    };
+{
+  "loggedIn": true,
+  "vetAccount": true,
+  "data": {
+    "id": "user1",
+    "name": "tom"
+  },
+  "choseId": true
+}
 
 Also use:
 

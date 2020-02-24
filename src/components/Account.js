@@ -25,10 +25,8 @@ class Account extends React.Component {
               Name: {store.getState().data.name}
               <br/>
             
-              Change user:
-              <button onClick={() => store.dispatch(ChooseIdAction())}> click </button>
-              <br/>
-            </p>
+            {/* For debugging only */}
+            {JSON.stringify(store.getState())}
           </div>
         );
       } else {

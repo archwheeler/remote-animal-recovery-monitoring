@@ -22,7 +22,7 @@ class Account extends React.Component {
     } else {
       return (
         <div>
-          <p>
+          <form onSubmit={this.login}>
             <label id="feedback">
             Log in to the system below.
             </label>
@@ -38,12 +38,11 @@ class Account extends React.Component {
             Show password?
             <br/>
 
-            <button onClick={this.login}> Log in </button>
+            <button type="submit"> Log in </button>
             <br/>
-
-            <button onClick={() => window.location.href='/#/register'}> Register </button>
-            <br/>
-          </p>
+          </form>
+          
+          <button onClick={() => window.location.href='/#/register'}> Register </button>
         </div>
       );
     }
