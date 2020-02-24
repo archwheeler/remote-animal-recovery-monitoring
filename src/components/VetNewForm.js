@@ -1,33 +1,58 @@
 import React from 'react';
-import {Card, CardText} from 'material-ui/Card';
-import {TextField, RaisedButton, SelectField, MenuItem, CardTitle } from 'material-ui';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
+import {TextField, RaisedButton, SelectField, MenuItem } from 'material-ui';
+
+
+const destinations = [
+	'Oliver Hansen',
+	'Van Henry',
+	'April Tucker',
+	'Ralph Hubbard',
+	'Omar Alexander',
+	'Carlos Abbott',
+	'Miriam Wagner',
+	'Bradley Wilkerson',
+	'Virginia Andrews',
+	'Kelly Snyder',
+  ];
 
 class VetNewSurvey extends React.Component {
 	state = {
-		value: null,
+		values: [],
 	};	
 
-	handleChange = (event, index, value) => this.setState({value});
+	handleChange = (event, index, values) => this.setState({values});
 
-
+	menuItems(values) {
+		return destinations.map((destination) => (
+		  <MenuItem
+			key={destination}
+			insetChildren={true}
+			checked={values && values.indexOf(destination) > -1}
+			value={destination}
+			primaryText={destination}
+		  />
+		));
+	  }
 
 	render() {
+		const {values} = this.state;
 
 		return (
 			<div>
 				<Card>
-					<CardTitle title= "Create New Survey"
+					<CardHeader title= "Create New Survey"
 					/>
 					<CardText>
 						To add a new survey please click <a href="https://docs.google.com/forms/u/0/">here</a> and create a new form. Once you have created the form click the send button and then the link button to get a shareable link to the form. Then copy and paste the link below and click submit.
 						<br />
 						<SelectField
-							hintText="Select a category"
-							value={this.state.value}
+							multiple={true}
+							hintText="Select a name"
+							value={values}
 							onChange={this.handleChange}
 						>
-							<MenuItem value={1} primaryText="Stitches" />
-       						<MenuItem value={2} primaryText="Staples" />
+							{this.menuItems(values)}
 						</SelectField> 
 						<br />
 
