@@ -3,7 +3,7 @@ var mysql = require('mysql');
 // function to establish the database connection : returns the connection (for querying)
 function createConnection(){
     var con = mysql.createConnection({
-      host: "localhost", //TODO
+      host: "localhost",
       user: "root",
       password: "Oracle1!",
       database: "app" //specify database
@@ -68,6 +68,13 @@ function createTables(con){
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("survey-target relation table created");
+    });
+
+    // survey-location relation table
+    sql = "CREATE TABLE IF NOT EXISTS survey_animal (survey_id  INT, aid INT, done BOOLEAN, FOREIGN KEY (survey_id) REFERENCES survey(survey_id), FOREIGN KEY (aid) REFERENCES animals(aid))";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("survey-animal relation table created")
     });
 
     // table of questionnaires
@@ -198,10 +205,23 @@ function addSurvey(con, uid, creation_date, link, target_location, callback){
         if (err) throw err;
         var sql2 = "INSERT INTO survey_location (survey_id, location) VALUES ?"
         var values = [[result.insertId, target_location]];
-        con.query(sql2, [values], function(err, res){
+        con.query(sql2, [values], function(err, result2){
             if (err) throw err;
-            console.log("Added new survey.");
-            callback(result.insertId);
+            // get animals to send survey to and put into table
+            var sql3 = "SELECT aid FROM animals JOIN operations WHERE animals.op_id = operations.op_id AND operations.location='" + target_location +"'";
+            con.query(sql3, function(err, result3){
+                if (err) throw err;
+                var animals = JSON.parse(JSON.stringify(result3));
+                for (i = 0; i < animals.length; i ++){
+                    var sql4 = "INSERT INTO survey_animal (survey_id, aid, done) VALUES ?";
+                    var values2 = [[result.insertId, animals[i].aid, false]];
+                    con.query(sql4, [values2], function(err, result4){
+                        if (err) throw err;
+                    });
+                }
+                console.log("Added new survey.");
+                callback(result.insertId);
+            });
         });
     });
 
@@ -218,12 +238,13 @@ function addQuestionnaire(con, time_to_send, link){
 }
 
 // add operation
-function addOperation(con, op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds){
+function addOperation(con, op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds, callback){
     var sql = "INSERT INTO operations (op_name, op_date, body_condition, injury, surgery, procedure_info, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds) VALUES ?";
     var values = [[op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds]];
     con.query(sql, [values], function(err, result){
         if (err) throw err;
         console.log('Added operation ' + result.insertId);
+        callback(result.insertId);
     });
 }
 
@@ -327,6 +348,21 @@ function getAnimalInfo(con, aid, callback){
     });
 }
 
+// get carer of animal
+function getCarerOfAnimal(con, aid, callback){
+    var sql = "SELECT owner_id FROM animals WHERE aid=" + aid;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        if (result.length ==  0){
+            callback(null);
+        }
+        else {
+            var carer_id = JSON.parse(JSON.stringify(result[0])).owner_id;
+            callback(carer_id);
+        }
+    });
+}
+
 // get animals of vet team
 function getAnimalsOfVetTeam(con, uid, callback){
     var sql = "SELECT aid FROM animal_vet JOIN accounts WHERE animal_vet.uid = accounts.uid AND animal_vet.uid =" + uid;
@@ -395,28 +431,32 @@ function getOperationInfo(con, op_id, callback){
 
 // get list of users to receive survey
 function getSurveyReceivers(con, survey_id, callback){
-    var sql1 = "SELECT location FROM survey_location WHERE survey_id=" + survey_id;
-    con.query(sql1, function(err, result){
+    var sql = "SELECT * FROM survey_animal WHERE survey_id = " + survey_id;
+    con.query(sql, function(err, result){
         if (err) throw err;
-        if (result.length == 0){
-            callback(null);
-        }
-        else{
-            var location = JSON.parse(JSON.stringify(result[0])).location;
-            var sql2 = "SELECT aid FROM animals JOIN operations WHERE animals.op_id = operations.op_id AND operations.location='" + location + "'";
-            con.query(sql2, function(err, result2){
-                if (err) throw err;
-                if (result2.length == 0){
-                    callback(null);
-                }
-                else{
-                    var animal_list = JSON.parse(JSON.stringify(result2));
-                    callback(animal_list);
-                }
-            });
-        }
+        callback(JSON.parse(JSON.stringify(result)));
     });
 }
+
+//get surveys of an animal
+function getSurveysOfAnimal(con, aid, callback){
+    var sql = "SELECT survey.survey_id FROM survey JOIN survey_animal WHERE survey.survey_id = survey_animal.survey_id AND survey_animal.aid = " +  aid;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        var surveys = JSON.parse(JSON.stringify(result));
+        callback(surveys);
+    });
+}
+
+// get list of all questionnaires
+function getQuestionnaires(con, callback){
+    var sql = "SELECT * FROM questionnaires";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        var questionnaire_info = JSON.parse(JSON.stringify(result));
+        callback(questionnaire_info);
+    });
+};
 
 // get the number of chats associated with a certain label
 function getNumberOfChatsForLabel(con, label, callback){
@@ -439,7 +479,17 @@ function getCarersAskingAboutLabel(con, label, callback){
 
 
 
-// TODO: update functions?
+// TODO: update functions
+
+// record completion of survey
+function completeSurvey(con, aid, survey_id){
+    var sql = "UPDATE survey_animal SET done = true WHERE aid=" + aid + " AND survey_id=" + survey_id;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("Owner of animal " + aid + " completed survey " + survey_id);
+    });
+}
+
 // TODO: delete functions
 
 
@@ -457,14 +507,16 @@ showTables(connection, function(result){
 //addVetToTeam(connection, 'vet@example.com', 'vet2');
 //
 var today = new Date().toISOString().slice(0, 10);
-//addOperation(connection, 'test_op', today, 6, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 3, false, new Date(), 'some_JSON');
+//addOperation(connection, 'test_op2', today, 7, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 7, true, new Date(), 'some_JSON', function(result){
+//    console.log("Created operation " + result);
+//});
 //addAnimal(connection, 'doggo', 'f', 'dog', 20, 1, 1);
 //addAnimalToVetTeam(connection, 1, 2);
 //
 //addSurvey(connection, 2, today, 'test_link1', 'test_loc', function(result){
 //    console.log(result);
 //});
-//addQuestionnaire(connection, 1, 'test_link2');
+//addQuestionnaire(connection, 2, 'test_link3');
 //addChatLabel(connection, 2, 1, 'test_vet_label', true);
 //addChatLabel(connection, 2, 1, 'test_carer_label', false);
 //addChatLabel(connection, 2, 1, 'test_vet_label', true);
@@ -482,6 +534,10 @@ getVetList(connection, 2, function(result){
 
 getAnimalInfo(connection, 1, function(result){
     console.log(result);
+});
+
+getCarerOfAnimal(connection, 1, function(result){
+    console.log("Owner of animal 1 is " + result);
 });
 
 getAnimalsOfVetTeam(connection, 2, function(result){
@@ -510,8 +566,15 @@ authenticateUser(connection, 'test', 'test_pass', function(result){
     console.log("Bad authenticate: " + result);
 });
 
-getSurveyReceivers(connection, 2, function(result){
-    console.log("Receivers of survey 2: " + JSON.stringify(result));
+getSurveyReceivers(connection, 3, function(result){
+    console.log("Receivers of survey 3: " + JSON.stringify(result));
+});
+getSurveysOfAnimal(connection, 1, function(result){
+    console.log("Surveys of animal 1: " + JSON.stringify(result));
+});
+
+getQuestionnaires(connection, function(result){
+    console.log(result);
 });
 
 getNumberOfChatsForLabel(connection, 'test_vet_label', function(result){
@@ -525,5 +588,8 @@ getNumberOfChatsForLabel(connection, 'test_carer_label', function(result){
 getCarersAskingAboutLabel(connection, 'test_vet_label', function(result){
     console.log(result);
 });
+
+
+//completeSurvey(connection, 1,  3);
 
 
