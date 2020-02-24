@@ -62,7 +62,7 @@ function connectToRoom(id = '41ac18aa-8570-436c-a737-9e310afbaf3d') {
   });
 
   return currentUser
-    .subscribeToRoom({
+    .subscribeToRoomMultipart({
       roomId: `${id}`,
       messageLimit: 100,
       hooks: {
@@ -107,14 +107,80 @@ function sendMessage(event) {
 
   if (newMessage.trim() === '') return;
 
-  currentUser.sendMessage({
-    text: newMessage,
+  const parts = [];
+  if (newMessage.trim() !== "") {
+    parts.push({
+      type: "text/plain",
+      content: newMessage
+    });
+  }
+
+  currentUser.sendMultipartMessage({
     roomId: `${currentRoom.id}`,
+    parts
   });
 
   this.setState({
-    newMessage: '',
+    newMessage: ""
   });
 }
 
-export { handleInput, connectToChatkit, connectToRoom, sendMessage }
+function onDrop(pictureFiles) {
+  this.setState({
+    pictures: this.state.pictures.concat(pictureFiles)
+  });
+}
+
+function openImageUploadDialog() {
+  this.setState({
+    showImageUploadDialog: true
+  });
+}
+
+function closeImageUploadDialog() {
+  this.setState({
+    showImageUploadDialog: false
+  });
+}
+
+function sendFile(event) {
+  event.preventDefault();
+  const { currentUser, fileUploadMessage, pictures, currentRoom } = this.state;
+
+  if (pictures.length === 0) return;
+
+  const parts = [];
+  if (fileUploadMessage.trim() !== "") {
+    parts.push({
+      type: "text/plain",
+      content: fileUploadMessage
+    });
+  }
+
+  pictures.forEach(pic => {
+    parts.push({
+      file: pic
+    });
+  });
+
+  currentUser.sendMultipartMessage({
+    roomId: `${currentRoom.id}`,
+    parts
+  });
+
+  this.setState({
+    fileUploadMessage: "",
+    pictures: [],
+    showImageUploadDialog: false
+  });
+}
+
+export { 
+  handleInput,
+  connectToChatkit,
+  connectToRoom,
+  sendMessage,
+  onDrop,
+  sendFile,
+  openImageUploadDialog,
+  closeImageUploadDialog,}

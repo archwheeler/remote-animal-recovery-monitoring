@@ -11,7 +11,16 @@ import {
     connectToChatkit,
     connectToRoom,
     sendMessage,
+    onDrop,
+    openImageUploadDialog,
+    closeImageUploadDialog,
+    sendFile
   } from '../chat-methods';
+
+import ImageUploadDialog from "./ImageUploadDialog";
+import ChatSession from "./ChatSession";
+
+import {Image} from 'react-feather';
 
 class Chat extends React.Component {
     constructor() {
@@ -26,12 +35,19 @@ class Chat extends React.Component {
             roomUsers: [],
             roomName: null,
             messages: [],
-            newMessage: ''};
+            newMessage: '',
+            pictures: [],
+            showImageUploadDialog: false,
+            fileUploadMessage: ""};
 
         this.handleInput = handleInput.bind(this);
         this.connectToChatkit = connectToChatkit.bind(this);
         this.connectToRoom = connectToRoom.bind(this);
         this.sendMessage = sendMessage.bind(this);
+        this.onDrop = onDrop.bind(this);
+        this.openImageUploadDialog = openImageUploadDialog.bind(this);
+        this.closeImageUploadDialog = closeImageUploadDialog.bind(this);
+        this.sendFile = sendFile.bind(this);
 
         this.connectToChatkit();
     }
@@ -51,6 +67,8 @@ class Chat extends React.Component {
           newMessage,
           roomUsers,
           roomName,
+          showImageUploadDialog,
+          fileUploadMessage
         } = this.state;
 
 		return (
@@ -61,15 +79,12 @@ class Chat extends React.Component {
 								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
 								avatar={<Avatar>G</Avatar>}
 					    />
-                        <List style={{maxHeight: '60vh', overflow: 'auto'}} >
-                                    {this.state.messages.map(message => 
-                                        <ListItem key={message.id} disabled={true}>
-                                            {message.senderId + "> " + message.text}
-                                        </ListItem>)}
-                                    <div style={{ float:"left", clear: "both" }}
+                        <ul className="chat-messages">
+                            <ChatSession messages={messages} />
+                            <div style={{ float:"left", clear: "both" }}
                                         ref={(el) => { this.messagesEnd = el; }}>
-                                    </div>
-                        </List>
+                            </div>
+                        </ul>
                     </Card>
                 ) : (
                     <Card style={{padding: "15px"}}>
@@ -88,9 +103,18 @@ class Chat extends React.Component {
                         type="button"
                         className="btn image-picker"
                     >
-                        Attach Image
+                        <Image />
                     </button>
                 </Card>
+                {showImageUploadDialog ? (
+                    <ImageUploadDialog
+                        handleInput={this.handleInput}
+                        fileUploadMessage={fileUploadMessage}
+                        onDrop={this.onDrop}
+                        sendFile={this.sendFile}
+                        closeImageUploadDialog={this.closeImageUploadDialog}
+                    />
+                ) : null}
             </div>
 		);
 	}
