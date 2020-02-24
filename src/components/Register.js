@@ -11,9 +11,14 @@ class Account extends React.Component {
   
 	render() {	
     if (store.getState().loggedIn) {
-      window.location.href = "/#/account";
-      return null;
-      
+      return (
+        <div>
+          You are already logged in.
+          <br/>
+          
+          <button onClick={() => window.location.href = "/#/account"}> Return </button> 
+        </div>
+      );
     } else {
       return (
         <div>

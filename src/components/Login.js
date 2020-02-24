@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {SelectAccountAction, LoginAction} from './AccountAction';
+import {LoginAction} from './AccountAction';
 
 class Account extends React.Component {
 
@@ -10,31 +10,15 @@ class Account extends React.Component {
   }
 
 	render() {
-	  if (store.getState().choseId) {
-      window.location.href = "/#/account";
-      return null;
-      
-    } else if (store.getState().loggedIn) {
+	  if (store.getState().loggedIn) {
       return (
         <div>
-          Please select an account from below: <br/>
-          {
-            Object.entries(store.getState().data).map(function([key, value]) {
-              return (
-                <div>
-                  <button key={key} onClick={function() {
-                    store.dispatch(SelectAccountAction(key))
-                  }}>
-                    {value}
-                  </button>
-                  <br/>
-                </div>
-              )
-            }
-          )}
+          You are already logged in.
+          <br/>
+          
+          <button onClick={() => window.location.href = "/#/account"}> Return </button> 
         </div>
       );
-    
     } else {
       return (
         <div>

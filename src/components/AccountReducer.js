@@ -21,6 +21,7 @@ export function AccountReducer(state = initial_state, action) {
       // TODO: lookup name / pass from database, not just hardcoded
       if (action.data.name == "tom" && action.data.pass == "hello") {
         action.label.innerHTML = "Log in successful";
+        window.location.href = "/#/account";
         
         return {
           loggedIn: true,
@@ -44,15 +45,20 @@ export function AccountReducer(state = initial_state, action) {
       // TODO: add to database
       
       // Success
-      return {
-        loggedIn: true,
-        choseId: true,
-        data: {
-          name: action.data.name,
-          pass: action.data.pass,
-          age: action.data.age
-        }
+      state.loggedIn = true;
+      state.choseId = true;
+      state.data = {
+        name: action.data.name,
+        pass: action.data.pass,
+        age: action.data.age
       };
+      
+      return state;
+    
+    case "CHOOSE_ID":
+      state.choseId = false;
+      state.data = names
+      return state;
     
     case "SELECT_ID":
       state.choseId = true;

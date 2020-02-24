@@ -24,12 +24,18 @@ export function RegisterAction(username, password, age) {
       pass: password,
       age: age
     }
-  }
+  };
 }
 
 export function SelectAccountAction(ID) {
   return {
     type: "SELECT_ID",
     id: ID
+  };
+}
+
+export function ChooseIdAction() {
+  return {
+    type: "CHOOSE_ID"
   };
 }
