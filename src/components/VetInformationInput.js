@@ -6,10 +6,14 @@ import MenuItem from 'material-ui/MenuItem';
 
 class VetInformationInput extends React.Component {
 	state = {
-		value: null,
+		sex: null,
+		animaltype: null,
+		stitchesstaples: null,
 	};
 
-	handleChange = (event, index, value) => this.setState({value});
+	handleChangeSex = (event, index, sex) => this.setState({sex});
+	handleChangeAnimalType = (event, index, animaltype) => this.setState({animaltype});
+	handleChangeStitchesStaples = (event, index, stitchesstaples) => this.setState({stitchesstaples});
 	
 	render() {
 		return (
@@ -23,8 +27,8 @@ class VetInformationInput extends React.Component {
 					/><br />
 					<SelectField
 					floatingLabelText="Sex"
-					value={this.state.value}
-					onChange={this.handleChange}
+					value={this.state.sex}
+					onChange={this.handleChangeSex}
 					>
 						<MenuItem value={1} primaryText="Male" />
        					<MenuItem value={2} primaryText="Female" />
@@ -32,8 +36,8 @@ class VetInformationInput extends React.Component {
 					<br />
 					<SelectField
 					floatingLabelText="Animal Type"
-					value={this.state.value}
-					onChange={this.handleChange}
+					value={this.state.animaltype}
+					onChange={this.handleChangeAnimalType}
 					>
 						<MenuItem value={1} primaryText="Dog" />
        					<MenuItem value={2} primaryText="Cat" />
@@ -68,8 +72,8 @@ class VetInformationInput extends React.Component {
 					<br />
 					<SelectField
 					floatingLabelText="Stitches or Staples"
-					value={this.state.value}
-					onChange={this.handleChange}
+					value={this.state.stitchesstaples}
+					onChange={this.handleChangeStitchesStaples}
 					>
 						<MenuItem value={1} primaryText="Stitches" />
        					<MenuItem value={2} primaryText="Staples" />

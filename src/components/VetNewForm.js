@@ -1,20 +1,43 @@
 import React from 'react';
-import {Card, CardHeader, CardText, CardMedia, CardActions} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
+import {Card, CardText} from 'material-ui/Card';
+import {TextField, RaisedButton, SelectField, MenuItem, CardTitle } from 'material-ui';
 
 class VetNewSurvey extends React.Component {
-	render() {
-		return (
-			<Card>
-				<CardHeader title="New Survey"/>
-				<CardText>
-						Please complete the following questionnare to help monitor your dog's progress:
-				</CardText>
-				<CardMedia>
-				<iframe src="https://docs.google.com/forms/u/0/" width="100%" height="400" frameBorder="0">Loading…</iframe>
-				</CardMedia>
+	state = {
+		value: null,
+	};	
 
-			</Card>
+	handleChange = (event, index, value) => this.setState({value});
+
+
+
+	render() {
+
+		return (
+			<div>
+				<Card>
+					<CardTitle title= "Create New Survey"
+					/>
+					<CardText>
+						To add a new survey please click <a href="https://docs.google.com/forms/u/0/">here</a> and create a new form. Once you have created the form click the send button and then the link button to get a shareable link to the form. Then copy and paste the link below and click submit.
+						<br />
+						<SelectField
+							hintText="Select a category"
+							value={this.state.value}
+							onChange={this.handleChange}
+						>
+							<MenuItem value={1} primaryText="Stitches" />
+       						<MenuItem value={2} primaryText="Staples" />
+						</SelectField> 
+						<br />
+
+					 	<TextField floatingLabelText="Link"/>
+						<br />
+						<RaisedButton label="Submit" primary={true} />
+
+					</CardText>
+				</Card>
+			</div>
 		);
 	}
 }
