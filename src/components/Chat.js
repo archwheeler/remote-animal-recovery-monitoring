@@ -131,7 +131,17 @@ class Chat extends React.Component {
                         onClick={this.openImageUploadDialog}
                         type="button"
                         className="btn image-picker"
-                    />
+                    >Image
+                    </button>
+                    {showImageUploadDialog ? (
+                        <ImageUploadDialog
+                            handleInput={this.handleInput}
+                            fileUploadMessage={fileUploadMessage}
+                            onDrop={this.onDrop}
+                            sendFile={this.sendFile}
+                            closeImageUploadDialog={this.closeImageUploadDialog}
+                        />
+                        ) : null}
                 </Card>
             </div>
 		);
