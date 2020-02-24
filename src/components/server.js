@@ -123,7 +123,7 @@ app.get('/checkForQuestionnaires/:animalID', (req, res) => {
                 const arr = [];
                 const c = 0;
                 for (questionnaire in questionnaire_list){
-                    if (dateDiffInWeeks(op_date, new Date()) == questionnaire.time){
+                    if (dateDiffInWeeks(op_date, new Date()) <= questionnaire.time){
                         arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
                         c = c + 1;
                     }
@@ -343,7 +343,7 @@ app.post('/registerUser', (req, res) => {
 app.post('/loginData', (req, res) => {
     //This method expects the username and password
     console.log(req.body);
-    res.send({passwordCorrect: true});
+    res.send({passwordCorrect: true, uid: 7});
     /*
     DB.authenticateUser(connection, req.body.username, req.body.password, function(result){res.send(
         JSON.stringify({passwordCorrect: result}),
