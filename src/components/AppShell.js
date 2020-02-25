@@ -4,7 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import ContentLink from 'material-ui/svg-icons/content/link';
-import { FlatButton, BottomNavigation, BottomNavigationItem } from 'material-ui';
+import { FlatButton } from 'material-ui';
 
 export default class AppShell extends React.Component {
 	constructor(props) {
@@ -12,7 +12,7 @@ export default class AppShell extends React.Component {
 
 		this.state = {
 			open: false,
-			title: props.title || 'PWA with React'
+			title: props.title || 'RARM'
 		};
 
 		this.handleToggleDrawer = this.handleToggleDrawer.bind(this);

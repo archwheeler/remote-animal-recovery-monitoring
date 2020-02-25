@@ -13,42 +13,40 @@ import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
-	async myFetch(){
-		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalId');
-        const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
-
-        return body;
-	}
+//	constructor(props) {
+//		super(props);
+//		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalID');
+//        this.state.body = await response.json();
+//		if (response.status !== 200) throw Error(body.message);
+//	}
 	
 
-		information = {	
-			name: "George",
-			firstLetterOfName: "G",
-			sex: "Male",
-			species: "Dog",
-			bodyweight: "30kg", //this should be an integer (perhaps kg?)
-			owner_name: "Albert", // VARCHAR
-			op_name: "Leg", //VARCHAR - name of the operation
-			op_date: "2020-01-22", //DATE
-			body_condition: 7, //INT (out of 9)
-			injury_info: "surgery on that leg tho.", //TEXT
-			procedure_details: "It went pretty well didn't it.", //TEXT
-			surgery_data: "weeee", //TEXT
-			abnormalities: "none", //TEXT
-			location: "leg", //VARCHAR
-			stitches_or_staples: true, //BOOLEAN - true if stitches
-			length_of_rest: 35, //INT - how many days rest?
-			cage_or_room: false, //BOOLEAN - true if cage
-			next_appt: "2020-02-29", //DATETIME
-			meds: {
-				name: "MED",
-				amount: 3,
-				frequency: 2,
-				start: "2020-01-23", //DATE??
-				length_of_course: 14,
-			}
-		}
+
+	information = {	
+		name: "George",
+		firstLetterOfName: "G",
+		sex: "Male",
+		species: "Dog",
+		bodyweight: "30kg", //this should be an integer (perhaps kg?)
+		owner_name: "Albert", // VARCHAR
+		op_name: "Leg", //VARCHAR - name of the operation
+		op_date: "2020-01-22", //DATE
+		body_condition: 7, //INT (out of 9)
+		injury_info: "surgery on that leg tho.", //TEXT
+		procedure_details: "It went pretty well didn't it.", //TEXT
+		surgery_data: "weeee", //TEXT
+		abnormalities: "none", //TEXT
+		location: "leg", //VARCHAR
+		stitches_or_staples: true, //BOOLEAN - true if stitches
+		length_of_rest: 35, //INT - how many days rest?
+		cage_or_room: false, //BOOLEAN - true if cage
+		next_appt: "2020-02-29", //DATETIME
+		meds_name: "MED",
+		meds_amount: 3,
+		meds_frequency: 2,
+		meds_start: "2020-01-23", //DATE??
+		meds_length_of_course: 14,
+	}
 	
 	
 	state = {
@@ -262,7 +260,7 @@ class Main extends React.Component {
 						showExpandableButton={true}
 						/>
 					<CardText expandable={true}>
-						{this.information.meds.name}: Please give {this.information.meds.amount} capsules/tablets {this.information.meds.frequency} times daily with food starting {this.information.meds.start} for {this.information.meds.length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
+						{this.information.meds_name}: Please give {this.information.meds_amount} capsules/tablets {this.information.meds_frequency} times daily with food starting {this.information.meds_start} for {this.information.meds_length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
 					</CardText>
 				</Card>
 
