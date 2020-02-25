@@ -1,6 +1,7 @@
 import React from 'react';
 import Proptypes from 'prop-types';
 import { format } from 'date-fns';
+import ListItem from 'material-ui/List/ListItem';
 
 const ChatSession = props => {
     const { messages } = props;
@@ -28,13 +29,10 @@ const ChatSession = props => {
             });
 
             return (
-                <li className="message" key={message.id}>
-                <div>
-                    <span className="user-id">{message.senderId}</span>
+                <ListItem className="message" key={message.id} disabled={true}>
+                    {time + " " + message.senderId + "> "}
                     {arr}
-                </div>
-                <span className="message-time">{time}</span>
-                </li>
+                </ListItem>
             );
             })}
         </div>

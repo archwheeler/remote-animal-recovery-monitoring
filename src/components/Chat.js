@@ -1,6 +1,5 @@
 import React from 'react';
 import List from 'material-ui/List/List';
-import ListItem from 'material-ui/List/ListItem';
 import {Card, CardHeader} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
@@ -21,6 +20,8 @@ import ImageUploadDialog from "./ImageUploadDialog";
 import ChatSession from "./ChatSession";
 
 import {Image} from 'react-feather';
+
+import './Chat.css';
 
 class Chat extends React.Component {
     constructor() {
@@ -79,12 +80,12 @@ class Chat extends React.Component {
 								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
 								avatar={<Avatar>G</Avatar>}
 					    />
-                        <ul className="chat-messages">
+                        <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
                             <ChatSession messages={messages} />
                             <div style={{ float:"left", clear: "both" }}
                                         ref={(el) => { this.messagesEnd = el; }}>
                             </div>
-                        </ul>
+                        </List>
                     </Card>
                 ) : (
                     <Card style={{padding: "15px"}}>
