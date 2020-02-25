@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-//const DB = require('./DB.js');
-//var connection = DB.createConnection();
+const DB = require('./DB.js');
+const connection = DB.createConnection();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,10 +29,11 @@ function dateDiffInWeeks(a, b) {
 
 app.get('/getAnimalInfo/:animalId', (req, res) => {
 
-    const test = 'BAgni';
-    const response_object = {ids: [1, 2, 3], name: req.params.animalId, text: 'Meow'};
+    //const test = 'BAgni';
+    //const response_object = {ids: [1, 2, 3], name: req.params.animalId, text: 'Meow'};
+    var response_object = {};
 
-    response_object.test_field = new Date();
+    //response_object.test_field = new Date();
     /*
     What response looks like:
     {
@@ -54,140 +55,171 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
         length_of_rest: , //INT - how many days rest?
         cage_or_room: , //BOOLEAN - true if cage
         next_appt: , //DATETIME
-        meds: {
-            name: ,
-            amount: ,
-            frequency: ,
-            start: , //DATE??
-            length_of_course:
-        }
+        weeks_after_surgery: , //INT
+        meds_name: ,
+        meds_amount: ,
+        meds_frequency: ,
+        meds_start: , //DATE??
+        meds_length_of_course:
     }
      */
 
-    /*
-    DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
+    try{
+        DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
 
-        //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
-        //Should we merge with accounts table?
-        response_object = AnResult;
-        response_object.first_letter_of_name = AnResult.name[0];
+            //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
+            //Should we merge with accounts table?
+            if (AnResult == null){
+                res.send({status:'failure'});
+            } else{
+                response_object = AnResult;
+                response_object.status = 'success';
+                response_object.first_letter_of_name = AnResult.name[0];
 
-        //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
-        //table?
-        DB.getOperationInfo(connection,AnResult.op_id, function(OpResult){
+                //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
+                //table?
+                DB.getOperationInfo(connection,AnResult.op_id, function(opResult){
 
-            //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
-            //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
-            response_object.op_name = opResult.op_name;
-            response_object.op_date = opResult.op_date;
-            response_object.body_condition = opResult.body_condition;
+                    //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
+                    //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
+                    response_object.op_name = opResult.op_name;
+                    response_object.op_date = opResult.op_date;
+                    response_object.body_condition = opResult.body_condition;
 
-            //Potential problem with JSON parsing of TEXT fields??
-            response_object.injury_info = opResult.injury;
-            response_object.surgery_data = opResult.surgery;
-            response_object.abnormalities = opResult.abnormalities;
-            response_object.procedure_info = opResult.procedure_info;
+                    //Potential problem with JSON parsing of TEXT fields??
+                    response_object.injury_info = opResult.injury;
+                    response_object.surgery_data = opResult.surgery;
+                    response_object.abnormalities = opResult.abnormalities;
+                    response_object.procedure_info = opResult.procedure_info;
 
-            response_object.location = opResult.location;
-            response_object.stitches_or_staples = opResult.stitch_staple;
-            response_object.length_of_rest = opResult.rest_len;
-            response_object.cage_or_room = opResult.cage_or_room;
-            response_object.next_appt = opResult.next_appt;
+                    response_object.location = opResult.location;
+                    response_object.stitches_or_staples = opResult.stitch_staple;
+                    response_object.length_of_rest = opResult.rest_len;
+                    response_object.cage_or_room = opResult.cage_or_room;
+                    response_object.next_appt = opResult.next_appt;
 
-            response_object.weeksAfterSurgery = dateDiffInWeeks(opResult.op_date, new Date());
+                    response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
 
-            response_object.meds = JSON.parse(OpResult.meds);
+                    opResult.meds = JSON.parse(opResult.meds);
 
+                    response_object.meds_name = opResult.meds.name;
+                    response_object.meds_amount = opResult.meds.amount;
+                    response_object.meds_frequency = opResult.meds.frequency;
+                    response_object.meds_start = opResult.meds.start;
+                    response_object.meds_length_of_course = opResult.meds.length_of_course;
+
+
+                    delete response_object.op_id;
+                    res.send(response_object);
+
+                });
+            }
         });
-
-        delete response_object.op_id;
-
-    }):
-     */
-
-    res.send(response_object);
+    }
+    catch(err){
+        res.send({status: "failure"});
+    }
 
 });
 
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
-    res.send(
-        {noOfQuestionnaires : 7, questionnaires: [{questionnaire_id : 1, link: 'link1'}]}
-    );
-    // TODO : DB.getQuestionnaires() which will give me a list of all the questionnaire rows
-    /*
-    DB.getAnimalInfo(connection, req.params.animalID, function(AnimalInfo){
-        DB.getOperationInfo(connection, AnimalInfo.op_id, function(OpInfo){
-            const op_date = OpInfo.op_date;
-            DB.getQuestionnaires(connection, function(questionnaire_list){
-                const arr = [];
-                const c = 0;
-                for (questionnaire in questionnaire_list){
-                    if (dateDiffInWeeks(op_date, new Date()) == questionnaire.time){
-                        arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
-                        c = c + 1;
-                    }
-                }
-                res.send(
-                    {noOfQuestionnaires : c, questionnaires : arr}
-                );
-            });
+
+    try{
+        DB.getAnimalInfo(connection, req.params.animalID, function(AnimalInfo){
+            if (AnimalInfo == null){
+                res.send({noOfQuestionnaires : 0, questionnaires : [], status: 'failure'});
+            }
+            else{
+                DB.getOperationInfo(connection, AnimalInfo.op_id, function(OpInfo){
+                    const op_date = OpInfo.op_date;
+                    DB.getQuestionnaires(connection, function(questionnaire_list){
+                        const arr = [];
+                        var c = 0;
+                        const dateDiff = dateDiffInWeeks(new Date(op_date), new Date());
+                        for (i = 0; i < questionnaire_list.length; i++){
+                            var questionnaire = questionnaire_list[i];
+                            if (dateDiff >= questionnaire.time){
+                                arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
+                                c = c + 1;
+                            }
+                        }
+                        res.send(
+                            {noOfQuestionnaires : c, questionnaires : arr, status: 'success'}
+                        );
+                    });
+                });
+            }
         });
-    });
-     */
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
 });
 
 app.get('/checkForSurveys/:animalID', (req, res) => {
     console.log(req.body);
-    res.send(
-        {noOfSurveys : 7, surveys: [{survey_id : 1, link: 'link1'}]}
-    );
-    /* TODO
-    DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
-        // I will just send a list of links - alternatively we could include a 'done' field?
-        const arr = [];
-        const c = 0;
-        for (survey in survey_list){
-            arr.push({survey_id : survey.survey_id, link: survey.link});
-            c = c + 1;
-        }
-        res.send(
-            {noOfSurveys : c, surveys : arr}
-        );
-    });
-     */
+
+    try{
+        DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
+            if (survey_list == null){
+                res.send(
+                    {noOfSurveys : 0, surveys : [], status: 'failure'}
+                );
+            }
+            else{
+                const arr = [];
+                for (i=0; i < survey_list.length; i++){
+                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link});
+                }
+                res.send(
+                    {noOfSurveys : survey_list.length, surveys : arr, status: 'success'}
+                );
+            }
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
 });
 
+//Returns a list like [{aid: , name: },{aid: , name: }, ...] - in future if no vetTeamID return failure
 app.get('/getAnimals/:vetTeamID', (req, res) => {
     console.log(req.params.vetTeamID);
-    res.send(
-        {animals: [{id:1, name:'Meow'},{id:2, name:'Woof'}]}
-    );
-    //Change original function to include animal's name as well
-    /*
-    DB.getAnimalsOfVetTeam(connection, req.body.vetTeamID, function(result){
-        res.send(result);
-    });
-     */
+
+    try{
+        DB.getAnimalsOfVetTeam(connection, req.params.vetTeamID, function(result){
+            res.send({animals: result, status:'success'});
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
 });
 
+//List like ['vet1', 'vet2', ...] - in future if no vetTeamID return failure
 app.get('/getListOfVets/:vetTeamID', (req, res) => {
     console.log(req.body);
-    res.send(
-        {vets : ['Tom','Agni']}
-    );
-    /*
-    DB.getVetList(connection, req.body.vetTeamID, function(result){
-        // for each element in list of vets, send names
-        const arr = [];
-        for (vet in result){
-            arr.push(vet.name);
-        }
-        res.send(
-            {vets : arr}
-        );
-    });
-    */
+
+    try{
+        DB.getVetList(connection, req.params.vetTeamID, function(result){
+            // for each element in list of vets, send names
+            var arr = [];
+            for (i = 0; i < result.length; i++){
+                arr.push(result[i].name);
+            }
+            res.send(
+                {vets : arr, status: 'success'}
+            );
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
 });
 
 //Include a checkbox beside survey to indicate that the survey is done
@@ -200,11 +232,16 @@ app.post('/surveyComplete', (req, res) => {
     }
      */
     console.log(req.body);
-    /* // Should be in (survey_id, aid, done) - result is just string indicating 'success' or 'failure'
-    DB.markSurveyDone(connection, req.body.survey_id, req.body.aid, function(result){
-        res.send(result);
-    });
-     */
+
+    try{
+        DB.completeSurvey(connection, req.body.aid, req.body.surveyId, function(result){
+            res.send(result);
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
 });
 
 app.post('/addNewAnimal', (req, res) => {
@@ -216,7 +253,7 @@ app.post('/addNewAnimal', (req, res) => {
         sex: ,
         species: ,
         bodyweight: , //this should be an integer (perhaps kg?)
-        owner_id: , // INT
+        owner_id: , // INT - send the  user id as well
         op_name: , //VARCHAR - name of the operation
         op_date: , //DATE
         body_condition: , //INT (out of 9)
@@ -229,45 +266,117 @@ app.post('/addNewAnimal', (req, res) => {
         length_of_rest: , //INT - how many days rest?
         cage_or_room: , //BOOLEAN - true if cage
         next_appt: , //DATETIME
-        meds: {
-            name: ,
-            amount: ,
-            frequency: ,
-            start: , //DATE??
-            length_of_course:
-        }
+        meds_name: ,
+        meds_amount: ,
+        meds_frequency: ,
+        meds_start: , //DATE??
+        meds_length_of_course:
     }
-     */
+
+
+    var req = { body: {
+        vetTeamID: 2,
+        name: "George",
+        sex: "m",
+        species: "Dog",
+        bodyweight: 30, //this should be an integer (perhaps kg?)
+        owner_id: "Albert", // VARCHAR
+        op_name: "Leg", //VARCHAR - name of the operation
+        op_date: "2020-01-11", //DATE
+        body_condition: 7, //INT (out of 9)
+        injury_info: "Surgery on that leg tho", //TEXT
+        procedure_details: "stuff n nonsense", //TEXT
+        surgery_data: "weeee", //TEXT
+        abnormalities: "none", //TEXT
+        location: "leg", //VARCHAR
+        stitches_or_staples: true, //BOOLEAN - true if stitches
+        length_of_rest: 35, //INT - how many days rest?
+        cage_or_room: false, //BOOLEAN - true if cage
+        next_appt: new Date(), //DATETIME
+        meds_name: "MED",
+        meds_amount: "3",
+        meds_frequency: "2",
+        meds_start: "2020-01-23", //DATE??
+        meds_length_of_course: "14",
+    }};*/
+
     console.log(req.body);
-    /*
-    // This function needs to return the op_id
-    DB.addOperation(connection, req.body.op_name, req.body.op_date, req.body.body_condition,
-    req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
-    req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
-    req.body.next_appt, JSON.stringify(req.body.meds), function(OpIdResult){
-        DB.addAnimal(connection, req.params.name, req.params.sex, req.params.species, req.params.bodyweight,
-        req.body.owner_id, OpIdResult, function(AnIdResult){
-            DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
-            res.send({aid: AnIdResult});
+
+    meds = JSON.stringify({name:req.body.meds_name, amount:req.body.meds_amount, frequency: req.body.meds_frequency,
+    start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
+
+    try{
+        DB.addOperation(connection, req.body.op_name, req.body.op_date, req.body.body_condition,
+        req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
+        req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
+        req.body.next_appt, meds, function(OpIdResult){
+            DB.addAnimal(connection, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
+            req.body.owner_id, OpIdResult, function(AnIdResult){
+                DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
+                res.send({aid: AnIdResult, status: 'success'});
+            });
         });
-    });
-     */
-    res.send(
-        `I received your POST request. This is what you sent me: ${req.body.name}`,
-    );
+    } catch(err){
+        res.send({aid: -1, status: 'failure'});
+    }
+
+
 });
 
 app.post('/modifyAnimal/:animalID', (req, res) => {
     /*
-    Expecting same format as addAnimal
+    Expecting same format as addAnimal - no need to send owner_id/op_id
      */
-    console.log(req.body);
-    /*
-    //TODO : DB.modifyAnimal
-     */
-    res.send(
-        `I received your POST request. This is what you sent me: ${req.body.next_appt}`,
-    );
+
+     /*var req = { body: {
+             vetTeamID: 2,
+             name: "meow",
+             sex: "m",
+             species: "Dog",
+             bodyweight: 30, //this should be an integer (perhaps kg?)
+             //owner_id: "Albert", // VARCHAR
+             op_name: "Leg", //VARCHAR - name of the operation
+             op_date: "2020-01-11", //DATE
+             body_condition: 7, //INT (out of 9)
+             injury_info: "Surgery on that leg tho", //TEXT
+             procedure_details: "stuff n nonsense", //TEXT
+             surgery_data: "weeee", //TEXT
+             abnormalities: "none", //TEXT
+             location: "leg", //VARCHAR
+             stitches_or_staples: true, //BOOLEAN - true if stitches
+             length_of_rest: 35, //INT - how many days rest?
+             cage_or_room: false, //BOOLEAN - true if cage
+             next_appt: new Date().toISOString().slice(0, 19).replace('T', ' '), //DATETIME
+             meds_name: "MED",
+             meds_amount: "3",
+             meds_frequency: "2",
+             meds_start: "2020-01-23", //DATE??
+             meds_length_of_course: "14",
+         }};*/
+
+    //console.log(req.body);
+    try{
+        meds = JSON.stringify({name:req.body.meds_name, amount:req.body.meds_amount, frequency: req.body.meds_frequency,
+               start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
+        DB.getAnimalInfo(connection,req.params.animalID, function(AnResult){
+            if(AnResult==null){
+                res.send({status: 'failure'});
+            } else {
+                DB.updateAnimal(connection, req.params.animalID, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
+                            AnResult.owner_id, AnResult.op_id, function(){
+                                DB.updateOperation(connection, AnResult.op_id, req.body.op_name, req.body.op_date, req.body.body_condition,
+                                        req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
+                                        req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
+                                        req.body.next_appt, meds, function(){
+                                            res.send({'status' : 'success'})
+                                        });
+                            });
+                }
+        });
+    }catch(err){
+        console.log(err);
+        res.send({'status' : 'failure'})
+    }
 });
 
 app.post('/addNewQuestionnaire', (req, res) => {
@@ -281,14 +390,18 @@ app.post('/addNewQuestionnaire', (req, res) => {
      */
 
     console.log(req.body);
-
-    /*
-    DB.addQuestionnaire(connection, req.body.time_to_send, req.body.link);
-     */
-
-    res.send(
-        `I received your POST request. This is what you sent me: ${req.body.link}`,
-    );
+    try{
+        DB.addQuestionnaire(connection, req.body.time_to_send, req.body.link, function(result){
+            if (result != -1){
+                res.send({qid: result, status: 'success'});
+            }
+            else{
+                res.send({qid: -1, status: 'failure'});
+            }
+        });
+    }catch(err){
+        res.send({qid: -1, status: 'failure'});
+    }
 });
 
 app.post('/addNewSurvey', (req, res) => {
@@ -303,52 +416,60 @@ app.post('/addNewSurvey', (req, res) => {
 
     console.log(req.body);
 
-    /*
-    DB.addSurvey(connection, req.body.vetTeamID, new Date(), req.body.link, req.body.location, function(AddResult){
-    //Instead of a (survey_id, location) table, we need a (survey_id, aid) relation
-        DB.getSurveyReceivers(connection, AddResult, function(animal_list){
-            const arr = [];
-            for (animal in animal_list){
-                arr.push(animal.aid);
-            }
-            res.send(
-                {animals : arr}
-            );
-        });
-    });
-     */
+    try{
+            DB.addSurvey(connection, req.body.vetTeamID, new Date().toISOString().slice(0,10), req.body.link, req.body.location, function(AddResult){
+                //Instead of a (survey_id, location) table, we need a (survey_id, aid) relation
+                    DB.getSurveyReceivers(connection, AddResult, function(animal_list){
+                        const arr = [];
+                        for (i=0; i<animal_list.length; i++){
+                            arr.push(animal_list[i].aid);
+                        }
+                        res.send(
+                            {animals : arr, status: 'success'}
+                        );
+                    });
+            });
+    } catch(err){
+        res.send({animals : [], status: 'failure'});
+    }
 
-    res.send(
-        `I received your POST request. This is what you sent me: ${req.body.link}`,
-    );
 });
 
 app.post('/registerUser', (req, res) => {
     //Username, password, email
     console.log(req.body);
-    res.send(
-        {uid:7, status: 'success'},
-    );
-    /*
-    DB.addCarer(connection, req.body.email, req.body.password, req.body.username);
-    DB.getUserID(connection, req.body.email, function(result){
-        const response_status = (result==-1) ? 'failure' : 'success';
-        res.send(
-        {uid:result, status: response_status},
-        );
-    ;});
-     */
+    try{
+        `DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
+            if (add_result == "Success!"){
+                DB.getUserID(connection, req.body.email, function(result){
+                    const response_status = (result==-1) ? 'failure' : 'success';
+                    res.send(
+                    {uid:result, status: response_status},
+                    );
+                ;});
+            }
+            else{
+                res.send({uid: -1, status: 'failure'});
+            }
+        });`
+    }catch(err){
+        res.send({uid: -1, status: 'failure'});
+    }
 });
 
 app.post('/loginData', (req, res) => {
-    //This method expects the username and password
+    //This method expects the email and password
     console.log(req.body);
-    res.send({passwordCorrect: true});
-    /*
-    DB.authenticateUser(connection, req.body.username, req.body.password, function(result){res.send(
-        JSON.stringify({passwordCorrect: result}),
-    );});
-    */
+    //res.send({passwordCorrect: true});
+
+    try{
+        DB.authenticateUser(connection, req.body.email, req.body.password, function(result){
+            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, status: 'success'});
+        });
+    }catch(err){
+            res.send({passwordCorrect: false, status: 'failure'});
+    }
+
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
