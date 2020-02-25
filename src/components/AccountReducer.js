@@ -2,14 +2,48 @@ export const initial_state = {
   loggedIn: false,
   choseId: false,
   vetAccount: false,
-  data: {}
+  data: {
+    name: "",
+    email: "",
+    userId: -1
+  },
+  accounts: []
 }
 
-// get from database
-var names = {
-  user1: "tom",
-  user2: "masha"
-};
+// API calls
+
+async function callRegister(user, pass, email) {
+  const response = await fetch('http://localhost:5000/registerUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      'username': user,
+      'password': pass,
+      'email': email
+    })
+  });
+  const body = await response.json();
+  return body;
+}
+
+async function callLogin(user, pass) {
+  const response = await fetch('http://localhost:5000/loginData', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      'username': user,
+      'password': pass
+    })
+  });
+  const body = await response.json();
+  return body;
+}
+
+// Reducer
 
 // previous state, action => next state
 export function AccountReducer(state = initial_state, action) {
@@ -17,74 +51,86 @@ export function AccountReducer(state = initial_state, action) {
     case "LOGIN":
       state.loggedIn = false;
       state.choseId = false;
-      
-      // TODO: lookup name / pass from database, not just hardcoded
-      if (action.data.name == "tom" && action.data.pass == "hello") {
-        action.label.innerHTML = "Log in successful";
-        window.location.href = "/#/account";
-        
-        return {
-          loggedIn: true,
-          vetAccount: true,
-          data: names
-        };
-      
-      } else {
-        action.label.innerHTML = "Wrong username or password.";
-        return state;
-      }
-    
+
+      callLogin(action.data.name, action.data.pass)
+        .then(res => {
+          state.loggedIn = res.passwordCorrect;
+
+          if (state.loggedIn) {
+
+            // Login success
+            action.label.innerHTML = JSON.stringify(state);
+
+            state.vetAccount = true;
+            state.data = {};
+
+            window.location.href = "/#/account";
+
+          } else {
+
+            // Login failed
+            action.label.innerHTML = "Wrong username or password.";
+
+          }
+        }
+      );
+
+      return state;
+
     case "LOGOUT":
-      window.location.href = "/#/login";
-      
       state.loggedIn = false;
-      state.choseId = false;
-      state.data = {};
-      return state;
-    
+      state = initial_state;
+      window.location.href = "/#/login";
+      return initial_state;
+
     case "REGISTER":
-      
-      // TODO: add to database
-      
-      // Success
-      window.location.href = "/#/account";
-      
-      state.loggedIn = true;
-      state.choseId = true;
-      state.data = {
-        name: action.data.name,
-        pass: action.data.pass,
-      };
-      
-      return state;
-    
+
+      callRegister(action.data.name, action.data.pass, action.data.email).then(res => {
+        if (res.status == "success") {
+
+          // Register successful
+          state.loggedIn = true;
+          state.data = {
+            userId: res.uid,
+            name: action.data.name,
+            email: action.data.email
+          };
+
+          window.location.href = "/#/account";
+
+        } else {
+
+          // Register failed
+          alert("Registration failed");
+
+        }
+
+        return state;
+      });
+
     case "CHOOSE_ID":
       state.choseId = false;
-      state.data = names
       return state;
-    
+
+    case "UPDATE_ACCOUNTS":
+      fetch('http://localhost:5000/getListOfVets/' + state.data.userId).then(
+        res => res.json()).then(
+        res => {
+          state.accounts = res.vets;
+        });
+      return state;
+
     case "SELECT_ID":
       state.choseId = true;
-      // TODO: send to database
-      if (state.vetAccount) {
-        state.data = {
-          id: action.id,
-          name: names[action.id],
-        };
-      } else {
-        state.data = {
-          id: action.id,
-          name: names[action.id],
-        };
-      }
+      state.data.name = action.id;
       return state;
-    
+
     case "FORGOT_PASSWORD":
       // action.data.email is the email
-      alert("Password reset. Please check your emails.");
+      alert("Password reset. Please check your emails. <TODO>");
       window.location.href = "/#/login";
       return state;
-      
+
     // Something else happened
     default:
       return state;

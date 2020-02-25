@@ -1,8 +1,8 @@
-import {createStore, combineReducers} from 'redux';
-import {AccountReducer} from "./components/AccountReducer";
+import {createStore} from 'redux';
+import {AccountReducer, initial_state} from "./components/AccountReducer";
 
-export const store = createStore(AccountReducer);
- 
+export const store = createStore(AccountReducer, initial_state);
+
 /*
 Usage:
 
@@ -10,20 +10,9 @@ Usage:
     ...
     store.getState().variable
 
-Format:
-
-{
-  "loggedIn": true,
-  "vetAccount": true,
-  "data": {
-    "id": "user1",
-    "name": "tom"
-  },
-  "choseId": true
-}
+Format: look at AccountReducer- it has a 'initial_state' variable
 
 Also use:
-
     const rerenderer = store.subscribe(() => this.forceUpdate());
 
 in the constructor. [remember to call super()!]

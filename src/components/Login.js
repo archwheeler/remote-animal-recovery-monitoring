@@ -15,12 +15,12 @@ class Account extends React.Component {
         <div className="center">
           You are already logged in.
           <br/>
-          
+
           <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
             My Account
           </button>
           <br/>
-          
+
           <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}>
             Log out
           </button>
@@ -35,10 +35,10 @@ class Account extends React.Component {
             </label>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username*" required/>
+            <input type="text" id="username_box" placeholder="Username" required/>
             <br/>
 
-            <input type="password" id="password_box" placeholder="Password*" required/>
+            <input type="password" id="password_box" placeholder="Password" required/>
             <br/>
 
             <label>
@@ -50,20 +50,20 @@ class Account extends React.Component {
             <input type="submit" value="Log in"/>
             <br/>
           </form>
-          
-          <button className="text" onClick={() => window.location.href='/#/register'}> 
+
+          <button className="text" onClick={() => window.location.href='/#/register'}>
             Don't have an account? Register here
           </button>
           <br/>
-          
-          <button className="text" onClick={() => window.location.href='/#/forgot'}> 
+
+          <button className="text" onClick={() => window.location.href='/#/forgot'}>
             Forgot password? Reset here
           </button>
         </div>
       );
     }
 	}
-	
+
 	showPassword() {
 	  var passBox = document.getElementById("password_box");
     if (passBox.type == "password") {
@@ -77,7 +77,7 @@ class Account extends React.Component {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var feedback = document.getElementById("feedback");
-    
+
     store.dispatch(LoginAction(username, password, feedback));
   }
 }

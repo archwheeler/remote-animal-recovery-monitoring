@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {ForgotAction} from './AccountAction';
+import {ForgotAction, GoToAccountAction} from './AccountAction';
 
 class Account extends React.Component {
 
@@ -15,15 +15,11 @@ class Account extends React.Component {
         <div className="center">
           You are already logged in.
           <br/>
-          
-          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
+
+          <button className="blueButton" onClick={() => store.dispatch(GoToAccountAction())}>
             My Account
           </button>
           <br/>
-          
-          <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}>
-            Log out
-          </button>
         </div>
       );
     } else {
@@ -35,14 +31,14 @@ class Account extends React.Component {
           You will get an email with instructions on how to access your
           account.
           <br/>
-          
+
           <form onSubmit={this.forgotPassword}>
-            <input id="email_box" type="text" placeholder="Email*" required/>
+            <input id="email_box" type="text" placeholder="Email" required/>
             <br/>
-            
+
             <input type="submit" value="Reset Password"/>
           </form>
-          
+
           <button className="text" onClick={() => window.location.href = "/#/login"}>
             Return to login
           </button>

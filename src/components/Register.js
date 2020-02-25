@@ -8,17 +8,17 @@ class Account extends React.Component {
     super();
     const rerenderer = store.subscribe(() => this.forceUpdate());
   }
-  
-	render() {	
+
+	render() {
     if (store.getState().loggedIn) {
       return (
         <div className="center">
           You are already logged in.
           <br/>
-          
+
           <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
             My Account
-          </button> 
+          </button>
         </div>
       );
     } else {
@@ -27,23 +27,26 @@ class Account extends React.Component {
           <form onSubmit={this.register}>
             Register
             <br/>
-        
-            <input type="text" id="username_box" placeholder="Username*" required/>
+
+            <input type="text" id="email_box" placeholder="Email" required/>
             <br/>
-        
-            <input type="password" id="password_box" placeholder="Password*" required/>
+
+            <input type="text" id="username_box" placeholder="Username" required/>
             <br/>
-        
+
+            <input type="password" id="password_box" placeholder="Password" required/>
+            <br/>
+
             <label>
               <input type="checkbox" onClick={this.showPassword}/>
               Show password?
             </label>
             <br/>
-        
+
             <input type="submit" value="Register" />
             <br/>
           </form>
-          
+
           <button className="text" onClick={() => window.location.href = "/#/login"}>
             Already have an account? Log in here
           </button>
@@ -51,14 +54,15 @@ class Account extends React.Component {
       );
     }
   }
-  
+
   register() {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
-    
-    store.dispatch(RegisterAction(username, password));
+    var email = document.getElementById("email_box").value;
+
+    store.dispatch(RegisterAction(username, password, email));
   }
-  
+
   showPassword() {
 	  var passBox = document.getElementById("password_box");
     if (passBox.type == "password") {

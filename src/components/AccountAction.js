@@ -15,13 +15,13 @@ export function LogoutAction() {
   };
 }
 
-export function RegisterAction(username, password) {
+export function RegisterAction(username, password, email) {
   return {
     type: "REGISTER",
     data: {
       name: username,
-      // DON'T SAVE PASSWORD ANYWHERE PLAINTEXT THIS IS JUST A PLACEHOLDER FOR TESTING PURPOSES
-      pass: password
+      pass: password,
+      email: email
     }
   };
 }
@@ -45,5 +45,11 @@ export function ForgotAction(email) {
     data: {
       email: email
     }
+  };
+}
+
+export function UpdateAccountsAction(accounts) {
+  return {
+    type: "UPDATE_ACCOUNTS"
   };
 }
