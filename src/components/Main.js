@@ -13,6 +13,7 @@ import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
+
 //	constructor(props) {
 //		super(props);
 //		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalID');
@@ -47,53 +48,53 @@ class Main extends React.Component {
 		meds_start: "2020-01-23", //DATE??
 		meds_length_of_course: 14,
 	}
-	
-	
+
+
 	state = {
 		finished: false,
 		stepIndex: 0,
-	  };
-	
-	  handleNext = () => {
+	};
+
+	handleNext = () => {
 		const {stepIndex} = this.state;
 		this.setState({
-		  stepIndex: stepIndex + 1,
-		  finished: stepIndex >= 5,
+			stepIndex: stepIndex + 1,
+			finished: stepIndex >= 5,
 		});
-	  };
-	
-	  handlePrev = () => {
+	};
+
+	handlePrev = () => {
 		const {stepIndex} = this.state;
 		if (stepIndex > 0) {
-		  this.setState({stepIndex: stepIndex - 1});
+			this.setState({stepIndex: stepIndex - 1});
 		}
-	  };
+	};
 
-	  renderStepActions(step) {
+	renderStepActions(step) {
 		const {stepIndex} = this.state;
-	
+
 		return (
-		  <div style={{margin: '12px 0'}}>
-			<RaisedButton
-			  label={stepIndex === 4 ? 'Finish' : 'Next'}
-			  disableTouchRipple={true}
-			  disableFocusRipple={true}
-			  primary={true}
-			  onClick={this.handleNext}
-			  style={{marginRight: 12}}
-			/>
-			{step > 0 && (
-			  <FlatButton
-				label="Back"
-				disabled={stepIndex === 0}
-				disableTouchRipple={true}
-				disableFocusRipple={true}
-				onClick={this.handlePrev}
-			  />
-			)}
-		  </div>
+			<div style={{margin: '12px 0'}}>
+				<RaisedButton
+					label={stepIndex === 4 ? 'Finish' : 'Next'}
+					disableTouchRipple={true}
+					disableFocusRipple={true}
+					primary={true}
+					onClick={this.handleNext}
+					style={{marginRight: 12}}
+				/>
+				{step > 0 && (
+					<FlatButton
+						label="Back"
+						disabled={stepIndex === 0}
+						disableTouchRipple={true}
+						disableFocusRipple={true}
+						onClick={this.handlePrev}
+					/>
+				)}
+			</div>
 		);
-	  }
+	}
 
 	render() {
 		const {finished, stepIndex} = this.state;
@@ -101,12 +102,14 @@ class Main extends React.Component {
 		return (
 			<div>
 				<Card>
-					<CardHeader title = {this.information.name}
-								subtitle={"Sex: " + this.information.sex + ", Animal Type: "+ this.information.species}
+					<CardHeader title={this.information.name}
+								subtitle={"Sex: " + this.information.sex + ", Animal Type: " + this.information.species}
 								avatar={<Avatar>{this.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
+
 					{this.information.name} was presented to the Queen’s Veterinary School Hospital on {this.information.op_date} for further investigation into {this.information.injury_info} {this.information.procedure_details}.
+
 					</CardText>
 				</Card>
 
@@ -115,8 +118,8 @@ class Main extends React.Component {
 						badgeContent={1}
 						primary={true}
 						style={{padding: 0}}
-						badgeStyle={{top:-10, right: -28}}>
-							Questionnaires
+						badgeStyle={{top: -10, right: -28}}>
+						Questionnaires
 
 					</Badge>}
 								actAsExpander={true}
@@ -130,7 +133,7 @@ class Main extends React.Component {
 					</CardActions>
 				</Card>
 				<Card>
-					<CardHeader title= "Wound Care"
+					<CardHeader title="Wound Care"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
@@ -144,40 +147,47 @@ class Main extends React.Component {
 				</Card>
 
 				<Card>
-					<CardHeader title= "Load Form"
+					<CardHeader title="Load Form"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-					Please fill in the form below. To send it too us after filling in click the print button and print to "Save as PDF". Then email this attachment to the <a href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
+						Please fill in the form below. To send it too us after filling in click the print button and
+						print to "Save as PDF". Then email this attachment to the <a
+						href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
 					</CardText>
 					<CardMedia expandable={true}>
-						<object data = "Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600" frameBorder="none">
-							<div style={{margin:15}}><p>Unfortunately this browser does not support PDFs. Please download the PDF using the button below, we recommend using Adobe Acrobat to fill in the form.</p>
+						<object data="Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600"
+								frameBorder="none">
+							<div style={{margin: 15}}><p>Unfortunately this browser does not support PDFs. Please
+								download the PDF using the button below, we recommend using Adobe Acrobat to fill in the
+								form.</p>
 							</div>
 							<FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
-						
+
 						</object>
 					</CardMedia>
 				</Card>
 
 				<Card>
-					<CardHeader title= "Vet Metrica Questionnare"
+					<CardHeader title="Vet Metrica Questionnare"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						Please complete the Vet Metrica Questionnare by clicking <a href="https://www.vetmetrica.com/Auth/Login">here</a>.
+						Please complete the Vet Metrica Questionnare by clicking <a
+						href="https://www.vetmetrica.com/Auth/Login">here</a>.
 					</CardText>
 				</Card>
 
-				
+
 				<Card>
-					<CardHeader title= "Exercise"
+					<CardHeader title="Exercise"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
+
 					<ul>
 					<li>{this.information.name} must not be allowed to do any running, jumping on/off furniture, climbing stairs or playing. At home, they must be kept confined to a {(this.information.cage_or_room) ? 'cage' : 'small room'}. They must be kept on the lead at all times when they are outside, even in the garden.</li>
 					<li>{this.information.name} can be taken for controlled walks on the lead as per the following schedule. Please walk slowly to encourage use of the operated limb</li>
@@ -235,7 +245,7 @@ class Main extends React.Component {
 						</p>
 						)}
 					</div>
-					
+
 					</CardText>
 				</Card>
 
@@ -246,11 +256,19 @@ class Main extends React.Component {
 						showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-					Physiotherapy and hydrotherapy can help to optimise recovery and are recommended.
-					<ul>
-						<li>For physiotherapy, we recommend <a href="https://www.ACPAT.org">ACPAT</a> or <a href="https://www.IAAT.org.uk">IAAT</a> certified animal physiotherapists. This can be started after discharge from the hospital.</li>
-						<li>For hydrotherapy, underwater treadmill hydrotherapy is recommended. This should not be started until after the surgical wound has healed and the skin sutures have been removed. Free swimming hydrotherapy is not allowed until after the recheck at QVSH. We suggest that you look for a member of the <a href="https://www.canine-hydrotherapy.org">Canine Hydrotherapy Association</a>.</li>
-					</ul>
+						Physiotherapy and hydrotherapy can help to optimise recovery and are recommended.
+						<ul>
+							<li>For physiotherapy, we recommend <a href="https://www.ACPAT.org">ACPAT</a> or <a
+								href="https://www.IAAT.org.uk">IAAT</a> certified animal physiotherapists. This can be
+								started after discharge from the hospital.
+							</li>
+							<li>For hydrotherapy, underwater treadmill hydrotherapy is recommended. This should not be
+								started until after the surgical wound has healed and the skin sutures have been
+								removed. Free swimming hydrotherapy is not allowed until after the recheck at QVSH. We
+								suggest that you look for a member of the <a href="https://www.canine-hydrotherapy.org">Canine
+									Hydrotherapy Association</a>.
+							</li>
+						</ul>
 					</CardText>
 				</Card>
 				<Card>
@@ -258,12 +276,11 @@ class Main extends React.Component {
 						title="Medication"
 						actAsExpander={true}
 						showExpandableButton={true}
-						/>
+					/>
 					<CardText expandable={true}>
 						{this.information.meds_name}: Please give {this.information.meds_amount} capsules/tablets {this.information.meds_frequency} times daily with food starting {this.information.meds_start} for {this.information.meds_length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
 					</CardText>
 				</Card>
-
 				<Card>
 					<CardHeader
 						title="Further  Appointments"
@@ -272,6 +289,7 @@ class Main extends React.Component {
 					/>
 					<CardText expandable={true}>
 						<ul>
+
 							<li>{this.information.name} has skin {this.information.stitches_or_staples?"stitches":"staples"} that will need to be removed 10-14 days after surgery. Please arrange an appointment with your local vets for this.</li>
 							<li>We would like to re-examine {this.information.name} at the QVSH. An appointment has been booked on {this.information.next_appt}. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
 						</ul>
@@ -284,5 +302,4 @@ class Main extends React.Component {
 		);
 	}
 }
-
 export default Main;
