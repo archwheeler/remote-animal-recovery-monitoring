@@ -4,7 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import ContentLink from 'material-ui/svg-icons/content/link';
-import { FlatButton } from 'material-ui';
+import { FlatButton, BottomNavigation, BottomNavigationItem } from 'material-ui';
 
 export default class AppShell extends React.Component {
 	constructor(props) {
@@ -44,19 +44,18 @@ export default class AppShell extends React.Component {
 					onRequestChange={this.handleRequestChange}
 					>
 					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/LoadForm"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/contact"/>} onClick={this.handleToggleDrawer}/>
+					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/loadform"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/survey"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onClick={this.handleToggleDrawer}/>
-					
+
 				</Drawer>
 				<AppBar
 					title={this.state.title}
 					onLeftIconButtonClick={this.handleToggleDrawer}
 					iconElementRight={<FlatButton backgroundColor="red" label="Emergency Contact" href="/#/contact" />}
 					/>
-				
 
 				<div id="content" style={{width: '90%', margin: 'auto', marginTop: '30px'}}>
 					{this.props.children}

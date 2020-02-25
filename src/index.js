@@ -5,6 +5,10 @@ import {Router, useRouterHistory} from 'react-router';
 import routes from './routes';
 import './index.css';
 
+// Fix onTouchTap issues
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 const history = useRouterHistory(createHashHistory)();
 
 render(

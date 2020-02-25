@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {LoginAction} from './AccountAction';
+import {LoginAction, LogoutAction} from './AccountAction';
 
 class Account extends React.Component {
 
@@ -11,38 +11,59 @@ class Account extends React.Component {
 
 	render() {
 	  if (store.getState().loggedIn) {
-      window.location.href = "/#/account";
-      return null;
-      
+      return (
+        <div className="center">
+          You are already logged in.
+          <br/>
+
+          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
+            My Account
+          </button>
+          <br/>
+
+          <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}>
+            Log out
+          </button>
+        </div>
+      );
     } else {
       return (
-        <div>
-          <p>
+        <div className="center">
+          <form onSubmit={this.login}>
             <label id="feedback">
             Log in to the system below.
             </label>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username"/>
+            <input type="text" id="username_box" placeholder="Username" required/>
             <br/>
 
-            <input type="password" id="password_box" placeholder="Password"/>
+            <input type="password" id="password_box" placeholder="Password" required/>
             <br/>
 
-            <input type="checkbox" onClick={this.showPassword}/>
-            Show password?
+            <label>
+              <input type="checkbox" onClick={this.showPassword}/>
+              Show password?
+            </label>
             <br/>
 
-            <button onClick={this.login}> Log in </button>
+            <input type="submit" value="Log in"/>
             <br/>
+          </form>
 
-            <button onClick={() => window.location.href='/#/register'}> Register </button>
-          </p>
+          <button className="text" onClick={() => window.location.href='/#/register'}>
+            Don't have an account? Register here
+          </button>
+          <br/>
+
+          <button className="text" onClick={() => window.location.href='/#/forgot'}>
+            Forgot password? Reset here
+          </button>
         </div>
       );
     }
 	}
-	
+
 	showPassword() {
 	  var passBox = document.getElementById("password_box");
     if (passBox.type == "password") {
@@ -53,11 +74,10 @@ class Account extends React.Component {
   }
 
   login() {
-    // verify from database :) @Masha collab needed
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var feedback = document.getElementById("feedback");
-    
+
     store.dispatch(LoginAction(username, password, feedback));
   }
 }

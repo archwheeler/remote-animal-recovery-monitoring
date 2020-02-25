@@ -20,10 +20,10 @@ class Main extends React.Component {
 //        this.state.body = await response.json();
 //		if (response.status !== 200) throw Error(body.message);
 //	}
-	
 
 
-	information = {	
+
+	information = {
 		name: "George",
 		firstLetterOfName: "G",
 		sex: "Male",
@@ -129,7 +129,7 @@ class Main extends React.Component {
 						You have a new questionnaire to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
-						<FlatButton label="Weeks 1-2 Questionnaire" href="/#/SurveyTemplate"/>
+						<FlatButton label="Weeks 1-2 Questionnaire" href="/#/survey"/>
 					</CardActions>
 				</Card>
 				<Card>
@@ -195,41 +195,41 @@ class Main extends React.Component {
 					<div style={{maxWidth: 380, maxHeight: 400, margin: 'auto'}}>
 						<Stepper activeStep={stepIndex} orientation="vertical">
 							<Step>
-								<StepLabel>Weeks 1-4</StepLabel> 
+								<StepLabel>Weeks 1-4</StepLabel>
 								<StepContent>
 									<p>5-10 minutes 3-4 times daily</p>
 									{this.renderStepActions(0)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 5-6</StepLabel> 
+								<StepLabel>Weeks 5-6</StepLabel>
 								<StepContent>
 									<p>10-15 minutes 3-4 times daily</p>
 									{this.renderStepActions(1)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 7-8</StepLabel> 
+								<StepLabel>Weeks 7-8</StepLabel>
 								<StepContent>
 									<p>15-20 minutes on the lead 2-3 times daily</p>
 									{this.renderStepActions(2)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 9-10</StepLabel> 
+								<StepLabel>Weeks 9-10</StepLabel>
 								<StepContent>
 									<p>20-30 minutes on the lead 2-3 times daily</p>
 									{this.renderStepActions(3)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 11-12</StepLabel> 
+								<StepLabel>Weeks 11-12</StepLabel>
 								<StepContent>
 									<p>30-40 minutes on the lead 2-3 times daily.</p>
 									{this.renderStepActions(4)}
 								</StepContent>
 							</Step>
-							
+
 						</Stepper>
 						{finished && (
 						<p style={{margin: '20px 0', textAlign: 'center'}}>
@@ -278,7 +278,7 @@ class Main extends React.Component {
 						showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						{this.information.meds_name}: Please give {this.information.meds_amount} capsules/tablets {this.information.meds_frequency} times daily with food starting {this.information.meds_start} for {this.information.meds_length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
+						{this.information.meds_name}: Please give {this.information.meds_amount} capsules/tablets {this.information.meds_frequency} times daily with food starting {this.information.meds_start} for {this.information.meds_length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice.
 					</CardText>
 				</Card>
 				<Card>
