@@ -13,34 +13,43 @@ import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
+	async myFetch(){
+		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalId');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
 
-	information = {
-		name: "George",
-		firstLetterOfName: "G",
-		sex: "Male",
-		species: "Dog",
-		bodyweight: "30kg", //this should be an integer (perhaps kg?)
-		owner_name: "Albert", // VARCHAR
-		op_name: "Leg", //VARCHAR - name of the operation
-		op_date: "2020-01-22", //DATE
-		body_condition: "7", //INT (out of 9)
-		injury_info: "Surgery on that leg tho", //TEXT
-		procedure_details: "stuff n nonsense", //TEXT
-		surgery_data: "weeee", //TEXT
-		abnormalities: "none", //TEXT
-		location: "leg", //VARCHAR
-		stitches_or_staples: true, //BOOLEAN - true if stitches
-		length_of_rest: "35", //INT - how many days rest?
-		cage_or_room: false, //BOOLEAN - true if cage
-		next_appt: "2020-02-29", //DATETIME
-		meds: {
-			name: "MED",
-			amount: "3",
-			frequency: "2",
-			start: "2020-01-23", //DATE??
-			length_of_course: "14",
-		}
+        return body;
 	}
+	
+
+		information = {	
+			name: "George",
+			firstLetterOfName: "G",
+			sex: "Male",
+			species: "Dog",
+			bodyweight: "30kg", //this should be an integer (perhaps kg?)
+			owner_name: "Albert", // VARCHAR
+			op_name: "Leg", //VARCHAR - name of the operation
+			op_date: "2020-01-22", //DATE
+			body_condition: 7, //INT (out of 9)
+			injury_info: "surgery on that leg tho.", //TEXT
+			procedure_details: "It went pretty well didn't it.", //TEXT
+			surgery_data: "weeee", //TEXT
+			abnormalities: "none", //TEXT
+			location: "leg", //VARCHAR
+			stitches_or_staples: true, //BOOLEAN - true if stitches
+			length_of_rest: 35, //INT - how many days rest?
+			cage_or_room: false, //BOOLEAN - true if cage
+			next_appt: "2020-02-29", //DATETIME
+			meds: {
+				name: "MED",
+				amount: 3,
+				frequency: 2,
+				start: "2020-01-23", //DATE??
+				length_of_course: 14,
+			}
+		}
+	
 	
 	state = {
 		finished: false,
@@ -99,7 +108,7 @@ class Main extends React.Component {
 								avatar={<Avatar>{this.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-					{this.information.name} was presented to the Queen’s Veterinary School Hospital on {this.information.op_date} for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*.
+					{this.information.name} was presented to the Queen’s Veterinary School Hospital on {this.information.op_date} for further investigation into {this.information.injury_info} {this.information.procedure_details}.
 					</CardText>
 				</Card>
 

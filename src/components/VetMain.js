@@ -15,27 +15,27 @@ class VetMain extends React.Component {
 						Please click the button below to see the chats.
 					</CardText>
 					<CardActions>
-						<FlatButton></FlatButton>
+						<FlatButton/>
 					</CardActions>
 				</Card>
 				<Card>
 					<CardTitle title= "Create New Survey"
 					/>
 					<CardText>
-						Please click the button below to see the chats.
+						Please click the button below to create a new survey.
 					</CardText>
 					<CardActions>
-						<FlatButton></FlatButton>
+						<FlatButton label="Create" href="/#/VetNewSurvey"/>
 					</CardActions>
 				</Card>
 				<Card>
-					<CardTitle title= "Chats"
+					<CardTitle title= "Create/Update discharge information"
 					/>
 					<CardText>
-						Please click the button below to see the chats.
+						Select a user if updating and then click the button below.
 					</CardText>
 					<CardActions>
-						<FlatButton></FlatButton>
+						<FlatButton label="Discharge Information" href="/#/VetInformationInput"/>
 					</CardActions>
 				</Card>
 			</div>

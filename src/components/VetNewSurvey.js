@@ -3,7 +3,7 @@ import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {TextField, RaisedButton, SelectField, MenuItem } from 'material-ui';
 
 
-const destinations = [
+const categories = [
 	'Oliver Hansen',
 	'Van Henry',
 	'April Tucker',
@@ -24,13 +24,13 @@ class VetNewSurvey extends React.Component {
 	handleChange = (event, index, values) => this.setState({values});
 
 	menuItems(values) {
-		return destinations.map((destination) => (
+		return categories.map((category) => (
 		  <MenuItem
-			key={destination}
+			key={category}
 			insetChildren={true}
-			checked={values && values.indexOf(destination) > -1}
-			value={destination}
-			primaryText={destination}
+			checked={values && values.indexOf(category) > -1}
+			value={category}
+			primaryText={category}
 		  />
 		));
 	  }

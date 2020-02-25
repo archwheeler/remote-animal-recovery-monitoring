@@ -1,19 +1,79 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
-import { Card, CardTitle, CardText, SelectField, DatePicker } from 'material-ui';
+import { Card, CardTitle, CardText, SelectField, DatePicker, TimePicker } from 'material-ui';
 import RaisedButton from 'material-ui/RaisedButton'
 import MenuItem from 'material-ui/MenuItem';
 
 class VetInformationInput extends React.Component {
-	state = {
-		sex: null,
-		animaltype: null,
-		stitchesstaples: null,
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			information: {
+				name: "George",
+				firstLetterOfName: "G",
+				sex: "Female",
+				species: "Dog",
+				bodyweight: "30kg", //this should be an integer (perhaps kg?)
+				owner_name: "Albert", // VARCHAR
+				op_name: "Leg", //VARCHAR - name of the operation
+				op_date: "2020-01-22", //DATE
+				body_condition: 7, //INT (out of 9)
+				injury_info: "surgery on that leg tho.", //TEXT
+				procedure_details: "It went pretty well didn't it.", //TEXT
+				surgery_data: "weeee", //TEXT
+				abnormalities: "none", //TEXT
+				location: "leg", //VARCHAR
+				stitches_or_staples: true, //BOOLEAN - true if stitches
+				length_of_rest: 35, //INT - how many days rest?
+				cage_or_room: false, //BOOLEAN - true if cage
+				next_appt: "2020-02-29", //DATETIME
+				meds: {
+					name: "MED",
+					amount: 3,
+					frequency: 2,
+					start: "2020-01-23", //DATE??
+					length_of_course: 14
+				}
+			},
+		};
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChangeSex = this.handleChangeSex.bind(this);
+		this.handleChangeAnimalType = this.handleChangeAnimalType.bind(this);
+		this.handleChangeStitchesStaples = this.handleChangeStitchesStaples.bind(this);
+		this.handleChangeCageRoom = this.handleChangeCageRoom.bind(this);
+	
+	}
+	
 
-	handleChangeSex = (event, index, sex) => this.setState({sex});
-	handleChangeAnimalType = (event, index, animaltype) => this.setState({animaltype});
-	handleChangeStitchesStaples = (event, index, stitchesstaples) => this.setState({stitchesstaples});
+	handleChangeSex = (event, index, sex) => this.setState({information:{sex}});
+	handleChangeAnimalType = (event, index, species) => this.setState({information:{species}});
+	handleChangeStitchesStaples = (event, index, stitches_or_staples) => this.setState({information:{stitches_or_staples}});
+	handleChangeCageRoom = (event, index, cage_or_room) => this.setState({information:{cage_or_room}});
+	handleSubmit(event) {
+		this.state.information.name = document.getElementById("name").value;
+		this.state.information.firstLetterOfName = document.getElementById("name").value;
+		this.state.information.bodyweight = document.getElementById("bodyweight").value;
+		this.state.information.owner_name = document.getElementById("ownername").value;
+		this.state.information.op_name = document.getElementById("opname").value;
+		this.state.information.op_date = document.getElementById("opdate").value;
+		this.state.information.body_condition = document.getElementById("bodycondition").value;
+		this.state.information.injury_info = document.getElementById("injuryinfo").value;
+		this.state.information.procedure_details = document.getElementById("procedure").value;
+		this.state.information.surgery_data = document.getElementById("surgerydata").value;
+		this.state.information.abnormalities = document.getElementById("abnormalities").value;
+		this.state.information.location = document.getElementById("op_loc").value;
+		this.state.information.length_of_rest = document.getElementById("length").value;
+		this.state.information.next_appt = document.getElementById("nextapptdate").value + " " + document.getElementById("nextappttime").value;
+		this.state.information.meds.name = document.getElementById("medname").value;
+		this.state.information.meds.amount = document.getElementById("medamount").value;
+		this.state.information.meds.frequency = document.getElementById("medfreq").value;
+		this.state.information.meds.start = document.getElementById("medstart").value;
+		this.state.information.meds.length_of_course = document.getElementById("medlength").value;
+		console.log(this.state.information);
+	
+	}
+
+	//this.state.information.name = document.getElementById("thingy").value;
 	
 	render() {
 		return (
@@ -22,82 +82,158 @@ class VetInformationInput extends React.Component {
 				<CardTitle title="Discharge Information Input"/>
 				 <CardText>
 				 	<TextField
+					id="name"
 					floatingLabelText="Animal Name"
-					defaultValue="George"
+					defaultValue={this.state.information.name}
 					/><br />
 					<SelectField
+					id="sex"
 					floatingLabelText="Sex"
-					value={this.state.sex}
+					value={this.state.information.sex}
 					onChange={this.handleChangeSex}
 					>
-						<MenuItem value={1} primaryText="Male" />
-       					<MenuItem value={2} primaryText="Female" />
+						<MenuItem value={"Male"} primaryText="Male" />
+       					<MenuItem value={"Female"} primaryText="Female" />
           			</SelectField>
 					<br />
 					<SelectField
+					id="species"
 					floatingLabelText="Animal Type"
-					value={this.state.animaltype}
+					value={this.state.information.species}
 					onChange={this.handleChangeAnimalType}
 					>
-						<MenuItem value={1} primaryText="Dog" />
-       					<MenuItem value={2} primaryText="Cat" />
+						<MenuItem value={"Dog"} primaryText="Dog" />
+       					<MenuItem value={"Cat"} primaryText="Cat" />
           			</SelectField>
 					<br />
 					<TextField
+					id="bodyweight"
 					floatingLabelText="Bodyweight"
-					defaultValue=""
+					defaultValue={this.state.information.bodyweight}
 					/><br />
 					<TextField
+					id="ownername"
 					floatingLabelText="Owner Name"
-					defaultValue="Albert"
+					defaultValue={this.state.information.owner_name}
 					/><br />
 					<br />
 					<TextField
+					id="opname"
 					floatingLabelText="Operation Name"
-					defaultValue=""
+					defaultValue={this.state.information.op_name}
 					/><br />
 					<br />
 					<DatePicker 
-						floatingLabelText="Operation Date"/>
+						id="opdate"
+						floatingLabelText="Operation Date"
+						defaultDate={new Date(this.state.information.op_date)}
+						/>
 					<br />
 					<TextField
-					floatingLabelText="Abnormalities"
-					defaultValue=""
+					id="bodycondition"
+					floatingLabelText="Body Condition"
+					defaultValue={this.state.information.body_condition}
 					/><br />
 					<br />
 					<TextField
-					floatingLabelText="Location"
-					defaultValue=""
+					id="injuryinfo"
+					floatingLabelText="Injury Info"
+					defaultValue={this.state.information.injury_info}
+					/><br />
+					<br />
+					<TextField
+					id="procedure"
+					floatingLabelText="Procedure Details"
+					defaultValue={this.state.information.procedure_details}
+					/><br />
+					<br />
+					<TextField
+					id="surgerydata"
+					floatingLabelText="Surgery Information"
+					defaultValue={this.state.information.surgery_data}
+					/><br />
+					<br />
+					<TextField
+					id="abnormalities"
+					floatingLabelText="Abnormalities"
+					defaultValue={this.state.information.abnormalities}
+					/><br />
+					<br />
+					<TextField
+					id="op_loc"
+					floatingLabelText="Operation Location"
+					defaultValue={this.state.information.location}
 					/><br />
 					<br />
 					<SelectField
+					id="stitchesstaples"
 					floatingLabelText="Stitches or Staples"
-					value={this.state.stitchesstaples}
+					value={this.state.information.stitches_or_staples}
 					onChange={this.handleChangeStitchesStaples}
 					>
-						<MenuItem value={1} primaryText="Stitches" />
-       					<MenuItem value={2} primaryText="Staples" />
+						<MenuItem value={true} primaryText="Stitches" />
+       					<MenuItem value={false} primaryText="Staples" />
           			</SelectField>
 					<br />
 					<TextField
+					id="length"
 					floatingLabelText="Length of rest"
-					defaultValue=""
+					defaultValue={this.state.information.length_of_rest}
 					/><br />
 					<br />
 					<SelectField
+					id="cageroom"
 					floatingLabelText="Cage or Room"
-					value={this.state.value}
-					onChange={this.handleChange}
+					value={this.state.information.cage_or_room}
+					onChange={this.handleChangeCageRoom}
 					>
-						<MenuItem value={1} primaryText="Cage" />
-       					<MenuItem value={2} primaryText="Small Room" />
+						<MenuItem value={true} primaryText="Cage" />
+       					<MenuItem value={false} primaryText="Small Room" />
           			</SelectField>
 					<br />
 					<DatePicker 
-						floatingLabelText="Next Appointment"/>
+						id="nextapptdate"
+						floatingLabelText="Next Appointment Date"
+						defaultDate={new Date(this.state.information.next_appt)}
+						/>
+					<br />
+					<TimePicker
+						id="nextappttime"
+						floatingLabelText="Next Appointment Time"
+					/>
+					<br />
+					<TextField
+					id="medname"
+					floatingLabelText="Medication Name"
+					defaultValue={this.state.information.meds.name}
+					/><br />
+					<br />
+					<TextField
+					id="medamount"
+					floatingLabelText="Medication amount per dose"
+					defaultValue={this.state.information.meds.amount}
+					/><br />
+					<br />
+					<TextField
+					id="medfreq"
+					floatingLabelText="Medication frequency per day"
+					defaultValue={this.state.information.meds.frequency}
+					/><br />
+					<br />
+					<DatePicker 
+						id="medstart"
+						floatingLabelText="Start of medication course"
+						defaultDate={new Date(this.state.information.next_appt)}
+						/>
+					<br />
+					<TextField
+					id="medlength"
+					floatingLabelText="Length of course of medication"
+					defaultValue={this.state.information.meds.length_of_course}
+					/><br />
 					<br />
 
-					<RaisedButton label="Submit" primary={true} />
+					<RaisedButton label="Submit" primary={true} onClick={this.handleSubmit}/>
 				</CardText>
 			</Card>
 		  </div>

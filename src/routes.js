@@ -63,8 +63,8 @@ function routeVetInformationInput(s, cb) {
 	});
 }
 
-function routeVetNewForm(s, cb) {
-	System.import('./components/VetNewForm').then(component => {
+function routeVetNewSurvey(s, cb) {
+	System.import('./components/VetNewSurvey').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -83,7 +83,7 @@ export default (
 		<Route path="login" getComponent={routeLogin}/>
 		<Route path="register" getComponent={routeRegister}/>
 		<Route path="vetmain" getComponent={routeVetMain}/>
-		<Route path="vetnewform" getComponent={routeVetNewForm}/>
+		<Route path="vetnewsurvey" getComponent={routeVetNewSurvey}/>
 		<Route path="vetinformationinput" getComponent={routeVetInformationInput}/>
 	</Route>
 );
