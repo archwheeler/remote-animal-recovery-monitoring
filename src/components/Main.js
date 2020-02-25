@@ -13,8 +13,16 @@ import { Badge } from 'material-ui';
 
 
 class Main extends React.Component {
+//	constructor(props) {
+//		super(props);
+//		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalID');
+//        this.state.body = await response.json();
+//		if (response.status !== 200) throw Error(body.message);
+//	}
+	
 
-	information = {
+
+	information = {	
 		name: "George",
 		firstLetterOfName: "G",
 		sex: "Male",
@@ -23,24 +31,23 @@ class Main extends React.Component {
 		owner_name: "Albert", // VARCHAR
 		op_name: "Leg", //VARCHAR - name of the operation
 		op_date: "2020-01-22", //DATE
-		body_condition: "7", //INT (out of 9)
-		injury_info: "Surgery on that leg tho", //TEXT
-		procedure_details: "stuff n nonsense", //TEXT
+		body_condition: 7, //INT (out of 9)
+		injury_info: "surgery on that leg tho.", //TEXT
+		procedure_details: "It went pretty well didn't it.", //TEXT
 		surgery_data: "weeee", //TEXT
 		abnormalities: "none", //TEXT
 		location: "leg", //VARCHAR
-		stitches_or_staples: "stitches", //BOOLEAN - true if stitches
-		length_of_rest: "35", //INT - how many days rest?
-		cage_or_room: "room", //BOOLEAN - true if cage
+		stitches_or_staples: true, //BOOLEAN - true if stitches
+		length_of_rest: 35, //INT - how many days rest?
+		cage_or_room: false, //BOOLEAN - true if cage
 		next_appt: "2020-02-29", //DATETIME
-		meds: {
-			name: "MED",
-			amount: "3",
-			frequency: "2",
-			start: "2020-01-23", //DATE??
-			length_of_course: "14",
-		}
+		meds_name: "MED",
+		meds_amount: 3,
+		meds_frequency: 2,
+		meds_start: "2020-01-23", //DATE??
+		meds_length_of_course: 14,
 	}
+	
 	
 	state = {
 		finished: false,
@@ -99,7 +106,7 @@ class Main extends React.Component {
 								avatar={<Avatar>{this.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-					{this.information.name} was presented to the Queen’s Veterinary School Hospital on {this.information.op_date} for further investigation into *mild/moderate/severe, left/right hindlimb/forelimb lameness of ….duration*. *Progression of lameness*. *Other medical issues*.
+					{this.information.name} was presented to the Queen’s Veterinary School Hospital on {this.information.op_date} for further investigation into {this.information.injury_info} {this.information.procedure_details}.
 					</CardText>
 				</Card>
 
@@ -131,7 +138,7 @@ class Main extends React.Component {
 						<ul>
 						<li>{this.information.name} has a surgical wound on his/her {this.information.location}. Please check the wound twice daily for any signs of swelling, heat, redness, discharge or pain. Please contact us or your vets if you have any concerns with the appearance of the wound.</li>
 						<li>{this.information.name} must not be allowed to lick the surgical site as this will interfere with healing and may cause infection. He/She must wear the Buster collar at all times, especially when unsupervised, until the skin stitches have been removed.</li>
-						<li>During the first 2-3 days after surgery, {this.information.name} may benefit from cold packing of the XXXX. Please apply a cold pack (commercially available cool pack or bag of frozen peas for example), wrapped in a clean towel for 5-10 minutes, 3-4 times a day.</li>
+						<li>During the first 2-3 days after surgery, {this.information.name} may benefit from cold packing of the {this.information.location}. Please apply a cold pack (commercially available cool pack or bag of frozen peas for example), wrapped in a clean towel for 5-10 minutes, 3-4 times a day.</li>
 						</ul>
 					</CardText>
 				</Card>
@@ -172,7 +179,7 @@ class Main extends React.Component {
 					/>
 					<CardText expandable={true}>
 					<ul>
-					<li>{this.information.name} must not be allowed to do any running, jumping on/off furniture, climbing stairs or playing. At home, they must be kept confined to a cage/small room. They must be kept on the lead at all times when they are outside, even in the garden.</li>
+					<li>{this.information.name} must not be allowed to do any running, jumping on/off furniture, climbing stairs or playing. At home, they must be kept confined to a {(this.information.cage_or_room) ? 'cage' : 'small room'}. They must be kept on the lead at all times when they are outside, even in the garden.</li>
 					<li>{this.information.name} can be taken for controlled walks on the lead as per the following schedule. Please walk slowly to encourage use of the operated limb</li>
 					</ul>
 					<div style={{maxWidth: 380, maxHeight: 400, margin: 'auto'}}>
@@ -253,7 +260,7 @@ class Main extends React.Component {
 						showExpandableButton={true}
 						/>
 					<CardText expandable={true}>
-						{this.information.meds.name}: Please give {this.information.meds.amount} capsules/tablets {this.information.meds.frequency} times daily with food starting {this.information.meds.start} for {this.information.meds.length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
+						{this.information.meds_name}: Please give {this.information.meds_amount} capsules/tablets {this.information.meds_frequency} times daily with food starting {this.information.meds_start} for {this.information.meds_length_of_course} days. If {this.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
 					</CardText>
 				</Card>
 
@@ -265,8 +272,8 @@ class Main extends React.Component {
 					/>
 					<CardText expandable={true}>
 						<ul>
-							<li>{this.information.name} has skin {this.information.stitches_or_staples} that will need to be removed 10-14 days after surgery. Please arrange an appointment with your local vets for this.</li>
-							<li>We would like to re-examine {this.information.name} at the QVSH. An appointment has been booked on {this.information.next_appt} at XX.XX. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
+							<li>{this.information.name} has skin {this.information.stitches_or_staples?"stitches":"staples"} that will need to be removed 10-14 days after surgery. Please arrange an appointment with your local vets for this.</li>
+							<li>We would like to re-examine {this.information.name} at the QVSH. An appointment has been booked on {this.information.next_appt}. Please contact our reception team to rearrange this appointment if required. Please do not feed animal’s name in the morning prior to this appointment, as sedation or general anaesthesia may be required. There is no need to withhold water during this time. Please be prepared to leave animal’s name with us for the day.</li>
 						</ul>
 					</CardText>
 					<CardActions expandable={true}>
