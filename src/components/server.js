@@ -78,7 +78,7 @@ const response = await fetch('http://localhost:5000/addNewAnimal', {
   headers: {
     'Content-Type': 'application/json',
   },
-  
+
   //Maybe have some state to store the required fields
   body: JSON.stringify({'textTest' : 'Hey'})
 });

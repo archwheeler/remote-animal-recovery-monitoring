@@ -1,7 +1,6 @@
 export const initial_state = {
   loggedIn: false,
   choseId: false,
-  vetAccount: false,
   data: {
     name: "",
     email: "",
@@ -61,7 +60,6 @@ export function AccountReducer(state = initial_state, action) {
             // Login success
             action.label.innerHTML = JSON.stringify(state);
 
-            state.vetAccount = true;
             state.data = {};
 
             window.location.href = "/#/account";

@@ -33,12 +33,16 @@ class Account extends React.Component {
               Click here
             </button>
             <br/>
+
+            Testing purposes:
+            <br/>
+            {JSON.stringify(store.getState())}
           </div>
         );
       } else {
         if (store.getState().accounts.length == 0) {
           alert("No accounts found- if this is unexpected, go to 'Change user' in accounts");
-          store.dispatch(SelectAccountAction("None found"));
+          store.dispatch(SelectAccountAction());
           return null;
         }
         return (
