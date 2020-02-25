@@ -26,14 +26,13 @@ class VetInformationInput extends React.Component {
 				stitches_or_staples: true, //BOOLEAN - true if stitches
 				length_of_rest: 35, //INT - how many days rest?
 				cage_or_room: false, //BOOLEAN - true if cage
-				next_appt: "2020-02-29", //DATETIME
-				meds: {
-					name: "MED",
-					amount: 3,
-					frequency: 2,
-					start: "2020-01-23", //DATE??
-					length_of_course: 14
-				}
+				next_appt: "2020-02-29 10:54:00", //DATETIME
+				meds_name: "MED",
+				meds_amount: 3,
+				meds_frequency: 2,
+				meds_start: "2020-01-23", //DATE??
+				meds_length_of_course: 14,
+				
 			},
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -45,13 +44,47 @@ class VetInformationInput extends React.Component {
 	}
 	
 
-	handleChangeSex = (event, index, sex) => this.setState({information:{sex}});
-	handleChangeAnimalType = (event, index, species) => this.setState({information:{species}});
-	handleChangeStitchesStaples = (event, index, stitches_or_staples) => this.setState({information:{stitches_or_staples}});
-	handleChangeCageRoom = (event, index, cage_or_room) => this.setState({information:{cage_or_room}});
+	handleChangeSex(event, index, value) {
+		this.setState({
+			...this.state,
+			information: {
+				...this.state.information,
+				sex: value
+			}
+		});
+	}
+	handleChangeAnimalType(event, index, value) {
+		this.setState({
+			...this.state,
+			information: {
+				...this.state.information,
+				species: value
+			}
+		});
+	}
+	handleChangeStitchesStaples(event, index, value) {
+		this.setState({
+			...this.state,
+			information: {
+				...this.state.information,
+				stitches_or_staples: value
+			}
+		});
+	}
+	handleChangeCageRoom(event, index, value) {
+		this.setState({
+			...this.state,
+			information: {
+				...this.state.information,
+				cage_or_room: value
+			}
+		});
+	}
 	handleSubmit(event) {
-		this.state.information.name = document.getElementById("name").value;
-		this.state.information.firstLetterOfName = document.getElementById("name").value;
+		const namestr = document.getElementById("name").value;
+		const timestr = document.getElementById("nextappttime").value;
+		this.state.information.name = namestr;
+		this.state.information.firstLetterOfName = namestr.substring(0,1);
 		this.state.information.bodyweight = document.getElementById("bodyweight").value;
 		this.state.information.owner_name = document.getElementById("ownername").value;
 		this.state.information.op_name = document.getElementById("opname").value;
@@ -63,20 +96,21 @@ class VetInformationInput extends React.Component {
 		this.state.information.abnormalities = document.getElementById("abnormalities").value;
 		this.state.information.location = document.getElementById("op_loc").value;
 		this.state.information.length_of_rest = document.getElementById("length").value;
-		this.state.information.next_appt = document.getElementById("nextapptdate").value + " " + document.getElementById("nextappttime").value;
-		this.state.information.meds.name = document.getElementById("medname").value;
-		this.state.information.meds.amount = document.getElementById("medamount").value;
-		this.state.information.meds.frequency = document.getElementById("medfreq").value;
-		this.state.information.meds.start = document.getElementById("medstart").value;
-		this.state.information.meds.length_of_course = document.getElementById("medlength").value;
+		this.state.information.next_appt = document.getElementById("nextapptdate").value + " " + document.getElementById("nextappttime").value + ":00";
+		this.state.information.meds_name = document.getElementById("medname").value;
+		this.state.information.meds_amount = document.getElementById("medamount").value;
+		this.state.information.meds_frequency = document.getElementById("medfreq").value;
+		this.state.information.meds_start = document.getElementById("medstart").value;
+		this.state.information.meds_length_of_course = document.getElementById("medlength").value;
 		console.log(this.state.information);
 	
 	}
 
-	//this.state.information.name = document.getElementById("thingy").value;
-	
+
 	render() {
+		const nextapptdatetime = new Date(this.state.information.next_appt);
 		return (
+			
 			<div>
 			<Card>
 				<CardTitle title="Discharge Information Input"/>
@@ -194,42 +228,44 @@ class VetInformationInput extends React.Component {
 					<DatePicker 
 						id="nextapptdate"
 						floatingLabelText="Next Appointment Date"
-						defaultDate={new Date(this.state.information.next_appt)}
+						defaultDate={nextapptdatetime}
 						/>
 					<br />
 					<TimePicker
 						id="nextappttime"
+						format="24hr"
 						floatingLabelText="Next Appointment Time"
+						defaultTime={nextapptdatetime}
 					/>
 					<br />
 					<TextField
 					id="medname"
 					floatingLabelText="Medication Name"
-					defaultValue={this.state.information.meds.name}
+					defaultValue={this.state.information.meds_name}
 					/><br />
 					<br />
 					<TextField
 					id="medamount"
 					floatingLabelText="Medication amount per dose"
-					defaultValue={this.state.information.meds.amount}
+					defaultValue={this.state.information.meds_amount}
 					/><br />
 					<br />
 					<TextField
 					id="medfreq"
 					floatingLabelText="Medication frequency per day"
-					defaultValue={this.state.information.meds.frequency}
+					defaultValue={this.state.information.meds_frequency}
 					/><br />
 					<br />
 					<DatePicker 
 						id="medstart"
 						floatingLabelText="Start of medication course"
-						defaultDate={new Date(this.state.information.next_appt)}
+						defaultDate={new Date(this.state.information.meds_start)}
 						/>
 					<br />
 					<TextField
 					id="medlength"
 					floatingLabelText="Length of course of medication"
-					defaultValue={this.state.information.meds.length_of_course}
+					defaultValue={this.state.information.meds_length_of_course}
 					/><br />
 					<br />
 
