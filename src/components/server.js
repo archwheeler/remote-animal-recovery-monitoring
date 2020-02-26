@@ -29,10 +29,34 @@ function dateDiffInWeeks(a, b) {
 
 app.get('/getAnimalInfo/:animalId', (req, res) => {
 
-    const test = 'BAgni';
-    const response_object = {ids: [1, 2, 3], name: req.params.animalId, text: 'Meow'};
+    console.log(req.body);
+    const response_object = {	
+		name: "George",
+		firstLetterOfName: "G",
+		sex: "M",
+		species: "Dog",
+		bodyweight: 30, //this should be an integer (perhaps kg?)
+		owner_name: "Albert", // VARCHAR
+		op_name: "Leg", //VARCHAR - name of the operation
+		op_date: "2020-01-22", //DATE
+		body_condition: 7, //INT (out of 9)
+		injury_info: "arthritis on leg.", //TEXT
+		procedure_details: "The surgery was completed successfully", //TEXT
+		surgery_data: "**Surgery data**", //TEXT
+		abnormalities: "none", //TEXT
+		location: "leg", //VARCHAR
+		stitches_or_staples: true, //BOOLEAN - true if stitches
+		length_of_rest: 35, //INT - how many days rest?
+		cage_or_room: false, //BOOLEAN - true if cage
+		next_appt: "2020-01-28 11:42:00", //DATETIME
+		meds_name: "Paracetamol",
+		meds_amount: 3,
+		meds_frequency: 2,
+		meds_start: "2020-01-23", //DATE??
+		meds_length_of_course: 14,
+	};
 
-    response_object.test_field = new Date();
+    //response_object.test_field = new Date();
     /*
     What response looks like:
     {
@@ -112,7 +136,7 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
     res.send(
-        {noOfQuestionnaires : 7, questionnaires: [{questionnaire_id : 1, link: 'link1'}]}
+        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id : 1, link: 'link1'}]}
     );
     // TODO : DB.getQuestionnaires() which will give me a list of all the questionnaire rows
     /*
@@ -140,7 +164,7 @@ app.get('/checkForQuestionnaires/:animalID', (req, res) => {
 app.get('/checkForSurveys/:animalID', (req, res) => {
     console.log(req.body);
     res.send(
-        {noOfSurveys : 7, surveys: [{survey_id : 1, link: 'link1'}]}
+        {noOfSurveys : 1, surveys: [{survey_id : 1, link: 'link1'}]}
     );
     /* TODO
     DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){

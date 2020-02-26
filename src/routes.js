@@ -16,12 +16,6 @@ function routeContact(s, cb) {
 	});
 }
 
-function routeLoadForm(s, cb) {
-	System.import('./components/LoadForm').then(component => {
-		cb(null, component.default || component);
-	});
-}
-
 function routeAccount(s, cb) {
 	System.import('./components/Account').then(component => {
 		cb(null, component.default || component);
@@ -63,6 +57,12 @@ function routeVetInformationInput(s, cb) {
 	});
 }
 
+function routeVetNewAnimal(s, cb) {
+	System.import('./components/VetNewAnimal').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 function routeVetNewSurvey(s, cb) {
 	System.import('./components/VetNewSurvey').then(component => {
 		cb(null, component.default || component);
@@ -76,7 +76,6 @@ export default (
 		<Route path="users" getComponent={routeUsers}/>
 		<Route path="users/:id" getComponent={routeUsers}/>
 		<Route path="contact" getComponent={routeContact}/>
-		<Route path="loadform" getComponent={routeLoadForm}/>
 		<Route path="survey" getComponent={routeSurvey}/>
 		<Route path="chat" getComponent={routeChat}/>
 		<Route path="account" getComponent={routeAccount}/>
@@ -84,6 +83,7 @@ export default (
 		<Route path="register" getComponent={routeRegister}/>
 		<Route path="vetmain" getComponent={routeVetMain}/>
 		<Route path="vetnewsurvey" getComponent={routeVetNewSurvey}/>
+		<Route path="vetnewanimal" getComponent={routeVetNewAnimal}/>
 		<Route path="vetinformationinput" getComponent={routeVetInformationInput}/>
 	</Route>
 );
