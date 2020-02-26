@@ -54,8 +54,23 @@ class VetChat extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.state.currentRoom) this.messagesEnd.scrollIntoView({ behavior: "smooth" });
-    }    
+        if (this.state.currentRoom) {
+            this.messagesEnd1.scrollIntoView({ behavior: "smooth" });
+            this.messagesEnd2.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+    
+    userBar = () => {
+        if (this.state.currentRoom) {
+            this.connectToRoom("9996e540-1d7a-433e-a21c-177de99dcdd8");
+        }
+    }
+
+    userFoo = () => {
+        if (this.state.currentRoom) {
+            this.connectToRoom("41ac18aa-8570-436c-a737-9e310afbaf3d");
+        }
+    }
 
 	render() {
         const {
@@ -75,13 +90,13 @@ class VetChat extends React.Component {
 		return (
             <div>
                 <Tabs>
-                    <Tab label="userFoo">
+                    <Tab label="userFoo" onActive={this.userFoo}>
                         {this.state.currentRoom ? (
                             <Card>
                                 <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
                                     <ChatSession messages={messages} />
                                     <div style={{ float:"left", clear: "both" }}
-                                                ref={(el) => { this.messagesEnd = el; }}>
+                                                ref={(el) => { this.messagesEnd1 = el; }}>
                                     </div>
                                 </List>
                             </Card>
@@ -115,8 +130,45 @@ class VetChat extends React.Component {
                             />
                         ) : null}
                     </Tab>
-                    <Tab label="userBar">
-                            <h1>Placeholder</h1>
+                    <Tab label="userBar" onActive={this.userBar}>
+                        {this.state.currentRoom ? (
+                                <Card>
+                                    <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
+                                        <ChatSession messages={messages} />
+                                        <div style={{ float:"left", clear: "both" }}
+                                                    ref={(el) => { this.messagesEnd2 = el; }}>
+                                        </div>
+                                    </List>
+                                </Card>
+                            ) : (
+                                <Card style={{padding: "15px"}}>
+                                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                                        <CircularProgress/>
+                                    </div>
+                                </Card>
+                            )}
+                            <Card style={{padding: "5px"}}>
+                                
+                                <form id="message-form" onSubmit={this.sendMessage}>
+                                    <TextField id='message-text' name="newMessage" fullWidth={true} value={newMessage} autoComplete={"off"} onChange={this.handleInput} hintText="Enter a message..."/>
+                                </form>
+                                <FlatButton
+                                    onClick={this.openImageUploadDialog}
+                                    type="button"
+                                    className="btn image-picker"
+                                    label="Attach an Image"
+                                    fullWidth={true}
+                                />
+                            </Card>
+                            {showImageUploadDialog ? (
+                                <ImageUploadDialog
+                                    handleInput={this.handleInput}
+                                    fileUploadMessage={fileUploadMessage}
+                                    onDrop={this.onDrop}
+                                    sendFile={this.sendFile}
+                                    closeImageUploadDialog={this.closeImageUploadDialog}
+                                />
+                            ) : null}
                     </Tab>
                 </Tabs>
             </div>
