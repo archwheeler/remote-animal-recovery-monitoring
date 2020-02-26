@@ -70,6 +70,12 @@ function routeForgot(s, cb) {
 	});
 }
 
+function routeVetChat(s, cb) {
+	System.import('./components/VetChat').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
@@ -84,5 +90,6 @@ export default (
 		<Route path="vetnewsurvey" getComponent={routeVetNewSurvey}/>
 		<Route path="vetinformationinput" getComponent={routeVetInformationInput}/>
 		<Route path="forgot" getComponent={routeForgot}/>
+		<Route path="vetchat" getComponent={routeVetChat}/>
 	</Route>
 );
