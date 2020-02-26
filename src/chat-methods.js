@@ -17,12 +17,8 @@ function connectToChatkit() {
     alert('Invalid userId');
     return;
   }
-
-  axios
-    .post('http://localhost:5200/users', { userId })
-    .then(() => {
       const tokenProvider = new Chatkit.TokenProvider({
-        url: 'http://localhost:5200/authenticate',
+        url: 'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/bc55c891-bd0f-475b-8ec6-7216d20ab4cf/token',
       });
 
       const chatManager = new Chatkit.ChatManager({
@@ -50,8 +46,6 @@ function connectToChatkit() {
           );
           connectToRoom.call(this);
         });
-    })
-    .catch(console.error);
 }
 
 function connectToRoom(id = '41ac18aa-8570-436c-a737-9e310afbaf3d') {
