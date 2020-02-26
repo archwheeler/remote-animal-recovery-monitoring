@@ -11,18 +11,16 @@ import Avatar from 'material-ui/Avatar';
 import FlatButton from 'material-ui/FlatButton';
 import { Badge } from 'material-ui';
 
+async function getInformation(animalID) {
+	const response = await fetch('http://localhost:5000/getAnimalInfo/:' + animalID);
+	this.state.body = await response.json();
+	if (response.status !== 200) throw Error(body.message);
+	return body;
+}
+
 
 class Main extends React.Component {
-//	constructor(props) {
-//		super(props);
-//		const response = await fetch('http://localhost:5000/getAnimalInfo/:animalID');
-//        this.state.body = await response.json();
-//		if (response.status !== 200) throw Error(body.message);
-//	}
-	
-
-
-	information = {	
+/*	information = {	
 		name: "George",
 		firstLetterOfName: "G",
 		sex: "Male",
@@ -47,6 +45,41 @@ class Main extends React.Component {
 		meds_start: "2020-01-23", //DATE??
 		meds_length_of_course: 14,
 	}
+	*/
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			information: {
+				name: "George",
+				firstLetterOfName: "G",
+				sex: "Female",
+				species: "Dog",
+				bodyweight: "30kg", //this should be an integer (perhaps kg?)
+				owner_name: "Albert", // VARCHAR
+				op_name: "Leg", //VARCHAR - name of the operation
+				op_date: "2020-01-22", //DATE
+				body_condition: 7, //INT (out of 9)
+				injury_info: "surgery on that leg tho.", //TEXT
+				procedure_details: "It went pretty well didn't it.", //TEXT
+				surgery_data: "weeee", //TEXT
+				abnormalities: "none", //TEXT
+				location: "leg", //VARCHAR
+				stitches_or_staples: true, //BOOLEAN - true if stitches
+				length_of_rest: 35, //INT - how many days rest?
+				cage_or_room: false, //BOOLEAN - true if cage
+				next_appt: "2020-02-29 10:54:00", //DATETIME
+				meds_name: "MED",
+				meds_amount: 3,
+				meds_frequency: 2,
+				meds_start: "2020-01-23", //DATE??
+				meds_length_of_course: 14,
+				
+			},
+		};
+		getInformation().then(information => this.setState({information}))
+	}
+
 	
 	
 	state = {
