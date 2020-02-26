@@ -19,8 +19,7 @@ import {
 
 import ImageUploadDialog from "./ImageUploadDialog";
 import ChatSession from "./ChatSession";
-
-import {Image} from 'react-feather';
+import {Tabs, Tab} from 'material-ui/Tabs';
 
 import './Chat.css';
 
@@ -75,48 +74,51 @@ class VetChat extends React.Component {
 
 		return (
             <div>
-                {this.state.currentRoom ? (
-                    <Card>
-                        <CardHeader title= "George"
-								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
-								avatar={<Avatar>G</Avatar>}
-					    />
-                        <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
-                            <ChatSession messages={messages} />
-                            <div style={{ float:"left", clear: "both" }}
-                                        ref={(el) => { this.messagesEnd = el; }}>
-                            </div>
-                        </List>
-                    </Card>
-                ) : (
-                    <Card style={{padding: "15px"}}>
-                        <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <CircularProgress/>
-                        </div>
-                    </Card>
-                )}
-                <Card style={{padding: "5px"}}>
-                    
-                    <form id="message-form" onSubmit={this.sendMessage}>
-                        <TextField id='message-text' name="newMessage" fullWidth={true} value={newMessage} autoComplete={"off"} onChange={this.handleInput} hintText="Enter a message..."/>
-                    </form>
-                    <FlatButton
-                        onClick={this.openImageUploadDialog}
-                        type="button"
-                        className="btn image-picker"
-                        label="Attach an Image"
-                        fullWidth={true}
-                    />
-                </Card>
-                {showImageUploadDialog ? (
-                    <ImageUploadDialog
-                        handleInput={this.handleInput}
-                        fileUploadMessage={fileUploadMessage}
-                        onDrop={this.onDrop}
-                        sendFile={this.sendFile}
-                        closeImageUploadDialog={this.closeImageUploadDialog}
-                    />
-                ) : null}
+                <Tabs>
+                    <Tab label="userFoo">
+                        {this.state.currentRoom ? (
+                            <Card>
+                                <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
+                                    <ChatSession messages={messages} />
+                                    <div style={{ float:"left", clear: "both" }}
+                                                ref={(el) => { this.messagesEnd = el; }}>
+                                    </div>
+                                </List>
+                            </Card>
+                        ) : (
+                            <Card style={{padding: "15px"}}>
+                                <div style={{display: 'flex', justifyContent: 'center'}}>
+                                    <CircularProgress/>
+                                </div>
+                            </Card>
+                        )}
+                        <Card style={{padding: "5px"}}>
+                            
+                            <form id="message-form" onSubmit={this.sendMessage}>
+                                <TextField id='message-text' name="newMessage" fullWidth={true} value={newMessage} autoComplete={"off"} onChange={this.handleInput} hintText="Enter a message..."/>
+                            </form>
+                            <FlatButton
+                                onClick={this.openImageUploadDialog}
+                                type="button"
+                                className="btn image-picker"
+                                label="Attach an Image"
+                                fullWidth={true}
+                            />
+                        </Card>
+                        {showImageUploadDialog ? (
+                            <ImageUploadDialog
+                                handleInput={this.handleInput}
+                                fileUploadMessage={fileUploadMessage}
+                                onDrop={this.onDrop}
+                                sendFile={this.sendFile}
+                                closeImageUploadDialog={this.closeImageUploadDialog}
+                            />
+                        ) : null}
+                    </Tab>
+                    <Tab label="userBar">
+                            <h1>Placeholder</h1>
+                    </Tab>
+                </Tabs>
             </div>
 		);
 	}
