@@ -4,6 +4,7 @@ import {Card, CardHeader} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
+import FlatButton from 'material-ui/FlatButton';
 
 import {
     handleInput,
@@ -99,13 +100,13 @@ class Chat extends React.Component {
                     <form id="message-form" onSubmit={this.sendMessage}>
                         <TextField id='message-text' name="newMessage" fullWidth={true} value={newMessage} autoComplete={"off"} onChange={this.handleInput} hintText="Enter a message..."/>
                     </form>
-                    <button
+                    <FlatButton
                         onClick={this.openImageUploadDialog}
                         type="button"
                         className="btn image-picker"
-                    >
-                        <Image />
-                    </button>
+                        label="Attach an Image"
+                        fullWidth={true}
+                    />
                 </Card>
                 {showImageUploadDialog ? (
                     <ImageUploadDialog
