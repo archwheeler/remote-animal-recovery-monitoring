@@ -46,7 +46,11 @@ module.exports = ({prod = false, sw = false, prefix = ''} = {}) => {
 			}, {
 				test: /\.css$/,
 				loader: 'style-loader!css-loader'
-			}]
+			},
+			{
+		      test: /\.(gif|svg|jpg|png)$/,
+		      loader: "file-loader",
+		    }],
 		},
 		plugins: [
 			new HtmlWebpackPlugin({

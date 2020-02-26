@@ -158,21 +158,27 @@ function addVetToTeam(con, email, name){
 
 // add animal
 // arguments: connection, name:string, sex:string(f/m), species:string, bodyweight:int, owner_id:int, op_id:int)
-function addAnimal(con, name, sex, species, bodyweight, owner_id, op_id){
+function addAnimal(con, name, sex, species, bodyweight, owner_id, op_id, callback){
     var sql = "INSERT INTO animals (name, sex, species, bodyweight, owner_id, op_id) VALUES ?";
     values =  [[name, sex, species, bodyweight, owner_id, op_id]];
     con.query(sql, [values], function(err, result){
         if (err) throw err;
         console.log("Added animal " + result.insertId);
+        callback(result.insertId);
     });
 }
 
 // add carer
-function addCarer(con, email, password, name){
+function addCarer(con, email, password, name, callback){
     var sql = "INSERT INTO accounts (email, password, type, name) VALUES ?";
     var values = [[email, password, 1, name]]; // 1 represents carer type
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
+        if (err) {
+            callback("Failed!");
+        }
+        else{
+            callback("Success!");
+        }
         console.log("Added user " + name);
     });
 }
@@ -228,11 +234,16 @@ function addSurvey(con, uid, creation_date, link, target_location, callback){
 }
 
 // add questionnaire
-function addQuestionnaire(con, time_to_send, link){
+function addQuestionnaire(con, time_to_send, link, callback){
     var sql = "INSERT INTO questionnaires (time, link) VALUES ?";
     var values = [[time_to_send, link]];
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
+        if (err){
+            callback(-1);
+        }
+        else{
+            callback(result.insertId);
+        }
         console.log("Added questionnaire " + result.insertId);
     });
 }
@@ -315,19 +326,31 @@ function getVetList(con, uid, callback){
 
 // check if uid-password pair is correct - return  true or false
 function authenticateUser(con, email, password, callback){
-    var sql = "SELECT password FROM accounts WHERE email='" + email + "'";
+    var sql = "SELECT password, uid FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length  == 0){
-            callback(false);
+            callback({status: false});
         }
         else{
             var pass = JSON.parse(JSON.stringify(result[0])).password;
+            var res_uid = JSON.parse(JSON.stringify(result[0])).uid;
             if (pass == password){
-                callback(true);
+                var sql2 = "SELECT aid FROM animals WHERE owner_id=" + res_uid;
+                con.query(sql2, function(err, result2){
+                    if (err) throw err;
+                    if (result2.length == 0){
+                        callback({status: true, uid: res_uid, aid: -1})
+                    }
+                    else{
+                        var res_aid = JSON.parse(JSON.stringify(result2[0])).aid;
+                        callback({status: true, uid: res_uid, aid: res_aid});
+                    }
+                });
+
             }
             else{
-                callback(false);
+                callback({status: false});
             }
         }
     });
@@ -365,16 +388,11 @@ function getCarerOfAnimal(con, aid, callback){
 
 // get animals of vet team
 function getAnimalsOfVetTeam(con, uid, callback){
-    var sql = "SELECT aid FROM animal_vet JOIN accounts WHERE animal_vet.uid = accounts.uid AND animal_vet.uid =" + uid;
+    var sql = "SELECT animals.aid, animals.name FROM animal_vet JOIN accounts ON animal_vet.uid = accounts.uid JOIN animals ON animals.aid = animal_vet.aid WHERE animal_vet.uid =" + uid;
     con.query(sql, function(err, result){
         if (err) throw err;
-        if (result.length == 0) {
-            callback(null);
-        }
-        else{
-            var dog_list = JSON.parse(JSON.stringify(result));
-            callback(dog_list);
-        }
+        var dog_list = JSON.parse(JSON.stringify(result));
+        callback(dog_list);
     });
 }
 
@@ -440,11 +458,16 @@ function getSurveyReceivers(con, survey_id, callback){
 
 //get surveys of an animal
 function getSurveysOfAnimal(con, aid, callback){
-    var sql = "SELECT survey.survey_id FROM survey JOIN survey_animal WHERE survey.survey_id = survey_animal.survey_id AND survey_animal.aid = " +  aid;
+    var sql = "SELECT survey.survey_id, survey.link, survey_animal.done FROM survey JOIN survey_animal WHERE survey.survey_id = survey_animal.survey_id AND survey_animal.aid = " +  aid;
     con.query(sql, function(err, result){
         if (err) throw err;
-        var surveys = JSON.parse(JSON.stringify(result));
-        callback(surveys);
+        if (result.length == 0){
+            callback(null);
+        }
+        else{
+            var surveys = JSON.parse(JSON.stringify(result));
+            callback(surveys);
+        }
     });
 }
 
@@ -479,117 +502,176 @@ function getCarersAskingAboutLabel(con, label, callback){
 
 
 
-// TODO: update functions
+// UPDATE FUNCTIONS
 
 // record completion of survey
-function completeSurvey(con, aid, survey_id){
+function completeSurvey(con, aid, survey_id, callback){
     var sql = "UPDATE survey_animal SET done = true WHERE aid=" + aid + " AND survey_id=" + survey_id;
     con.query(sql, function(err, result){
-        if (err) throw err;
+        if (err) {
+            callback({status: 'failure'});
+        }
+        else {
+            callback({status: 'success'});
+        }
         console.log("Owner of animal " + aid + " completed survey " + survey_id);
+    });
+}
+
+// update  animal info
+function updateAnimal(con, aid, name, sex, species, bodyweight, owner_id, op_id, callback){
+    var sql = "UPDATE animals SET name = '" + name + "', sex = '" + sex + "', species = '" + species + "', bodyweight = " + bodyweight + ", owner_id=" + owner_id + ", op_id="  + op_id + " WHERE aid=" + aid;
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("Updated animal " + aid);
+        callback();
+    });
+}
+
+// update operation info
+function updateOperation(con, op_id, op_name, op_date, condition, injury_text, surgery_text, procedure_text, abnormalities, location, stitch_staple, rest_len, cage_or_room, next_appointment, meds, callback){
+    var sql = "UPDATE operations SET op_name='" + op_name + "', op_date='" + op_date + "', body_condition=" + condition + ", injury='" + injury_text + "', surgery='" + surgery_text + "', procedure_info='" + procedure_text + "', abnormalities='" + abnormalities + "', location='" + location + "', stitch_staple=" + stitch_staple + ", rest_len=" + rest_len + ", cage_or_room=" + cage_or_room + ", next_appointment='" + next_appointment + "', meds='" + meds +"' WHERE op_id=" + op_id;
+    con.query(sql, function(err, result){
+        if (err) throw  err;
+        console.log("Updated operation " + op_id);
+        callback();
     });
 }
 
 // TODO: delete functions
 
 
-
 // TESTING
-var connection = createConnection();
-//clearDB(connection);
-createTables(connection);
-showTables(connection, function(result){
-    console.log(result);
-});
-//addCarer(connection, 'test@example.com', 'test_pass', 'test');
-//addVetTeam(connection, 'vet@example.com', 'test_pass', 'test_vet_team');
-//addVetToTeam(connection, 'vet@example.com', 'vet1');
-//addVetToTeam(connection, 'vet@example.com', 'vet2');
-//
-var today = new Date().toISOString().slice(0, 10);
-//addOperation(connection, 'test_op2', today, 7, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 7, true, new Date(), 'some_JSON', function(result){
-//    console.log("Created operation " + result);
-//});
-//addAnimal(connection, 'doggo', 'f', 'dog', 20, 1, 1);
-//addAnimalToVetTeam(connection, 1, 2);
-//
-//addSurvey(connection, 2, today, 'test_link1', 'test_loc', function(result){
+//var connection = createConnection();
+////clearDB(connection);
+//createTables(connection);
+//showTables(connection, function(result){
 //    console.log(result);
 //});
-//addQuestionnaire(connection, 2, 'test_link3');
-//addChatLabel(connection, 2, 1, 'test_vet_label', true);
-//addChatLabel(connection, 2, 1, 'test_carer_label', false);
-//addChatLabel(connection, 2, 1, 'test_vet_label', true);
+////addCarer(connection, 'test@example.com', 'test_pass', 'test');
+////addVetTeam(connection, 'vet@example.com', 'test_pass', 'test_vet_team');
+////addVetToTeam(connection, 'vet@example.com', 'vet1');
+////addVetToTeam(connection, 'vet@example.com', 'vet2');
+////
+//var today = new Date().toISOString().slice(0, 10);
+////addOperation(connection, 'test_op2', today, 7, 'injury_text', 'surgery_text', 'prcedure_text', 'abnormalities_text', 'test_loc', false, 7, true, new Date(), 'some_JSON', function(result){
+////    console.log("Created operation " + result);
+////});
+////addAnimal(connection, 'doggo', 'f', 'dog', 20, 1, 1, function(result){
+////    console.log("added animal " +  result);
+////});
+////addAnimalToVetTeam(connection, 1, 2);
+////
+////addSurvey(connection, 2, today, 'test_link1', 'test_loc', function(result){
+////    console.log(result);
+////});
+////addQuestionnaire(connection, 2, 'test_link3');
+////addChatLabel(connection, 2, 1, 'test_vet_label', true);
+////addChatLabel(connection, 2, 1, 'test_carer_label', false);
+////addChatLabel(connection, 2, 1, 'test_vet_label', true);
+//
+//getUserInfo(connection, 2, function(result){
+//    console.log(result);
+//});
+//getUserID(connection, 'test@example.com', function(result){
+//    console.log(result);
+//});
+//
+//getVetList(connection, 2, function(result){
+//    console.log(result);
+//});
+//
+//getAnimalInfo(connection, 1, function(result){
+//    console.log(result);
+//});
+//
+//getCarerOfAnimal(connection, 1, function(result){
+//    console.log("Owner of animal 1 is " + result);
+//});
+//
+//getAnimalsOfVetTeam(connection, 2, function(result){
+//    console.log(result);
+//});
+//
+//getOperationInfo(connection, 1, function(result){
+//    console.log(result);
+//});
+//
+//getUserContacts(connection, 1, function(result){
+//    console.log(result);
+//});
+//
+//getUserContacts(connection, 2, function(result){
+//    console.log(result);
+//});
+//
+//authenticateUser(connection, 'test@example.com', 'test_pass', function(result){
+//    console.log("Good authenticate: " + result);
+//});
+//authenticateUser(connection, 'test@example.com', 'test', function(result){
+//    console.log("Bad authenticate: " + result);
+//});
+//authenticateUser(connection, 'test', 'test_pass', function(result){
+//    console.log("Bad authenticate: " + result);
+//});
+//
+//getSurveyReceivers(connection, 3, function(result){
+//    console.log("Receivers of survey 3: " + JSON.stringify(result));
+//});
+//getSurveysOfAnimal(connection, 1, function(result){
+//    console.log("Surveys of animal 1: " + JSON.stringify(result));
+//});
+//
+//getQuestionnaires(connection, function(result){
+//    console.log(result);
+//});
+//
+//getNumberOfChatsForLabel(connection, 'test_vet_label', function(result){
+//    console.log("Number of chats for 'test_vet_label': " + result)
+//});
+//
+//getNumberOfChatsForLabel(connection, 'test_carer_label', function(result){
+//    console.log("Number of chats for 'test_carer_label': " + result)
+//});
+//
+//getCarersAskingAboutLabel(connection, 'test_vet_label', function(result){
+//    console.log(result);
+//});
+//
+//
+////completeSurvey(connection, 1,  3);
+////updateAnimal(connection, 1, 'kitty', 'f', 'cat', 20, 1, 1);
 
-getUserInfo(connection, 2, function(result){
-    console.log(result);
-});
-getUserID(connection, 'test@example.com', function(result){
-    console.log(result);
-});
-
-getVetList(connection, 2, function(result){
-    console.log(result);
-});
-
-getAnimalInfo(connection, 1, function(result){
-    console.log(result);
-});
-
-getCarerOfAnimal(connection, 1, function(result){
-    console.log("Owner of animal 1 is " + result);
-});
-
-getAnimalsOfVetTeam(connection, 2, function(result){
-    console.log(result);
-});
-
-getOperationInfo(connection, 1, function(result){
-    console.log(result);
-});
-
-getUserContacts(connection, 1, function(result){
-    console.log(result);
-});
-
-getUserContacts(connection, 2, function(result){
-    console.log(result);
-});
-
-authenticateUser(connection, 'test@example.com', 'test_pass', function(result){
-    console.log("Good authenticate: " + result);
-});
-authenticateUser(connection, 'test@example.com', 'test', function(result){
-    console.log("Bad authenticate: " + result);
-});
-authenticateUser(connection, 'test', 'test_pass', function(result){
-    console.log("Bad authenticate: " + result);
-});
-
-getSurveyReceivers(connection, 3, function(result){
-    console.log("Receivers of survey 3: " + JSON.stringify(result));
-});
-getSurveysOfAnimal(connection, 1, function(result){
-    console.log("Surveys of animal 1: " + JSON.stringify(result));
-});
-
-getQuestionnaires(connection, function(result){
-    console.log(result);
-});
-
-getNumberOfChatsForLabel(connection, 'test_vet_label', function(result){
-    console.log("Number of chats for 'test_vet_label': " + result)
-});
-
-getNumberOfChatsForLabel(connection, 'test_carer_label', function(result){
-    console.log("Number of chats for 'test_carer_label': " + result)
-});
-
-getCarersAskingAboutLabel(connection, 'test_vet_label', function(result){
-    console.log(result);
-});
-
-
-//completeSurvey(connection, 1,  3);
+module.exports = {
+    createConnection,
+    createTables,
+    showTables,
+    addCarer,
+    addVetTeam,
+    addVetToTeam,
+    addOperation,
+    addAnimal,
+    addAnimalToVetTeam,
+    addSurvey,
+    addQuestionnaire,
+    addChatLabel,
+    getUserID,
+    getUserInfo,
+    getUserContacts,
+    getVetList,
+    getAnimalInfo,
+    getCarerOfAnimal,
+    getAnimalsOfVetTeam,
+    getOperationInfo,
+    getQuestionnaires,
+    getSurveysOfAnimal,
+    getCarersAskingAboutLabel,
+    getNumberOfChatsForLabel,
+    getSurveyReceivers,
+    authenticateUser,
+    completeSurvey,
+    updateAnimal,
+    updateOperation
+};
 
 

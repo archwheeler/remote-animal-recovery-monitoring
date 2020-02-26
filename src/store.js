@@ -1,20 +1,21 @@
-import {createStore, combineReducers} from 'redux';
-import {AccountReducer} from "./components/AccountReducer";
+import {createStore} from 'redux';
+import {AccountReducer, initial_state} from "./components/AccountReducer";
 
-export const store = createStore(AccountReducer);
-// Usage:
+export const store = createStore(AccountReducer, initial_state);
 
-// import {store} from "./store"
-// ...
-// store.getState().variable
+/*
+Usage:
 
-// Format:
-/* 
-{
-  loggedIn: true,
-  user: {
-    name: "tom",
-    age: 19
-  }
-};
+    import {store} from "./store"
+    ...
+    store.getState().variable
+
+Format: look at AccountReducer- it has a 'initial_state' variable
+
+Also use:
+    const rerenderer = store.subscribe(() => this.forceUpdate());
+
+in the constructor. [remember to call super()!]
+This means the page will update itself when the store updates.
+rerenderer actually returns a function- call it to stop the page re-updating
 */

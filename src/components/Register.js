@@ -8,50 +8,61 @@ class Account extends React.Component {
     super();
     const rerenderer = store.subscribe(() => this.forceUpdate());
   }
-  
-	render() {	
+
+	render() {
     if (store.getState().loggedIn) {
-      window.location.href = "/#/account";
-      return null;
-      
+      return (
+        <div className="center">
+          You are already logged in.
+          <br/>
+
+          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
+            My Account
+          </button>
+        </div>
+      );
     } else {
       return (
-        <div>
-          <p>
+        <div className="center">
+          <form onSubmit={this.register}>
             Register
             <br/>
-          
-            <input type="text" id="username_box" placeholder="Username"/>
+
+            <input type="text" id="email_box" placeholder="Email" required/>
             <br/>
-          
-            <input type="password" id="password_box" placeholder="Password"/>
+
+            <input type="text" id="username_box" placeholder="Username" required/>
             <br/>
-          
-            <input type="text" id="age_box" placeholder="Age"/>
+
+            <input type="password" id="password_box" placeholder="Password" required/>
             <br/>
-          
-            <input type="checkbox" onClick={this.showPassword}/>
-            Show password?
+
+            <label>
+              <input type="checkbox" onClick={this.showPassword}/>
+              Show password?
+            </label>
             <br/>
-          
-            <button onClick={this.register}> Register </button>
+
+            <input type="submit" value="Register" />
             <br/>
-          
-            <button onClick={() => window.location.href = "/#/login"}> go back to login </button>
-          </p>
+          </form>
+
+          <button className="text" onClick={() => window.location.href = "/#/login"}>
+            Already have an account? Log in here
+          </button>
         </div>
       );
     }
   }
-  
+
   register() {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
-    var age = document.getElementById("age_box").value;
-    
-    store.dispatch(RegisterAction(username, password, age));
+    var email = document.getElementById("email_box").value;
+
+    store.dispatch(RegisterAction(username, password, email));
   }
-  
+
   showPassword() {
 	  var passBox = document.getElementById("password_box");
     if (passBox.type == "password") {

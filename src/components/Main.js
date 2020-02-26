@@ -80,43 +80,43 @@ class Main extends React.Component {
 	  handleNext = () => {
 		const {stepIndex} = this.state;
 		this.setState({
-		  stepIndex: stepIndex + 1,
-		  finished: stepIndex >= 5,
+			stepIndex: stepIndex + 1,
+			finished: stepIndex >= 5,
 		});
-	  };
-	
-	  handlePrev = () => {
+	};
+
+	handlePrev = () => {
 		const {stepIndex} = this.state;
 		if (stepIndex > 0) {
-		  this.setState({stepIndex: stepIndex - 1});
+			this.setState({stepIndex: stepIndex - 1});
 		}
-	  };
+	};
 
-	  renderStepActions(step) {
+	renderStepActions(step) {
 		const {stepIndex} = this.state;
-	
+
 		return (
-		  <div style={{margin: '12px 0'}}>
-			<RaisedButton
-			  label={stepIndex === 4 ? 'Finish' : 'Next'}
-			  disableTouchRipple={true}
-			  disableFocusRipple={true}
-			  primary={true}
-			  onClick={this.handleNext}
-			  style={{marginRight: 12}}
-			/>
-			{step > 0 && (
-			  <FlatButton
-				label="Back"
-				disabled={stepIndex === 0}
-				disableTouchRipple={true}
-				disableFocusRipple={true}
-				onClick={this.handlePrev}
-			  />
-			)}
-		  </div>
+			<div style={{margin: '12px 0'}}>
+				<RaisedButton
+					label={stepIndex === 4 ? 'Finish' : 'Next'}
+					disableTouchRipple={true}
+					disableFocusRipple={true}
+					primary={true}
+					onClick={this.handleNext}
+					style={{marginRight: 12}}
+				/>
+				{step > 0 && (
+					<FlatButton
+						label="Back"
+						disabled={stepIndex === 0}
+						disableTouchRipple={true}
+						disableFocusRipple={true}
+						onClick={this.handlePrev}
+					/>
+				)}
+			</div>
 		);
-	  }
+	}
 
 	render() {
 		const {finished, stepIndex} = this.state;
@@ -139,8 +139,8 @@ class Main extends React.Component {
 						badgeContent={this.state.questionnaire.noOfQuestionnaires}
 						primary={true}
 						style={{padding: 0}}
-						badgeStyle={{top:-10, right: -28}}>
-							Questionnaires
+						badgeStyle={{top: -10, right: -28}}>
+						Questionnaires
 
 					</Badge>}
 								actAsExpander={true}
@@ -157,7 +157,7 @@ class Main extends React.Component {
 				}
 
 				<Card>
-					<CardHeader title= "Wound Care"
+					<CardHeader title="Wound Care"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
@@ -171,40 +171,47 @@ class Main extends React.Component {
 				</Card>
 
 				<Card>
-					<CardHeader title= "Load Form"
+					<CardHeader title="Load Form"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-					Please fill in the form below. To send it too us after filling in click the print button and print to "Save as PDF". Then email this attachment to the <a href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
+						Please fill in the form below. To send it too us after filling in click the print button and
+						print to "Save as PDF". Then email this attachment to the <a
+						href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
 					</CardText>
 					<CardMedia expandable={true}>
-						<object data = "Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600" frameBorder="none">
-							<div style={{margin:15}}><p>Unfortunately this browser does not support PDFs. Please download the PDF using the button below, we recommend using Adobe Acrobat to fill in the form.</p>
+						<object data="Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600"
+								frameBorder="none">
+							<div style={{margin: 15}}><p>Unfortunately this browser does not support PDFs. Please
+								download the PDF using the button below, we recommend using Adobe Acrobat to fill in the
+								form.</p>
 							</div>
 							<FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
-						
+
 						</object>
 					</CardMedia>
 				</Card>
 
 				<Card>
-					<CardHeader title= "Vet Metrica Questionnare"
+					<CardHeader title="Vet Metrica Questionnare"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						Please complete the Vet Metrica Questionnare by clicking <a href="https://www.vetmetrica.com/Auth/Login">here</a>.
+						Please complete the Vet Metrica Questionnare by clicking <a
+						href="https://www.vetmetrica.com/Auth/Login">here</a>.
 					</CardText>
 				</Card>
 
-				
+
 				<Card>
-					<CardHeader title= "Exercise"
+					<CardHeader title="Exercise"
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
+
 					<ul>
 					<li>{this.state.information.name} must not be allowed to do any running, jumping on/off furniture, climbing stairs or playing. At home, they must be kept confined to a {(this.state.information.cage_or_room) ? 'cage' : 'small room'}. They must be kept on the lead at all times when they are outside, even in the garden.</li>
 					<li>{this.state.information.name} can be taken for controlled walks on the lead as per the following schedule. Please walk slowly to encourage use of the operated limb</li>
@@ -212,41 +219,41 @@ class Main extends React.Component {
 					<div style={{maxWidth: 380, maxHeight: 400, margin: 'auto'}}>
 						<Stepper activeStep={stepIndex} orientation="vertical">
 							<Step>
-								<StepLabel>Weeks 1-4</StepLabel> 
+								<StepLabel>Weeks 1-4</StepLabel>
 								<StepContent>
 									<p>5-10 minutes 3-4 times daily</p>
 									{this.renderStepActions(0)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 5-6</StepLabel> 
+								<StepLabel>Weeks 5-6</StepLabel>
 								<StepContent>
 									<p>10-15 minutes 3-4 times daily</p>
 									{this.renderStepActions(1)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 7-8</StepLabel> 
+								<StepLabel>Weeks 7-8</StepLabel>
 								<StepContent>
 									<p>15-20 minutes on the lead 2-3 times daily</p>
 									{this.renderStepActions(2)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 9-10</StepLabel> 
+								<StepLabel>Weeks 9-10</StepLabel>
 								<StepContent>
 									<p>20-30 minutes on the lead 2-3 times daily</p>
 									{this.renderStepActions(3)}
 								</StepContent>
 							</Step>
 							<Step>
-								<StepLabel>Weeks 11-12</StepLabel> 
+								<StepLabel>Weeks 11-12</StepLabel>
 								<StepContent>
 									<p>30-40 minutes on the lead 2-3 times daily.</p>
 									{this.renderStepActions(4)}
 								</StepContent>
 							</Step>
-							
+
 						</Stepper>
 						{finished && (
 						<p style={{margin: '20px 0', textAlign: 'center'}}>
@@ -262,7 +269,7 @@ class Main extends React.Component {
 						</p>
 						)}
 					</div>
-					
+
 					</CardText>
 				</Card>
 
@@ -273,11 +280,19 @@ class Main extends React.Component {
 						showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-					Physiotherapy and hydrotherapy can help to optimise recovery and are recommended.
-					<ul>
-						<li>For physiotherapy, we recommend <a href="https://www.ACPAT.org">ACPAT</a> or <a href="https://www.IAAT.org.uk">IAAT</a> certified animal physiotherapists. This can be started after discharge from the hospital.</li>
-						<li>For hydrotherapy, underwater treadmill hydrotherapy is recommended. This should not be started until after the surgical wound has healed and the skin sutures have been removed. Free swimming hydrotherapy is not allowed until after the recheck at QVSH. We suggest that you look for a member of the <a href="https://www.canine-hydrotherapy.org">Canine Hydrotherapy Association</a>.</li>
-					</ul>
+						Physiotherapy and hydrotherapy can help to optimise recovery and are recommended.
+						<ul>
+							<li>For physiotherapy, we recommend <a href="https://www.ACPAT.org">ACPAT</a> or <a
+								href="https://www.IAAT.org.uk">IAAT</a> certified animal physiotherapists. This can be
+								started after discharge from the hospital.
+							</li>
+							<li>For hydrotherapy, underwater treadmill hydrotherapy is recommended. This should not be
+								started until after the surgical wound has healed and the skin sutures have been
+								removed. Free swimming hydrotherapy is not allowed until after the recheck at QVSH. We
+								suggest that you look for a member of the <a href="https://www.canine-hydrotherapy.org">Canine
+									Hydrotherapy Association</a>.
+							</li>
+						</ul>
 					</CardText>
 				</Card>
 				<Card>
@@ -285,12 +300,11 @@ class Main extends React.Component {
 						title="Medication"
 						actAsExpander={true}
 						showExpandableButton={true}
-						/>
+					/>
 					<CardText expandable={true}>
 						{this.state.information.meds_name}: Please give {this.state.information.meds_amount} capsules/tablets {this.state.information.meds_frequency} times daily with food starting {this.state.information.meds_start} for {this.state.information.meds_length_of_course} days. If {this.state.information.name} has any vomiting or diarrhoea, stop this medication and contact us or your vets for advice. 
 					</CardText>
 				</Card>
-
 				<Card>
 					<CardHeader
 						title="Further  Appointments"
@@ -311,5 +325,4 @@ class Main extends React.Component {
 		);
 	}
 }
-
 export default Main;

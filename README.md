@@ -32,6 +32,14 @@ Like humans, dogs often suffer from injuries and joint problems but, unlike huma
 Clone the git repository, change into the created directory and enter the following into a terminal:
 ```shell
 yarn install
+```
+Then ensure the API and Chat server are running:
+```shell
+node src/components/server.js
+node src/chat-server/chat-server.js
+```
+Finally, start the app:
+```shell
 yarn start
 ```
 (Can also use npm in place of yarn!)
