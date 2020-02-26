@@ -77,10 +77,6 @@ class Chat extends React.Component {
             <div>
                 {this.state.currentRoom ? (
                     <Card>
-                        <CardHeader title= "George"
-								subtitle="Age 13, Male, Labradoodle, QVSH Ref: 1932"
-								avatar={<Avatar>G</Avatar>}
-					    />
                         <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
                             <ChatSession messages={messages} />
                             <div style={{ float:"left", clear: "both" }}
