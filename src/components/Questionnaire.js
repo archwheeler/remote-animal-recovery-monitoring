@@ -9,6 +9,7 @@ class Questionnaire extends React.Component {
 		this.state = {
             loading: true,
             link: props.link,
+            name: props.name,
         }
 	}
 	
@@ -22,7 +23,7 @@ class Questionnaire extends React.Component {
 
 	render() {
 		return (
-            (this.state.data.link=="Printable_LOAD_Form.pdf")?
+            (this.state.link=="Printable_LOAD_Form.pdf")?
             <div>
                 <Card>
                 <CardHeader title="Load Form"
@@ -49,9 +50,9 @@ class Questionnaire extends React.Component {
             </div>
             :
 			<div>
-                <Card key={this.state.data.questionnaire_id} expandable={true} onExpandChange={this.expandChange}>
+                <Card expandable={true} onExpandChange={this.expandChange}>
                     <CardHeader 
-                        title={this.state.data.name}
+                        title={this.state.name}
                         actAsExpander={true}
                         showExpandableButton={true}
                     />
@@ -61,7 +62,7 @@ class Questionnaire extends React.Component {
                                 <CircularProgress/>
                             </div>) : null
                         }
-                        <iframe src={this.state.data.link}
+                        <iframe src={this.state.link}
                                     width="100%"
                                     height="400"
                                     frameBorder="0"
