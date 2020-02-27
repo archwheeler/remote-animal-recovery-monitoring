@@ -8,77 +8,44 @@ class VetInformationInput extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			animals: [],
-			animalID: null,
 			information: {
 				vetTeamID: 1,
 				name: "",
 				firstLetterOfName: "",
 				sex: "",
 				species: "",
-				bodyweight: 0, //this should be an integer (perhaps kg?)
+				bodyweight: null, //this should be an integer (perhaps kg?)
 				owner_name: "", // VARCHAR
 				op_name: "", //VARCHAR - name of the operation
-				op_date: "2000-01-01", //DATE
-				body_condition: 0, //INT (out of 9)
+				op_date: "", //DATE
+				body_condition: null, //INT (out of 9)
 				injury_info: "", //TEXT
 				procedure_details: "", //TEXT
 				surgery_data: "", //TEXT
 				abnormalities: "", //TEXT
 				location: "", //VARCHAR
-				stitches_or_staples: true, //BOOLEAN - true if stitches
-				length_of_rest: 0, //INT - how many days rest?
-				cage_or_room: true, //BOOLEAN - true if cage
-				next_appt: "2000-01-01 00:00:00", //DATETIME
+				stitches_or_staples: null, //BOOLEAN - true if stitches
+				length_of_rest: null, //INT - how many days rest?
+				cage_or_room: null, //BOOLEAN - true if cage
+				next_appt: "", //DATETIME
 				meds_name: "",
-				meds_amount: 0,
-				meds_frequency: 0,
-				meds_start: "2000-01-01", //DATE??
-				meds_length_of_course: 0,
+				meds_amount: null,
+				meds_frequency: null,
+				meds_start: "", //DATE??
+				meds_length_of_course: null,
 				
 			},
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleChangeAnimal = this.handleChangeAnimal.bind(this);
 		this.handleChangeSex = this.handleChangeSex.bind(this);
 		this.handleChangeAnimalType = this.handleChangeAnimalType.bind(this);
 		this.handleChangeStitchesStaples = this.handleChangeStitchesStaples.bind(this);
 		this.handleChangeCageRoom = this.handleChangeCageRoom.bind(this);
-
-		this.componentDidMount = this.componentDidMount.bind(this);
-		this.getInformation = this.getInformation.bind(this);
-		this.getAnimals = this.getAnimals.bind(this);
 	
-	}
-
-	getAnimals = async(vetTeamID) => {
-		const response = await fetch('http://localhost:5000/getAnimals/' + vetTeamID);
-		const body = await response.json();
-		if (response.status !== 200) throw Error(body.message);
-		return body;
-	}
-	
-	menuItems(values) {
-		return this.state.animals.map((animal) => (
-		  <MenuItem
-			key={animal}
-			insetChildren={true}
-			checked={values && values.indexOf(animal) > -1}
-			value={animal}
-			primaryText={animal}
-		  />
-		));
-	  }
-
-	getInformation = async(animalID) => {
-		const response = await fetch('http://localhost:5000/getAnimalInfo/' + animalID);
-		const body = await response.json();
-		if (response.status !== 200) throw Error(body.message);
-		return body;
 	}
 
 	returnInformation = async(animalID) => {
-        const response = await fetch('http://localhost:5000/modifyAnimal/'+ animalID, {
+        const response = await fetch('http://localhost:5000/addNewAnimal/'+ animalID, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,18 +57,7 @@ class VetInformationInput extends React.Component {
         this.setState({ responseToPost: body.uid });
     };
 
-	componentDidMount() {
-		//this.getAnimals("123").then(listOfAnimals => this.setState({animals:listOfAnimals})).catch(err => console.log(err));
-        this.getInformation("1234").then(info => this.setState({information:info}))
-			.catch(err => console.log(err));
-	}
-
-	handleChangeAnimal(event, index, value) {
-		this.setState({
-			...this.state,
-				animal: value
-		});
-	}
+	
 
 	handleChangeSex(event, index, value) {
 		this.setState({
@@ -142,7 +98,6 @@ class VetInformationInput extends React.Component {
 	handleSubmit(event) {
 		const namestr = document.getElementById("name").value;
 		const timestr = document.getElementById("nextappttime").value;
-		//TODO: add vet team id
 		this.state.information.name = namestr;
 		this.state.information.firstLetterOfName = namestr.substring(0,1);
 		this.state.information.bodyweight = document.getElementById("bodyweight").value;
@@ -169,25 +124,8 @@ class VetInformationInput extends React.Component {
 
 
 	render() {
-		const nextapptdatetime = new Date(this.state.information.next_appt);
-		
 		return (
-			(this.state.information.vetTeamID == 1)? null
-			/*<div>
-				<Card>
-					<CardTitle title="Please select an animal to update:" />
-					<SelectField
-					id="animal"
-					floatingLabelText="Name"
-					value={this.state.animals}
-					onChange={this.handleChangeAnimal}
-					>
-						{this.menuItems(this.state.animals)}
-          			</SelectField>
-				</Card>
-			</div>
-*/
-			:
+			
 			<div>
 			<Card>
 				<CardTitle title="Discharge Information Input"/>
@@ -195,7 +133,6 @@ class VetInformationInput extends React.Component {
 				 	<TextField
 					id="name"
 					floatingLabelText="Animal Name"
-					defaultValue={this.state.information.name}
 					/><br />
 					<SelectField
 					id="sex"
@@ -203,8 +140,8 @@ class VetInformationInput extends React.Component {
 					value={this.state.information.sex}
 					onChange={this.handleChangeSex}
 					>
-						<MenuItem value={"M"} primaryText="Male" />
-       					<MenuItem value={"F"} primaryText="Female" />
+						<MenuItem value={"Male"} primaryText="Male" />
+       					<MenuItem value={"Female"} primaryText="Female" />
           			</SelectField>
 					<br />
 					<SelectField
@@ -219,61 +156,51 @@ class VetInformationInput extends React.Component {
 					<br />
 					<TextField
 					id="bodyweight"
-					floatingLabelText="Bodyweight in kg"
-					defaultValue={this.state.information.bodyweight}
+					floatingLabelText="Bodyweight"
 					/><br />
 					<TextField
 					id="ownername"
 					floatingLabelText="Owner Name"
-					defaultValue={this.state.information.owner_name}
 					/><br />
 					<br />
 					<TextField
 					id="opname"
 					floatingLabelText="Operation Name"
-					defaultValue={this.state.information.op_name}
 					/><br />
 					<br />
 					<DatePicker 
 						id="opdate"
 						floatingLabelText="Operation Date"
-						defaultDate={new Date(this.state.information.op_date)}
 						/>
 					<br />
 					<TextField
 					id="bodycondition"
 					floatingLabelText="Body Condition"
-					defaultValue={this.state.information.body_condition}
 					/><br />
 					<br />
 					<TextField
 					id="injuryinfo"
 					floatingLabelText="Injury Info"
-					defaultValue={this.state.information.injury_info}
 					/><br />
 					<br />
 					<TextField
 					id="procedure"
 					floatingLabelText="Procedure Details"
-					defaultValue={this.state.information.procedure_details}
 					/><br />
 					<br />
 					<TextField
 					id="surgerydata"
 					floatingLabelText="Surgery Information"
-					defaultValue={this.state.information.surgery_data}
 					/><br />
 					<br />
 					<TextField
 					id="abnormalities"
 					floatingLabelText="Abnormalities"
-					defaultValue={this.state.information.abnormalities}
 					/><br />
 					<br />
 					<TextField
 					id="op_loc"
 					floatingLabelText="Operation Location"
-					defaultValue={this.state.information.location}
 					/><br />
 					<br />
 					<SelectField
@@ -289,7 +216,6 @@ class VetInformationInput extends React.Component {
 					<TextField
 					id="length"
 					floatingLabelText="Length of rest"
-					defaultValue={this.state.information.length_of_rest}
 					/><br />
 					<br />
 					<SelectField
@@ -305,44 +231,37 @@ class VetInformationInput extends React.Component {
 					<DatePicker 
 						id="nextapptdate"
 						floatingLabelText="Next Appointment Date"
-						defaultDate={nextapptdatetime}
 						/>
 					<br />
 					<TimePicker
 						id="nextappttime"
 						format="24hr"
 						floatingLabelText="Next Appointment Time"
-						defaultTime={nextapptdatetime}
 					/>
 					<br />
 					<TextField
 					id="medname"
 					floatingLabelText="Medication Name"
-					defaultValue={this.state.information.meds_name}
 					/><br />
 					<br />
 					<TextField
 					id="medamount"
 					floatingLabelText="Medication amount per dose"
-					defaultValue={this.state.information.meds_amount}
 					/><br />
 					<br />
 					<TextField
 					id="medfreq"
 					floatingLabelText="Medication frequency per day"
-					defaultValue={this.state.information.meds_frequency}
 					/><br />
 					<br />
 					<DatePicker 
 						id="medstart"
 						floatingLabelText="Start of medication course"
-						defaultDate={new Date(this.state.information.meds_start)}
 						/>
 					<br />
 					<TextField
 					id="medlength"
 					floatingLabelText="Length of course of medication"
-					defaultValue={this.state.information.meds_length_of_course}
 					/><br />
 					<br />
 

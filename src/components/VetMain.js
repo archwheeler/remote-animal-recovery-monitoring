@@ -15,7 +15,7 @@ class VetMain extends React.Component {
 						Please click the button below to see the chats.
 					</CardText>
 					<CardActions>
-						<FlatButton/>
+						<FlatButton label="Chats" href="/#/VetChat"/>
 					</CardActions>
 				</Card>
 				<Card>
@@ -35,7 +35,8 @@ class VetMain extends React.Component {
 						Select a user if updating and then click the button below.
 					</CardText>
 					<CardActions>
-						<FlatButton label="Discharge Information" href="/#/VetInformationInput"/>
+						<FlatButton label="Create New Animal" href="/#/VetNewAnimal"/>
+						<FlatButton label="Update discharge information" href="/#/VetInformationInput"/>
 					</CardActions>
 				</Card>
 			</div>

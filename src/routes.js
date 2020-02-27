@@ -4,14 +4,9 @@ import IndexRoute from 'react-router/lib/IndexRoute';
 import App from './components/App';
 import Main from './components/Main';
 
+
 function routeContact(s, cb) {
 	System.import('./components/Contact').then(component => {
-		cb(null, component.default || component);
-	});
-}
-
-function routeLoadForm(s, cb) {
-	System.import('./components/LoadForm').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -22,8 +17,8 @@ function routeAccount(s, cb) {
 	});
 }
 
-function routeSurvey(s, cb) {
-	System.import('./components/Survey').then(component => {
+function routeQuestionnaires(s, cb) {
+	System.import('./components/Questionnaires').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -57,6 +52,12 @@ function routeVetInformationInput(s, cb) {
 	});
 }
 
+function routeVetNewAnimal(s, cb) {
+	System.import('./components/VetNewAnimal').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 function routeVetNewSurvey(s, cb) {
 	System.import('./components/VetNewSurvey').then(component => {
 		cb(null, component.default || component);
@@ -80,14 +81,14 @@ export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="contact" getComponent={routeContact}/>
-		<Route path="loadform" getComponent={routeLoadForm}/>
-		<Route path="survey" getComponent={routeSurvey}/>
+		<Route path="questionnaires" getComponent={routeQuestionnaires}/>
 		<Route path="chat" getComponent={routeChat}/>
 		<Route path="account" getComponent={routeAccount}/>
 		<Route path="login" getComponent={routeLogin}/>
 		<Route path="register" getComponent={routeRegister}/>
 		<Route path="vetmain" getComponent={routeVetMain}/>
 		<Route path="vetnewsurvey" getComponent={routeVetNewSurvey}/>
+		<Route path="vetnewanimal" getComponent={routeVetNewAnimal}/>
 		<Route path="vetinformationinput" getComponent={routeVetInformationInput}/>
 		<Route path="forgot" getComponent={routeForgot}/>
 		<Route path="vetchat" getComponent={routeVetChat}/>

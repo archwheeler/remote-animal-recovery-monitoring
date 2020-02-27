@@ -5,6 +5,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import ContentLink from 'material-ui/svg-icons/content/link';
 import { FlatButton, BottomNavigation, BottomNavigationItem } from 'material-ui';
+import {store} from "../store"
 
 export default class AppShell extends React.Component {
 	constructor(props) {
@@ -44,12 +45,10 @@ export default class AppShell extends React.Component {
 					onRequestChange={this.handleRequestChange}
 					>
 					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/contact"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Load Form" leftIcon={<ContentLink/>} containerElement={<Link to="/loadform"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Survey Test" leftIcon={<ContentLink/>} containerElement={<Link to="/survey"/>} onClick={this.handleToggleDrawer}/>
-					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>
+					{(store.getState().loggedIn)?<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>:null}
 					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onClick={this.handleToggleDrawer}/>
-
+					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onClick={this.handleToggleDrawer}/>
+					
 				</Drawer>
 				<AppBar
 					title={this.state.title}

@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const DB = require('./DB.js');
-const connection = DB.createConnection();
+//const DB = require('./DB.js');
+//const connection = DB.createConnection();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,9 +29,32 @@ function dateDiffInWeeks(a, b) {
 
 app.get('/getAnimalInfo/:animalId', (req, res) => {
 
-    //const test = 'BAgni';
-    //const response_object = {ids: [1, 2, 3], name: req.params.animalId, text: 'Meow'};
-    var response_object = {};
+    console.log(req.body);
+    const response_object = {	
+		name: "George",
+		firstLetterOfName: "G",
+		sex: "M",
+		species: "Dog",
+		bodyweight: 30, //this should be an integer (perhaps kg?)
+		owner_name: "Albert", // VARCHAR
+		op_name: "Leg", //VARCHAR - name of the operation
+		op_date: "2020-01-22", //DATE
+		body_condition: 7, //INT (out of 9)
+		injury_info: "arthritis on leg.", //TEXT
+		procedure_details: "The surgery was completed successfully", //TEXT
+		surgery_data: "**Surgery data**", //TEXT
+		abnormalities: "none", //TEXT
+		location: "leg", //VARCHAR
+		stitches_or_staples: true, //BOOLEAN - true if stitches
+		length_of_rest: 35, //INT - how many days rest?
+		cage_or_room: false, //BOOLEAN - true if cage
+		next_appt: "2020-01-28 11:42:00", //DATETIME
+		meds_name: "Paracetamol",
+		meds_amount: 3,
+		meds_frequency: 2,
+		meds_start: "2020-01-23", //DATE??
+		meds_length_of_course: 14,
+	};
 
     //response_object.test_field = new Date();
     /*
@@ -64,67 +87,17 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
     }
      */
 
-    try{
-        DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
-
-            //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
-            //Should we merge with accounts table?
-            if (AnResult == null){
-                res.send({status:'failure'});
-            } else{
-                response_object = AnResult;
-                response_object.status = 'success';
-                response_object.first_letter_of_name = AnResult.name[0];
-
-                //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
-                //table?
-                DB.getOperationInfo(connection,AnResult.op_id, function(opResult){
-
-                    //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
-                    //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
-                    response_object.op_name = opResult.op_name;
-                    response_object.op_date = opResult.op_date;
-                    response_object.body_condition = opResult.body_condition;
-
-                    //Potential problem with JSON parsing of TEXT fields??
-                    response_object.injury_info = opResult.injury;
-                    response_object.surgery_data = opResult.surgery;
-                    response_object.abnormalities = opResult.abnormalities;
-                    response_object.procedure_info = opResult.procedure_info;
-
-                    response_object.location = opResult.location;
-                    response_object.stitches_or_staples = opResult.stitch_staple;
-                    response_object.length_of_rest = opResult.rest_len;
-                    response_object.cage_or_room = opResult.cage_or_room;
-                    response_object.next_appt = opResult.next_appt;
-
-                    response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
-
-                    opResult.meds = JSON.parse(opResult.meds);
-
-                    response_object.meds_name = opResult.meds.name;
-                    response_object.meds_amount = opResult.meds.amount;
-                    response_object.meds_frequency = opResult.meds.frequency;
-                    response_object.meds_start = opResult.meds.start;
-                    response_object.meds_length_of_course = opResult.meds.length_of_course;
-
-
-                    delete response_object.op_id;
-                    res.send(response_object);
-
-                });
-            }
-        });
-    }
-    catch(err){
-        res.send({status: "failure"});
-    }
+    res.send(response_object);
 
 });
 
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
-
+    /*res.send(
+        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id: 1, name:"Weeks 1-2", link: 'https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true'},
+                                                    {questionnaire_id: 2, name: "VetMetrica", link: "https://www.vetmetrica.com/Auth/Login"},
+                                                {questionnaire_id: 3, name:"LOAD Form", link: "Printable_LOAD_Form.pdf"}]}
+    );*/
     try{
         DB.getAnimalInfo(connection, req.params.animalID, function(AnimalInfo){
             if (AnimalInfo == null){
@@ -171,8 +144,12 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
             }
             else{
                 const arr = [];
-                for (i=0; i < survey_list.length; i++){
-                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link});
+                const c = 0;
+                for (questionnaire in questionnaire_list){
+                    if (dateDiffInWeeks(op_date, new Date()) <= questionnaire.time){
+                        arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
+                        c = c + 1;
+                    }
                 }
                 res.send(
                     {noOfSurveys : survey_list.length, surveys : arr, status: 'success'}
@@ -184,6 +161,25 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
         res.send({status: 'failure'});
     }
 
+app.get('/checkForSurveys/:animalID', (req, res) => {
+    console.log(req.body);
+    res.send(
+        {noOfSurveys : 1, surveys: [{survey_id : 1, link: 'link1'}]}
+    );
+    /* TODO
+    DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
+        // I will just send a list of links - alternatively we could include a 'done' field?
+        const arr = [];
+        const c = 0;
+        for (survey in survey_list){
+            arr.push({survey_id : survey.survey_id, link: survey.link});
+            c = c + 1;
+        }
+        res.send(
+            {noOfSurveys : c, surveys : arr}
+        );
+    });
+     */
 });
 
 //Returns a list like [{aid: , name: },{aid: , name: }, ...] - in future if no vetTeamID return failure

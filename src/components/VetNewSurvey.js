@@ -4,22 +4,48 @@ import {TextField, RaisedButton, SelectField, MenuItem } from 'material-ui';
 
 
 const categories = [
-	'Oliver Hansen',
-	'Van Henry',
-	'April Tucker',
-	'Ralph Hubbard',
-	'Omar Alexander',
-	'Carlos Abbott',
-	'Miriam Wagner',
-	'Bradley Wilkerson',
-	'Virginia Andrews',
-	'Kelly Snyder',
+	'Leg',
+	'Arm',
+	'Lower back',
+	'Thigh',
   ];
 
 class VetNewSurvey extends React.Component {
-	state = {
-		values: [],
+	constructor(props) {
+		super(props);
+		this.state = {
+			values: [],
+			survey:{
+				vetTeamID: 1, //User ID of the vet team
+				link: "", //Link to the survey
+				location: "", //Location being targeted
+			}
+		}
+
 	};	
+
+	returnInformation = async () => {
+        const response = await fetch('http://localhost:5000/addNewSurvey/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            
+            body: JSON.stringify(this.state.survey)
+        });
+        const body = await response.json();
+        this.setState({ responseToPost: body.uid });
+	};
+	
+	handleSubmit(event) {
+		//TODO: vetTeamID
+		this.state.survey.link = document.getElementById("link").value;
+		this.state.survey.location = document.getElementById("category").value;
+		
+		console.log(this.state.survey);
+		this.returnInformation();
+	}
+
 
 	handleChange = (event, index, values) => this.setState({values});
 
@@ -47,8 +73,9 @@ class VetNewSurvey extends React.Component {
 						To add a new survey please click <a href="https://docs.google.com/forms/u/0/">here</a> and create a new form. Once you have created the form click the send button and then the link button to get a shareable link to the form. Then copy and paste the link below and click submit.
 						<br />
 						<SelectField
+							id="category"
 							multiple={true}
-							hintText="Select a name"
+							hintText="Select a category"
 							value={values}
 							onChange={this.handleChange}
 						>
@@ -56,7 +83,9 @@ class VetNewSurvey extends React.Component {
 						</SelectField> 
 						<br />
 
-					 	<TextField floatingLabelText="Link"/>
+						 <TextField 
+						 	id="link"
+						 	floatingLabelText="Link"/>
 						<br />
 						<RaisedButton label="Submit" primary={true} />
 
