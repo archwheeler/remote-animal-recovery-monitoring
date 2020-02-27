@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardText, CardActions, CardMedia} from 'material-ui/Card';
+import {Card, CardHeader, CardText, CardActions, CardMedia, CardTitle} from 'material-ui/Card';
 import {
 	Step,
 	Stepper,
@@ -10,6 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
 import FlatButton from 'material-ui/FlatButton';
 import { Badge } from 'material-ui';
+import {store} from "../store"
 
 
 class Main extends React.Component {
@@ -120,8 +121,8 @@ class Main extends React.Component {
 
 	render() {
 		const {finished, stepIndex} = this.state;
-
 		return (
+			(store.getState().loggedIn)?
 			<div>
 				<Card>
 					<CardHeader title = {this.state.information.name}
@@ -322,6 +323,19 @@ class Main extends React.Component {
 					</CardActions>
 				</Card>
 			</div>
+			: 
+			<div>
+				<Card>
+					<CardTitle title="Welcome to RARM (Remote Animal Recovery Monitoring)"/>
+					<CardText>
+						Please log in by clicking below:
+					</CardText>
+					<CardActions>
+						<FlatButton label="Log In" href="/#/login"/>
+					</CardActions>
+				</Card>
+			</div>
+
 		);
 	}
 }

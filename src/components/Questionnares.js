@@ -84,7 +84,7 @@ class Questionnares extends React.Component {
 						width="100%"
 						height="400"
 						frameBorder="0"
-						onLoad={}>
+						onLoad={true}>
 							Loading…
 			</iframe>
 			</CardMedia>
