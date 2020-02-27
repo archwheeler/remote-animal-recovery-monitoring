@@ -78,7 +78,7 @@ function createTables(con){
     });
 
     // table of questionnaires
-    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link TEXT)";
+    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link TEXT, name VARCHAR(255))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
@@ -129,12 +129,17 @@ function showTables(con, callback){
 // ADD FUNCTIONS
 
 // add vet to system
-function addVetTeam(con, email, password, vet_team_name){
+function addVetTeam(con, email, password, vet_team_name, callback){
     var sql = "INSERT INTO accounts (email, password, type, name) VALUES ?";
     var values = [[email, password, 0, vet_team_name]]; // 0 represents vet type
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
-        console.log("Added vet team " + vet_team_name);
+        if (err){
+            callback(-1);
+        }
+        else{
+            console.log("Added vet team " + vet_team_name);
+            callback(result.insertId);
+        }
     });
 }
 
@@ -162,9 +167,13 @@ function addAnimal(con, name, sex, species, bodyweight, owner_id, op_id, callbac
     var sql = "INSERT INTO animals (name, sex, species, bodyweight, owner_id, op_id) VALUES ?";
     values =  [[name, sex, species, bodyweight, owner_id, op_id]];
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
-        console.log("Added animal " + result.insertId);
-        callback(result.insertId);
+        if (err){
+            callback(-1);
+        }
+        else{
+            console.log("Added animal " + result.insertId);
+            callback(result.insertId);
+        }
     });
 }
 
@@ -234,9 +243,9 @@ function addSurvey(con, uid, creation_date, link, target_location, callback){
 }
 
 // add questionnaire
-function addQuestionnaire(con, time_to_send, link, callback){
-    var sql = "INSERT INTO questionnaires (time, link) VALUES ?";
-    var values = [[time_to_send, link]];
+function addQuestionnaire(con, time_to_send, link, name, callback){
+    var sql = "INSERT INTO questionnaires (time, link, name) VALUES ?";
+    var values = [[time_to_send, link, name]];
     con.query(sql, [values], function(err, result){
         if (err){
             callback(-1);
@@ -326,7 +335,7 @@ function getVetList(con, uid, callback){
 
 // check if uid-password pair is correct - return  true or false
 function authenticateUser(con, email, password, callback){
-    var sql = "SELECT password, uid FROM accounts WHERE email='" + email + "'";
+    var sql = "SELECT password, uid, type FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length  == 0){
@@ -335,16 +344,17 @@ function authenticateUser(con, email, password, callback){
         else{
             var pass = JSON.parse(JSON.stringify(result[0])).password;
             var res_uid = JSON.parse(JSON.stringify(result[0])).uid;
+            var res_type = JSON.parse(JSON.stringify(result[0])).type;
             if (pass == password){
                 var sql2 = "SELECT aid FROM animals WHERE owner_id=" + res_uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     if (result2.length == 0){
-                        callback({status: true, uid: res_uid, aid: -1})
+                        callback({status: true, uid: res_uid, type: res_type, aid: -1})
                     }
                     else{
                         var res_aid = JSON.parse(JSON.stringify(result2[0])).aid;
-                        callback({status: true, uid: res_uid, aid: res_aid});
+                        callback({status: true, uid: res_uid, type: res_type, aid: res_aid});
                     }
                 });
 
@@ -542,7 +552,7 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 
 
 // TESTING
-//var connection = createConnection();
+var connection = createConnection();
 ////clearDB(connection);
 //createTables(connection);
 //showTables(connection, function(result){
