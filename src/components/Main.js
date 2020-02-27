@@ -150,7 +150,7 @@ class Main extends React.Component {
 						You have a questionnaire to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
-						<FlatButton label="Weeks 1-2 Questionnaire" href="/#/Survey"/>
+						<FlatButton label="Questionnares" href={`/#/Questionnares/`}/>
 					</CardActions>
 				</Card>
 				:null

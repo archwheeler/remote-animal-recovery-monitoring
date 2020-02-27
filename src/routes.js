@@ -4,11 +4,6 @@ import IndexRoute from 'react-router/lib/IndexRoute';
 import App from './components/App';
 import Main from './components/Main';
 
-function routeUsers(s, cb) {
-	System.import('./components/Users').then(component => {
-		cb(null, component.default || component);
-	});
-}
 
 function routeContact(s, cb) {
 	System.import('./components/Contact').then(component => {
@@ -22,8 +17,8 @@ function routeAccount(s, cb) {
 	});
 }
 
-function routeSurvey(s, cb) {
-	System.import('./components/Survey').then(component => {
+function routeQuestionnares(s, cb) {
+	System.import('./components/Questionnares').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -86,7 +81,8 @@ export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="contact" getComponent={routeContact}/>
-		<Route path="survey" getComponent={routeSurvey}/>
+		<Route path="questionnares" getComponent={routeQuestionnares}/>
+		<Route path="questionnares/:id" getComponent={routeQuestionnares}/>
 		<Route path="chat" getComponent={routeChat}/>
 		<Route path="account" getComponent={routeAccount}/>
 		<Route path="login" getComponent={routeLogin}/>

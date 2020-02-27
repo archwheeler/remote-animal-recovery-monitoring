@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const DB = require('./DB.js');
-const connection = DB.createConnection();
+//const DB = require('./DB.js');
+//const connection = DB.createConnection();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -87,68 +87,14 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
     }
      */
 
-    try{
-        DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
-
-            //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
-            //Should we merge with accounts table?
-            if (AnResult == null){
-                res.send({status:'failure'});
-            } else{
-                response_object = AnResult;
-                response_object.status = 'success';
-                response_object.first_letter_of_name = AnResult.name[0];
-
-                //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
-                //table?
-                DB.getOperationInfo(connection,AnResult.op_id, function(opResult){
-
-                    //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
-                    //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
-                    response_object.op_name = opResult.op_name;
-                    response_object.op_date = opResult.op_date;
-                    response_object.body_condition = opResult.body_condition;
-
-                    //Potential problem with JSON parsing of TEXT fields??
-                    response_object.injury_info = opResult.injury;
-                    response_object.surgery_data = opResult.surgery;
-                    response_object.abnormalities = opResult.abnormalities;
-                    response_object.procedure_info = opResult.procedure_info;
-
-                    response_object.location = opResult.location;
-                    response_object.stitches_or_staples = opResult.stitch_staple;
-                    response_object.length_of_rest = opResult.rest_len;
-                    response_object.cage_or_room = opResult.cage_or_room;
-                    response_object.next_appt = opResult.next_appt;
-
-                    response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
-
-                    opResult.meds = JSON.parse(opResult.meds);
-
-                    response_object.meds_name = opResult.meds.name;
-                    response_object.meds_amount = opResult.meds.amount;
-                    response_object.meds_frequency = opResult.meds.frequency;
-                    response_object.meds_start = opResult.meds.start;
-                    response_object.meds_length_of_course = opResult.meds.length_of_course;
-
-
-                    delete response_object.op_id;
-                    res.send(response_object);
-
-                });
-            }
-        });
-    }
-    catch(err){
-        res.send({status: "failure"});
-    }
+    res.send(response_object);
 
 });
 
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
     res.send(
-        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id : 1, link: 'link1'}]}
+        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id: 1, link: 'https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true'}]}
     );
     // TODO : DB.getQuestionnaires() which will give me a list of all the questionnaire rows
     /*
