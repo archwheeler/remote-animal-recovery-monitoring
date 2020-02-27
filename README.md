@@ -33,10 +33,9 @@ Clone the git repository, change into the created directory and enter the follow
 ```shell
 yarn install
 ```
-Then ensure the API and Chat server are running:
+Then ensure the API is running:
 ```shell
 node src/components/server.js
-node src/chat-server/chat-server.js
 ```
 Finally, start the app:
 ```shell
