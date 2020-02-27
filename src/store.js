@@ -6,7 +6,7 @@ export const store = createStore(AccountReducer, initial_state);
 /*
 Usage:
 
-    import {store} from "./store"
+    import {store} from "../store"
     ...
     store.getState().variable
 

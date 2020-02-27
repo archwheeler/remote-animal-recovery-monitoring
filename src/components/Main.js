@@ -123,6 +123,9 @@ class Main extends React.Component {
 		const {finished, stepIndex} = this.state;
 		return (
 			(store.getState().loggedIn)?
+			(store.getState().vet)?
+			window.location.href="/#/VetMain"
+			:
 			<div>
 				<Card>
 					<CardHeader title = {this.state.information.name}
@@ -151,7 +154,7 @@ class Main extends React.Component {
 						You have a questionnaire to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
-						<FlatButton label="Questionnares" href={`/#/Questionnares/`}/>
+						<FlatButton label="Questionnaires" href={`/#/Questionnaires/`}/>
 					</CardActions>
 				</Card>
 				:null
@@ -168,40 +171,6 @@ class Main extends React.Component {
 						<li>{this.state.information.name} must not be allowed to lick the surgical site as this will interfere with healing and may cause infection. He/She must wear the Buster collar at all times, especially when unsupervised, until the skin stitches have been removed.</li>
 						<li>During the first 2-3 days after surgery, {this.state.information.name} may benefit from cold packing of the {this.state.information.location}. Please apply a cold pack (commercially available cool pack or bag of frozen peas for example), wrapped in a clean towel for 5-10 minutes, 3-4 times a day.</li>
 						</ul>
-					</CardText>
-				</Card>
-
-				<Card>
-					<CardHeader title="Load Form"
-								actAsExpander={true}
-								showExpandableButton={true}
-					/>
-					<CardText expandable={true}>
-						Please fill in the form below. To send it to us after filling in click the print button and
-						print to "Save as PDF". Then email this attachment to the <a
-						href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
-					</CardText>
-					<CardMedia expandable={true}>
-						<object data="Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600"
-								frameBorder="none">
-							<div style={{margin: 15}}><p>Unfortunately this browser does not support PDFs. Please
-								download the PDF using the button below, we recommend using Adobe Acrobat to fill in the
-								form.</p>
-							</div>
-							<FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
-
-						</object>
-					</CardMedia>
-				</Card>
-
-				<Card>
-					<CardHeader title="Vet Metrica Questionnare"
-								actAsExpander={true}
-								showExpandableButton={true}
-					/>
-					<CardText expandable={true}>
-						Please complete the Vet Metrica Questionnare by clicking <a
-						href="https://www.vetmetrica.com/Auth/Login">here</a>.
 					</CardText>
 				</Card>
 

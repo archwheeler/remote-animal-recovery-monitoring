@@ -1,5 +1,6 @@
 import React from 'react';
-import {Card, CardMedia, CardHeader} from 'material-ui/Card';
+import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
 class Questionnaire extends React.Component {
@@ -21,10 +22,36 @@ class Questionnaire extends React.Component {
 
 	render() {
 		return (
+            (this.state.data.link=="Printable_LOAD_Form.pdf")?
+            <div>
+                <Card>
+                <CardHeader title="Load Form"
+                            actAsExpander={true}
+                            showExpandableButton={true}
+                />
+                <CardText expandable={true}>
+                    Please fill in the form below. To send it to us after filling in click the print button and
+                    print to "Save as PDF". Then email this attachment to the <a
+                    href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
+                </CardText>
+                <CardMedia expandable={true}>
+                    <object data="Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600"
+                            frameBorder="none">
+                        <div style={{margin: 15}}><p>Unfortunately this browser does not support PDFs. Please
+                            download the PDF using the button below, we recommend using Adobe Acrobat to fill in the
+                            form.</p>
+                        </div>
+                        <FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
+
+                    </object>
+                </CardMedia>
+                </Card>
+            </div>
+            :
 			<div>
                 <Card key={this.state.data.questionnaire_id} expandable={true} onExpandChange={this.expandChange}>
                     <CardHeader 
-                        title="NAME"
+                        title={this.state.data.name}
                         actAsExpander={true}
                         showExpandableButton={true}
                     />

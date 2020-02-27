@@ -4,9 +4,9 @@ import {SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction
 
 class Account extends React.Component {
 
-  constructor() {
-    super();
-    const rerenderer = store.subscribe(() => this.forceUpdate());
+  constructor(props) {
+    super(props);
+    store.subscribe(() => this.forceUpdate());
   }
 
   render() {
@@ -45,7 +45,6 @@ class Account extends React.Component {
           <div className="center">
             Please select an account from below:
             <br/>
-
             {
               store.getState().accounts.map(item =>
                 <div>

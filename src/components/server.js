@@ -94,7 +94,9 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
     res.send(
-        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id: 1, link: 'https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true'}]}
+        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id: 1, name:"Weeks 1-2", link: 'https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true'},
+                                                    {questionnaire_id: 2, name: "VetMetrica", link: "https://www.vetmetrica.com/Auth/Login"},
+                                                {questionnaire_id: 3, name:"LOAD Form", link: "Printable_LOAD_Form.pdf"}]}
     );
     // TODO : DB.getQuestionnaires() which will give me a list of all the questionnaire rows
     /*

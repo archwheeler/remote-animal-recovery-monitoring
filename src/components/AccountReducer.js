@@ -54,7 +54,7 @@ async function callRegister(user, pass, email) {
   return {success: "success", uid: 7};
 }
 async function callLogin(user, pass) {
-  return {passwordCorrect: user == "tom" && pass == "hello", id: 3};
+  return {passwordCorrect: user == "tom" && pass == "hello", id: 3, };
 }
 async function fetchAccounts(id) {
   return {vets: ["Tom", "Agni"]};
@@ -84,8 +84,9 @@ export function AccountReducer(state = initial_state, action) {
             fetchAccounts(state.data.id).then(
               res => {
                 state.accounts = res.vets;
-                window.location.href = "/#/account";
+                //window.location.assign("/#/account");
               }
+              
             );
 
           } else {
