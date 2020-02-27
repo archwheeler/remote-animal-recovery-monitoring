@@ -7,7 +7,7 @@ class Questionnaire extends React.Component {
 		super(props);
 		this.state = {
             loading: true,
-            data: props.data,
+            link: props.link,
         }
 	}
 	
@@ -21,28 +21,26 @@ class Questionnaire extends React.Component {
 
 	render() {
 		return (
-			<div>
-                <Card key={this.state.data.questionnaire_id} expandable={true} onExpandChange={this.expandChange}>
-                    <CardHeader 
-                        title="NAME"
-                        actAsExpander={true}
-                        showExpandableButton={true}
-                    />
-                    <CardMedia expandable={true}>
-                        { this.state.loading ? (
-                            <div style={{display: 'flex', justifyContent: 'center'}}>
-                                <CircularProgress/>
-                            </div>) : null
-                        }
-                        <iframe src={this.state.data.link}
-                                    width="100%"
-                                    height="400"
-                                    frameBorder="0"
-                                    onLoad={this.stopLoading}>
-                        </iframe>
-                    </CardMedia>
-                </Card>
-			</div>
+            <Card expandable={true} onExpandChange={this.expandChange}>
+                <CardHeader 
+                    title="NAME"
+                    actAsExpander={true}
+                    showExpandableButton={true}
+                />
+                <CardMedia expandable={true}>
+                    { this.state.loading ? (
+                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                            <CircularProgress/>
+                        </div>) : null
+                    }
+                    <iframe src={this.state.link}
+                                width="100%"
+                                height="400"
+                                frameBorder="0"
+                                onLoad={this.stopLoading}>
+                    </iframe>
+                </CardMedia>
+            </Card>
 		);
 	}
 }
