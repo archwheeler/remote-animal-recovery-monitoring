@@ -160,6 +160,7 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
     catch(err){
         res.send({status: 'failure'});
     }
+});
 
 app.get('/checkForSurveys/:animalID', (req, res) => {
     console.log(req.body);
