@@ -73,7 +73,7 @@ class Questionnaires extends React.Component {
 					</CardText>					
 				</Card>
 				{this.state.questionnaire.questionnaires.map((q, index) => (
-					<Questionnaire data={q}/>		
+					<Questionnaire key={q.questionnaire_id} link={q.link}/>		
 				))}
 			</div>
 		);

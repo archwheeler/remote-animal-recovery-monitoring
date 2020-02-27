@@ -8,7 +8,7 @@ class Questionnaire extends React.Component {
 		super(props);
 		this.state = {
             loading: true,
-            data: props.data,
+            link: props.link,
         }
 	}
 	
@@ -70,6 +70,7 @@ class Questionnaire extends React.Component {
                     </CardMedia>
                 </Card>
 			</div>
+           
 		);
 	}
 }
