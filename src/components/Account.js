@@ -1,16 +1,12 @@
 import React from 'react';
 import {store} from '../store';
-import {SelectAccountAction, LogoutAction, ChooseIdAction, UpdateAccountsAction} from "./AccountAction";
+import {SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
 
 class Account extends React.Component {
 
   constructor() {
     super();
     const rerenderer = store.subscribe(() => this.forceUpdate());
-  }
-
-  componentDidMount() {
-    store.dispatch(UpdateAccountsAction());
   }
 
   render() {

@@ -47,9 +47,3 @@ export function ForgotAction(email) {
     }
   };
 }
-
-export function UpdateAccountsAction(accounts) {
-  return {
-    type: "UPDATE_ACCOUNTS"
-  };
-}
