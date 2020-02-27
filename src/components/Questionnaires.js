@@ -1,9 +1,9 @@
 import React from 'react';
-import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
-import CircularProgress from 'material-ui/CircularProgress';
+import Questionnaire from './Questionnaire';
 
-class Questionnares extends React.Component {
+class Questionnaires extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -37,7 +37,6 @@ class Questionnares extends React.Component {
 				noOfQuestionnaires: 0,
 				questionnaires: []}
 			};
-			this.questionnares = this.questionnares.bind(this)
 	}
 
 	getInformation = async(animalID) => {
@@ -47,7 +46,7 @@ class Questionnares extends React.Component {
 		return body;
 	}
 
-	getQuestionnares = async(animalID) => {
+	getQuestionnaires = async(animalID) => {
 		const response = await fetch('http://localhost:5000/checkForQuestionnaires/' + animalID);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
@@ -57,58 +56,28 @@ class Questionnares extends React.Component {
 	componentDidMount() {
         this.getInformation("123").then(info => this.setState({information:info}))
 			.catch(err => console.log(err));
-		this.getQuestionnares("123").then(info => this.setState({questionnaire:info}))
+		this.getQuestionnaires("123").then(info => this.setState({questionnaire:info}))
 			.catch(err => console.log(err));
-	}
-	
-	stopLoading = () => {
-		this.setState({loading: false});
-	}
-
-	questionnares() {
-		return this.state.questionnaire.questionnaires.map((questionnaire, index) => (
-			questionnaire.loading = true,
-			<Card key={questionnaire}>
-				<CardHeader title="NAME"
-				actAsExpander={true}
-				showExpandableButton={true}
-			/>
-
-			<CardMedia expandable={true}>
-			{ questionnaire.loading ? (
-				<div style={{display: 'flex', justifyContent: 'center'}}>
-					<CircularProgress/>
-				</div>) : null
-			}
-			<iframe src={questionnaire.link}
-						width="100%"
-						height="400"
-						frameBorder="0"
-						onLoad={true}>
-							Loading…
-			</iframe>
-			</CardMedia>
-			</Card>
-		));
 	}
 
 	render() {
 		return (
 			<div>
-				{this.state.surveyURL}
 				<Card>
-				<CardHeader title = {this.state.information.name}
-								subtitle={"Sex: " + ((this.state.information.sex=="M")?"Male":"Female") + ", Animal Type: "+ this.state.information.species}
-								avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
+					<CardHeader title = {this.state.information.name}
+									subtitle={"Sex: " + ((this.state.information.sex=="M")?"Male":"Female") + ", Animal Type: "+ this.state.information.species}
+									avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-						Please complete the following questionnare(s) to help monitor your dog's progress:
+						Please complete the following questionnaire(s) to help monitor your dog's progress:
 					</CardText>					
 				</Card>
-				{this.questionnares()}
+				{this.state.questionnaire.questionnaires.map((q, index) => (
+					<Questionnaire data={q}/>		
+				))}
 			</div>
 		);
 	}
 }
 
-export default Questionnares;
+export default Questionnaires;
