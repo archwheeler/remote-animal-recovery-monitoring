@@ -10,7 +10,7 @@ export const initial_state = {
 }
 
 // API calls
-
+/*
 async function callRegister(user, pass, email) {
   const response = await fetch('http://localhost:5000/registerUser', {
     method: 'POST',
@@ -42,6 +42,24 @@ async function callLogin(user, pass) {
   return body;
 }
 
+async function fetchAccounts(id) {
+    return await fetch('http://localhost:5000/getListOfVets/' + state.data.userId).then(
+      res => res.json()
+    );
+}
+*/
+
+//        IT'S HARDCODING TIME :)
+async function callRegister(user, pass, email) {
+  return {success: "success", uid: 7};
+}
+async function callLogin(user, pass) {
+  return {passwordCorrect: user == "tom" && pass == "hello", id: 3};
+}
+async function fetchAccounts(id) {
+  return {vets: ["Tom", "Agni"]};
+}
+
 // Reducer
 
 // previous state, action => next state
@@ -61,8 +79,14 @@ export function AccountReducer(state = initial_state, action) {
             action.label.innerHTML = JSON.stringify(state);
 
             state.data = {};
+            state.data.id = res.id;
 
-            window.location.href = "/#/account";
+            fetchAccounts(state.data.id).then(
+              res => {
+                state.accounts = res.vets;
+                window.location.href = "/#/account";
+              }
+            );
 
           } else {
 
@@ -108,14 +132,6 @@ export function AccountReducer(state = initial_state, action) {
 
     case "CHOOSE_ID":
       state.choseId = false;
-      return state;
-
-    case "UPDATE_ACCOUNTS":
-      fetch('http://localhost:5000/getListOfVets/' + state.data.userId).then(
-        res => res.json()).then(
-        res => {
-          state.accounts = res.vets;
-        });
       return state;
 
     case "SELECT_ID":
