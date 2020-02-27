@@ -2,6 +2,7 @@ import React from 'react';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import Questionnaire from './Questionnaire';
+import {store} from "../store"
 
 class Questionnaires extends React.Component {
 	constructor(props) {
@@ -37,6 +38,7 @@ class Questionnaires extends React.Component {
 				noOfQuestionnaires: 0,
 				questionnaires: []}
 			};
+			this.componentDidMount = this.componentDidMount.bind(this);
 	}
 
 	getInformation = async(animalID) => {
@@ -62,6 +64,7 @@ class Questionnaires extends React.Component {
 
 	render() {
 		return (
+			(store.getState().loggedIn)?
 			<div>
 				<Card>
 					<CardHeader title = {this.state.information.name}
@@ -76,6 +79,10 @@ class Questionnaires extends React.Component {
 					<Questionnaire key={q.questionnaire_id} link={q.link} name={q.name}/>		
 				))}
 			</div>
+			:
+			<div>
+			{window.location.assign("/")}
+            </div>
 		);
 	}
 }

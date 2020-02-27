@@ -50,7 +50,6 @@ class Main extends React.Component {
 				questionnaires: []}
 		};
 		this.componentDidMount = this.componentDidMount.bind(this);
-		this.getInformation = this.getInformation.bind(this);
 	}
 	
 	getInformation = async(animalID) => {
