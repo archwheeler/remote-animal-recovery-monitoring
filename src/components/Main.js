@@ -152,7 +152,7 @@ class Main extends React.Component {
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						Please fill in the form below. To send it too us after filling in click the print button and
+						Please fill in the form below. To send it to us after filling in click the print button and
 						print to "Save as PDF". Then email this attachment to the <a
 						href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
 					</CardText>
