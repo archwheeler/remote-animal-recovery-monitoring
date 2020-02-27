@@ -140,7 +140,8 @@ app.get('/checkForQuestionnaires/:animalID', (req, res) => {
                         for (i = 0; i < questionnaire_list.length; i++){
                             var questionnaire = questionnaire_list[i];
                             if (dateDiff >= questionnaire.time){
-                                arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
+                                arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link,
+                                name:questionnaire.name });
                                 c = c + 1;
                             }
                         }
@@ -386,12 +387,13 @@ app.post('/addNewQuestionnaire', (req, res) => {
         vetTeamID: , //User ID of the vet team
         link: , //Link to the survey
         time_to_send: , //In no of weeks
+        name: , //Name of questionnaire
     }
      */
 
     console.log(req.body);
     try{
-        DB.addQuestionnaire(connection, req.body.time_to_send, req.body.link, function(result){
+        DB.addQuestionnaire(connection, req.body.time_to_send, req.body.link, req.body.name, function(result){
             if (result != -1){
                 res.send({qid: result, status: 'success'});
             }
@@ -439,21 +441,33 @@ app.post('/registerUser', (req, res) => {
     //Username, password, email
     console.log(req.body);
     try{
-        `DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
-            if (add_result == "Success!"){
-                DB.getUserID(connection, req.body.email, function(result){
-                    const response_status = (result==-1) ? 'failure' : 'success';
-                    res.send(
-                    {uid:result, status: response_status},
-                    );
-                ;});
+            DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
+                if (add_result != -1){
+                    res.send({uid: add_result, status: 'success'});
+                }
+                else{
+                    res.send({uid: -1, status: 'failure'});
+                }
+            });
+        }catch(err){
+            res.send({uid: -1, status: 'failure'});
+        }
+});
+
+app.post('/registerVetTeam', (req, res) => {
+    //Username, password, email
+    console.log(req.body);
+    try{
+        DB.addVetTeam(connection, req.body.email, req.body.password, req.body.username, function(add_result){
+            if (add_result != -1){
+                res.send({vid: add_result, status: 'success'});
             }
             else{
-                res.send({uid: -1, status: 'failure'});
+                res.send({vid: -1, status: 'failure'});
             }
-        });`
+        });
     }catch(err){
-        res.send({uid: -1, status: 'failure'});
+        res.send({vid: -1, status: 'failure'});
     }
 });
 
@@ -464,7 +478,8 @@ app.post('/loginData', (req, res) => {
 
     try{
         DB.authenticateUser(connection, req.body.email, req.body.password, function(result){
-            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, status: 'success'});
+            var type = (result.type == 1)? 'carer' : 'vet';
+            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, status: 'success', VetOrCarer : type});
         });
     }catch(err){
             res.send({passwordCorrect: false, status: 'failure'});

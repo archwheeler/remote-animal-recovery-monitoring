@@ -183,12 +183,12 @@ function addCarer(con, email, password, name, callback){
     var values = [[email, password, 1, name]]; // 1 represents carer type
     con.query(sql, [values], function(err, result){
         if (err) {
-            callback("Failed!");
+            callback(-1);
         }
         else{
-            callback("Success!");
+            callback(result.insertId);
+            console.log("Added user " + name);
         }
-        console.log("Added user " + name);
     });
 }
 
@@ -350,7 +350,7 @@ function authenticateUser(con, email, password, callback){
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     if (result2.length == 0){
-                        callback({status: true, uid: res_uid, type: res_type, aid: -1})
+                        callback({status: true, uid: res_uid, type: res_type, aid: -1});
                     }
                     else{
                         var res_aid = JSON.parse(JSON.stringify(result2[0])).aid;
@@ -552,7 +552,7 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 
 
 // TESTING
-var connection = createConnection();
+//var connection = createConnection();
 ////clearDB(connection);
 //createTables(connection);
 //showTables(connection, function(result){
