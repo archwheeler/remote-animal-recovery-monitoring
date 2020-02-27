@@ -17,8 +17,8 @@ function routeAccount(s, cb) {
 	});
 }
 
-function routeQuestionnares(s, cb) {
-	System.import('./components/Questionnares').then(component => {
+function routeQuestionnaires(s, cb) {
+	System.import('./components/Questionnaires').then(component => {
 		cb(null, component.default || component);
 	});
 }
@@ -81,8 +81,7 @@ export default (
 	<Route path="/" component={App}>
 		<IndexRoute component={Main}/>
 		<Route path="contact" getComponent={routeContact}/>
-		<Route path="questionnares" getComponent={routeQuestionnares}/>
-		<Route path="questionnares/:id" getComponent={routeQuestionnares}/>
+		<Route path="questionnaires" getComponent={routeQuestionnaires}/>
 		<Route path="chat" getComponent={routeChat}/>
 		<Route path="account" getComponent={routeAccount}/>
 		<Route path="login" getComponent={routeLogin}/>

@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardMedia, CardHeader} from 'material-ui/Card';
 import CircularProgress from 'material-ui/CircularProgress';
 
-class Questionnare extends React.Component {
+class Questionnaire extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -47,4 +47,4 @@ class Questionnare extends React.Component {
 	}
 }
 
-export default Questionnare;
+export default Questionnaire;
