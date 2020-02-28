@@ -3,23 +3,30 @@ body {
   padding: 0;
 }
 
-
 .center {
   text-align: center;
 }
 
 label {
+  width: 500px;
+  max-width: 100%;
+
+  text-align: left;
   display: inline-block;
-  white-space: nowrap;
 }
 
 input[type=checkbox] {
+  width: 20px;
+  position: relative;
+  bottom: .08em;
   display: inline-block;
 }
 
 input, .blueButton {
-  width: 40%;
-  padding: 12px 20px;
+  width: 500px;
+  max-width: 100%;
+
+  padding: 12px 8px;
   margin: 8px 0;
   border-radius: 8px;
   box-shadow: none;

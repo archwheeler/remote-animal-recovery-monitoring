@@ -30,12 +30,12 @@ class Account extends React.Component {
       return (
         <div className="center">
           <form onSubmit={this.login}>
-            <label id="feedback">
+            <label id="feedback" className="center">
             Log in to the system below.
             </label>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username" required/>
+            <input type="text" id="email_box" placeholder="Email" required/>
             <br/>
 
             <input type="password" id="password_box" placeholder="Password" required/>
@@ -74,11 +74,11 @@ class Account extends React.Component {
   }
 
   login() {
-    var username = document.getElementById("username_box").value;
+    var email = document.getElementById("email_box").value;
     var password = document.getElementById("password_box").value;
     var feedback = document.getElementById("feedback");
 
-    store.dispatch(LoginAction(username, password, feedback));
+    store.dispatch(LoginAction(email, password, feedback));
   }
 }
 

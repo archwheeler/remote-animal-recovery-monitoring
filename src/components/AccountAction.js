@@ -1,9 +1,9 @@
-export function LoginAction(username, password, feedback) {
+export function LoginAction(email, password, feedback) {
   return {
     type: "LOGIN",
     label: feedback,
     data: {
-      name: username,
+      email: email,
       pass: password
     }
   };
@@ -15,13 +15,14 @@ export function LogoutAction() {
   };
 }
 
-export function RegisterAction(username, password, email) {
+export function RegisterAction(username, password, email, vet) {
   return {
     type: "REGISTER",
     data: {
       name: username,
       pass: password,
-      email: email
+      email: email,
+      vet: vet
     }
   };
 }

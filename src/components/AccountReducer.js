@@ -1,6 +1,7 @@
 export const initial_state = {
   loggedIn: false,
   choseId: false,
+  vetAccount: false,
   data: {
     name: "",
     email: "",
@@ -27,14 +28,30 @@ async function callRegister(user, pass, email) {
   return body;
 }
 
-async function callLogin(user, pass) {
+async function callRegisterVet(user, pass, email) {
+  const response = await fetch('http://localhost:5000/registerVetTeam', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      'username': user,
+      'password': pass,
+      'email': email
+    })
+  });
+  const body = await response.json();
+  return body;
+}
+
+async function callLogin(email, pass) {
   const response = await fetch('http://localhost:5000/loginData', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      'username': user,
+      'email': email,
       'password': pass
     })
   });
@@ -51,10 +68,19 @@ async function fetchAccounts(id) {
 
 //        IT'S HARDCODING TIME :)
 async function callRegister(user, pass, email) {
-  return {success: "success", uid: 7};
+  return {success: "success", uid: 0};
 }
-async function callLogin(user, pass) {
-  return {passwordCorrect: user == "tom" && pass == "hello", id: 3, };
+async function callRegisterVet(user, pass, email) {
+  return {success: "success", uid: 1};
+}
+async function callLogin(email, pass) {
+  return {
+    passwordCorrect: email == "tom" && pass == "hello",
+    uid: 2,
+    aid: 3,
+    status: "success",
+    VetOrCarer: "vet" // could be 'carer'
+  };
 }
 async function fetchAccounts(id) {
   return {vets: ["Tom", "Agni"]};
@@ -69,24 +95,22 @@ export function AccountReducer(state = initial_state, action) {
       state.loggedIn = false;
       state.choseId = false;
 
-      callLogin(action.data.name, action.data.pass)
+      callLogin(action.data.email, action.data.pass)
         .then(res => {
           state.loggedIn = res.passwordCorrect;
 
           if (state.loggedIn) {
 
             // Login success
-            action.label.innerHTML = JSON.stringify(state);
-
             state.data = {};
             state.data.id = res.id;
 
             fetchAccounts(state.data.id).then(
               res => {
                 state.accounts = res.vets;
-                //window.location.assign("/#/account");
+                window.location.assign("/#/account");
               }
-              
+
             );
 
           } else {
@@ -107,8 +131,8 @@ export function AccountReducer(state = initial_state, action) {
       return initial_state;
 
     case "REGISTER":
-
-      callRegister(action.data.name, action.data.pass, action.data.email).then(res => {
+      var funcCall = action.data.vet ? callRegisterVet : callRegister;
+      funcCall(action.data.name, action.data.pass, action.data.email).then(res => {
         if (res.status == "success") {
 
           // Register successful

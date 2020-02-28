@@ -43,6 +43,12 @@ class Account extends React.Component {
             </label>
             <br/>
 
+            <label>
+              <input type="checkbox" id="vet_checkbox"/>
+              Create a vet account?
+            </label>
+            <br/>
+
             <input type="submit" value="Register" />
             <br/>
           </form>
@@ -59,8 +65,9 @@ class Account extends React.Component {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var email = document.getElementById("email_box").value;
+    var vet = document.getElementById("vet_checkbox").checked;
 
-    store.dispatch(RegisterAction(username, password, email));
+    store.dispatch(RegisterAction(username, password, email, vet));
   }
 
   showPassword() {

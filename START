@@ -1,4 +1,6 @@
 #! /bin/bash
-clear
 cd "${0%/*}"
+yarn install
+
+open -na Terminal ./START_SERVER
 yarn start
