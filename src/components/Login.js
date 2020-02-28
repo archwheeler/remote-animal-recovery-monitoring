@@ -35,7 +35,7 @@ class Account extends React.Component {
             </label>
             <br/>
 
-            <input type="text" id="email_box" placeholder="Email" required/>
+            <input type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
             <input type="password" id="password_box" placeholder="Password" required/>

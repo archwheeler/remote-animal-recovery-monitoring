@@ -75,7 +75,7 @@ async function callRegisterVet(user, pass, email) {
 }
 async function callLogin(email, pass) {
   return {
-    passwordCorrect: email == "tom" && pass == "hello",
+    passwordCorrect: email == "t@cam.ac.uk" && pass == "hello",
     uid: 2,
     aid: 3,
     status: "success",

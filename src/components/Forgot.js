@@ -33,7 +33,7 @@ class Account extends React.Component {
           <br/>
 
           <form onSubmit={this.forgotPassword}>
-            <input id="email_box" type="text" placeholder="Email" required/>
+            <input id="email_box" type="email" placeholder="Email" required/>
             <br/>
 
             <input type="submit" value="Reset Password"/>

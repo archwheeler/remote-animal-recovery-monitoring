@@ -28,7 +28,7 @@ class Account extends React.Component {
             Register
             <br/>
 
-            <input type="text" id="email_box" placeholder="Email" required/>
+            <input type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
             <input type="text" id="username_box" placeholder="Username" required/>
