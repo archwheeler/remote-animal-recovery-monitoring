@@ -29,32 +29,9 @@ function dateDiffInWeeks(a, b) {
 
 app.get('/getAnimalInfo/:animalId', (req, res) => {
 
-    console.log(req.body);
-    const response_object = {	
-		name: "George",
-		firstLetterOfName: "G",
-		sex: "M",
-		species: "Dog",
-		bodyweight: 30, //this should be an integer (perhaps kg?)
-		owner_name: "Albert", // VARCHAR
-		op_name: "Leg", //VARCHAR - name of the operation
-		op_date: "2020-01-22", //DATE
-		body_condition: 7, //INT (out of 9)
-		injury_info: "arthritis on leg.", //TEXT
-		procedure_details: "The surgery was completed successfully", //TEXT
-		surgery_data: "**Surgery data**", //TEXT
-		abnormalities: "none", //TEXT
-		location: "leg", //VARCHAR
-		stitches_or_staples: true, //BOOLEAN - true if stitches
-		length_of_rest: 35, //INT - how many days rest?
-		cage_or_room: false, //BOOLEAN - true if cage
-		next_appt: "2020-01-28 11:42:00", //DATETIME
-		meds_name: "Paracetamol",
-		meds_amount: 3,
-		meds_frequency: 2,
-		meds_start: "2020-01-23", //DATE??
-		meds_length_of_course: 14,
-	};
+    //const test = 'BAgni';
+    //const response_object = {ids: [1, 2, 3], name: req.params.animalId, text: 'Meow'};
+    var response_object = {};
 
     //response_object.test_field = new Date();
     /*
@@ -87,17 +64,67 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
     }
      */
 
-    res.send(response_object);
+    try{
+        DB.getAnimalInfo(connection,req.params.animalId, function(AnResult){
+
+            //The result should contain aid, name, sex, species, owner_id, bodyweight, op_id
+            //Should we merge with accounts table?
+            if (AnResult == null){
+                res.send({status:'failure'});
+            } else{
+                response_object = AnResult;
+                response_object.status = 'success';
+                response_object.first_letter_of_name = AnResult.name[0];
+
+                //Each animal is associated with only one operation at present but for scalability, maybe separate (Animal, Op)
+                //table?
+                DB.getOperationInfo(connection,AnResult.op_id, function(opResult){
+
+                    //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
+                    //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
+                    response_object.op_name = opResult.op_name;
+                    response_object.op_date = opResult.op_date;
+                    response_object.body_condition = opResult.body_condition;
+
+                    //Potential problem with JSON parsing of TEXT fields??
+                    response_object.injury_info = opResult.injury;
+                    response_object.surgery_data = opResult.surgery;
+                    response_object.abnormalities = opResult.abnormalities;
+                    response_object.procedure_info = opResult.procedure_info;
+
+                    response_object.location = opResult.location;
+                    response_object.stitches_or_staples = opResult.stitch_staple;
+                    response_object.length_of_rest = opResult.rest_len;
+                    response_object.cage_or_room = opResult.cage_or_room;
+                    response_object.next_appt = opResult.next_appt;
+
+                    response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
+
+                    opResult.meds = JSON.parse(opResult.meds);
+
+                    response_object.meds_name = opResult.meds.name;
+                    response_object.meds_amount = opResult.meds.amount;
+                    response_object.meds_frequency = opResult.meds.frequency;
+                    response_object.meds_start = opResult.meds.start;
+                    response_object.meds_length_of_course = opResult.meds.length_of_course;
+
+
+                    delete response_object.op_id;
+                    res.send(response_object);
+
+                });
+            }
+        });
+    }
+    catch(err){
+        res.send({status: "failure"});
+    }
 
 });
 
 app.get('/checkForQuestionnaires/:animalID', (req, res) => {
     console.log(req.body);
-    /*res.send(
-        {noOfQuestionnaires : 1, questionnaires: [{questionnaire_id: 1, name:"Weeks 1-2", link: 'https://docs.google.com/forms/d/e/1FAIpQLSe3uN1_Ew1C3pvMUUtUK1eU0vZGpslGZsqlIrOMq9ka4UjrpQ/viewform?embedded=true'},
-                                                    {questionnaire_id: 2, name: "VetMetrica", link: "https://www.vetmetrica.com/Auth/Login"},
-                                                {questionnaire_id: 3, name:"LOAD Form", link: "Printable_LOAD_Form.pdf"}]}
-    );*/
+
     try{
         DB.getAnimalInfo(connection, req.params.animalID, function(AnimalInfo){
             if (AnimalInfo == null){
@@ -114,7 +141,7 @@ app.get('/checkForQuestionnaires/:animalID', (req, res) => {
                             var questionnaire = questionnaire_list[i];
                             if (dateDiff >= questionnaire.time){
                                 arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link,
-                                name:questionnaire.name });
+                                    name:questionnaire.name });
                                 c = c + 1;
                             }
                         }
@@ -144,12 +171,8 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
             }
             else{
                 const arr = [];
-                const c = 0;
-                for (questionnaire in questionnaire_list){
-                    if (dateDiffInWeeks(op_date, new Date()) <= questionnaire.time){
-                        arr.push({questionnaire_id : questionnaire.questionnaire_id, link: questionnaire.link});
-                        c = c + 1;
-                    }
+                for (i=0; i < survey_list.length; i++){
+                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link});
                 }
                 res.send(
                     {noOfSurveys : survey_list.length, surveys : arr, status: 'success'}
@@ -160,27 +183,7 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
     catch(err){
         res.send({status: 'failure'});
     }
-});
 
-app.get('/checkForSurveys/:animalID', (req, res) => {
-    console.log(req.body);
-    res.send(
-        {noOfSurveys : 1, surveys: [{survey_id : 1, link: 'link1'}]}
-    );
-    /* TODO
-    DB.getSurveysOfAnimal(connection, req.params.animalID, function(survey_list){
-        // I will just send a list of links - alternatively we could include a 'done' field?
-        const arr = [];
-        const c = 0;
-        for (survey in survey_list){
-            arr.push({survey_id : survey.survey_id, link: survey.link});
-            c = c + 1;
-        }
-        res.send(
-            {noOfSurveys : c, surveys : arr}
-        );
-    });
-     */
 });
 
 //Returns a list like [{aid: , name: },{aid: , name: }, ...] - in future if no vetTeamID return failure
@@ -270,8 +273,6 @@ app.post('/addNewAnimal', (req, res) => {
         meds_start: , //DATE??
         meds_length_of_course:
     }
-
-
     var req = { body: {
         vetTeamID: 2,
         name: "George",
@@ -301,19 +302,19 @@ app.post('/addNewAnimal', (req, res) => {
     console.log(req.body);
 
     meds = JSON.stringify({name:req.body.meds_name, amount:req.body.meds_amount, frequency: req.body.meds_frequency,
-    start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
+        start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
 
     try{
         DB.addOperation(connection, req.body.op_name, req.body.op_date, req.body.body_condition,
-        req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
-        req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
-        req.body.next_appt, meds, function(OpIdResult){
-            DB.addAnimal(connection, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
-            req.body.owner_id, OpIdResult, function(AnIdResult){
-                DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
-                res.send({aid: AnIdResult, status: 'success'});
+            req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
+            req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
+            req.body.next_appt, meds, function(OpIdResult){
+                DB.addAnimal(connection, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
+                    req.body.owner_id, OpIdResult, function(AnIdResult){
+                        DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
+                        res.send({aid: AnIdResult, status: 'success'});
+                    });
             });
-        });
     } catch(err){
         res.send({aid: -1, status: 'failure'});
     }
@@ -326,50 +327,50 @@ app.post('/modifyAnimal/:animalID', (req, res) => {
     Expecting same format as addAnimal - no need to send owner_id/op_id
      */
 
-     /*var req = { body: {
-             vetTeamID: 2,
-             name: "meow",
-             sex: "m",
-             species: "Dog",
-             bodyweight: 30, //this should be an integer (perhaps kg?)
-             //owner_id: "Albert", // VARCHAR
-             op_name: "Leg", //VARCHAR - name of the operation
-             op_date: "2020-01-11", //DATE
-             body_condition: 7, //INT (out of 9)
-             injury_info: "Surgery on that leg tho", //TEXT
-             procedure_details: "stuff n nonsense", //TEXT
-             surgery_data: "weeee", //TEXT
-             abnormalities: "none", //TEXT
-             location: "leg", //VARCHAR
-             stitches_or_staples: true, //BOOLEAN - true if stitches
-             length_of_rest: 35, //INT - how many days rest?
-             cage_or_room: false, //BOOLEAN - true if cage
-             next_appt: new Date().toISOString().slice(0, 19).replace('T', ' '), //DATETIME
-             meds_name: "MED",
-             meds_amount: "3",
-             meds_frequency: "2",
-             meds_start: "2020-01-23", //DATE??
-             meds_length_of_course: "14",
-         }};*/
+    /*var req = { body: {
+            vetTeamID: 2,
+            name: "meow",
+            sex: "m",
+            species: "Dog",
+            bodyweight: 30, //this should be an integer (perhaps kg?)
+            //owner_id: "Albert", // VARCHAR
+            op_name: "Leg", //VARCHAR - name of the operation
+            op_date: "2020-01-11", //DATE
+            body_condition: 7, //INT (out of 9)
+            injury_info: "Surgery on that leg tho", //TEXT
+            procedure_details: "stuff n nonsense", //TEXT
+            surgery_data: "weeee", //TEXT
+            abnormalities: "none", //TEXT
+            location: "leg", //VARCHAR
+            stitches_or_staples: true, //BOOLEAN - true if stitches
+            length_of_rest: 35, //INT - how many days rest?
+            cage_or_room: false, //BOOLEAN - true if cage
+            next_appt: new Date().toISOString().slice(0, 19).replace('T', ' '), //DATETIME
+            meds_name: "MED",
+            meds_amount: "3",
+            meds_frequency: "2",
+            meds_start: "2020-01-23", //DATE??
+            meds_length_of_course: "14",
+        }};*/
 
     //console.log(req.body);
     try{
         meds = JSON.stringify({name:req.body.meds_name, amount:req.body.meds_amount, frequency: req.body.meds_frequency,
-               start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
+            start: req.body.meds_start, length_of_course: req.body.meds_length_of_course});
         DB.getAnimalInfo(connection,req.params.animalID, function(AnResult){
             if(AnResult==null){
                 res.send({status: 'failure'});
             } else {
                 DB.updateAnimal(connection, req.params.animalID, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
-                            AnResult.owner_id, AnResult.op_id, function(){
-                                DB.updateOperation(connection, AnResult.op_id, req.body.op_name, req.body.op_date, req.body.body_condition,
-                                        req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
-                                        req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
-                                        req.body.next_appt, meds, function(){
-                                            res.send({'status' : 'success'})
-                                        });
+                    AnResult.owner_id, AnResult.op_id, function(){
+                        DB.updateOperation(connection, AnResult.op_id, req.body.op_name, req.body.op_date, req.body.body_condition,
+                            req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
+                            req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
+                            req.body.next_appt, meds, function(){
+                                res.send({'status' : 'success'})
                             });
-                }
+                    });
+            }
         });
     }catch(err){
         console.log(err);
@@ -416,18 +417,18 @@ app.post('/addNewSurvey', (req, res) => {
     console.log(req.body);
 
     try{
-            DB.addSurvey(connection, req.body.vetTeamID, new Date().toISOString().slice(0,10), req.body.link, req.body.location, function(AddResult){
-                //Instead of a (survey_id, location) table, we need a (survey_id, aid) relation
-                    DB.getSurveyReceivers(connection, AddResult, function(animal_list){
-                        const arr = [];
-                        for (i=0; i<animal_list.length; i++){
-                            arr.push(animal_list[i].aid);
-                        }
-                        res.send(
-                            {animals : arr, status: 'success'}
-                        );
-                    });
+        DB.addSurvey(connection, req.body.vetTeamID, new Date().toISOString().slice(0,10), req.body.link, req.body.location, function(AddResult){
+            //Instead of a (survey_id, location) table, we need a (survey_id, aid) relation
+            DB.getSurveyReceivers(connection, AddResult, function(animal_list){
+                const arr = [];
+                for (i=0; i<animal_list.length; i++){
+                    arr.push(animal_list[i].aid);
+                }
+                res.send(
+                    {animals : arr, status: 'success'}
+                );
             });
+        });
     } catch(err){
         res.send({animals : [], status: 'failure'});
     }
@@ -438,20 +439,17 @@ app.post('/registerUser', (req, res) => {
     //Username, password, email
     console.log(req.body);
     try{
-            DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
-                if (add_result != -1){
-                    res.send({uid: add_result, status: 'success'});
-                    console.log(add_result);
-                }
-                else{
-                    res.send({uid: -1, status: 'failure'});
-                    console.log(-1);
-                }
-            });
-        }catch(err){
-            res.send({uid: -1, status: 'failure'});
-            console.log(err);
-        }
+        DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
+            if (add_result != -1){
+                res.send({uid: add_result, status: 'success'});
+            }
+            else{
+                res.send({uid: -1, status: 'failure'});
+            }
+        });
+    }catch(err){
+        res.send({uid: -1, status: 'failure'});
+    }
 });
 
 app.post('/registerVetTeam', (req, res) => {
@@ -471,7 +469,6 @@ app.post('/registerVetTeam', (req, res) => {
     }
 });
 
-
 app.post('addVetToTeam/:vetTeamID', (req, res) =>{
 
     try{
@@ -485,7 +482,6 @@ app.post('addVetToTeam/:vetTeamID', (req, res) =>{
 
 });
 
-
 app.post('/loginData', (req, res) => {
     //This method expects the email and password
     console.log(req.body);
@@ -494,10 +490,10 @@ app.post('/loginData', (req, res) => {
     try{
         DB.authenticateUser(connection, req.body.email, req.body.password, function(result){
             var type = (result.type == 1)? 'carer' : 'vet';
-            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, username: result.name, status: 'success', VetOrCarer : type});
+            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, status: 'success', VetOrCarer : type});
         });
     }catch(err){
-            res.send({passwordCorrect: false, status: 'failure'});
+        res.send({passwordCorrect: false, status: 'failure'});
     }
 
 });
