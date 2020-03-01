@@ -1,9 +1,7 @@
 import React from 'react';
 import List from 'material-ui/List/List';
-import {Card, CardHeader} from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+import {Card} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
 
 import {
@@ -55,15 +53,7 @@ class VetChat extends React.Component {
 
 	render() {
         const {
-          userId,
-          showLogin,
-          rooms,
-          currentRoom,
-          currentUser,
-          messages,
           newMessage,
-          roomUsers,
-          roomName,
           showImageUploadDialog,
           fileUploadMessage
         } = this.state;
@@ -72,7 +62,7 @@ class VetChat extends React.Component {
             <div>
                 <Tabs>
                     {this.state.rooms.map((room, index) => (
-                        <Tab label={index} onActive={() => (this.connectToRoom(room.id))}>
+                        <Tab label={room.name} onActive={() => (this.connectToRoom(room.id))} key={room.id}>
                             <Card>
                                 <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
                                     <ChatSession messages={this.state.messages} />
