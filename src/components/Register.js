@@ -1,6 +1,10 @@
 import React from 'react';
 import {RegisterAction, RegisterVetAction} from './AccountAction';
 import {store} from '../store';
+import {Card, CardTitle} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
@@ -12,36 +16,35 @@ class Account extends React.Component {
 	render() {
     if (store.getState().loggedIn) {
       return (
-        <div className="center">
-          You are already logged in.
+        <Card className="center">
+          <CardTitle title="You are already logged in." />
           <br/>
 
-          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
-            My Account
-          </button>
-        </div>
+          <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="My Account" onClick={() => store.dispatch(GoToAccountAction())}/>
+          </div>
+          <br/>
+        </Card>
       );
     } else {
       return (
-        <div className="center">
+        <Card className="center">
+          <CardTitle title="Register" />
           <form onSubmit={this.register}>
-            Register
+            <TextField type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
-            <input type="email" id="email_box" placeholder="Email" required/>
+            <TextField type="text" id="username_box" placeholder="Username" required/>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username" required/>
+            <TextField type="password" id="password_box" placeholder="Password" required/>
             <br/>
-
-            <input type="password" id="password_box" placeholder="Password" required/>
             <br/>
 
             <label>
               <input type="checkbox" onClick={this.showPassword}/>
               Show password?
             </label>
-            <br/>
 
             <label>
               <input type="checkbox" id="vet_checkbox"/>
@@ -49,14 +52,14 @@ class Account extends React.Component {
             </label>
             <br/>
 
-            <input type="submit" value="Register" />
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} type="submit" label="Register"/>
+            </div>
             <br/>
           </form>
 
-          <button className="text" onClick={() => window.location.href = "/#/login"}>
-            Already have an account? Log in here
-          </button>
-        </div>
+          <FlatButton className="text" onClick={() => window.location.href = "/#/login"} label="Already have an account?" />
+        </Card>
       );
     }
   }

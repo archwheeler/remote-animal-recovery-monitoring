@@ -7,12 +7,11 @@ body {
   text-align: center;
 }
 
-label {
-  width: 500px;
-  max-width: 100%;
-
-  text-align: left;
-  display: inline-block;
+.center label {
+  display: block;
+  text-align: center;
+  line-height: 150%;
+  font-size: .85em;
 }
 
 input[type=checkbox] {
