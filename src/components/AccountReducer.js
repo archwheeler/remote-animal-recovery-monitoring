@@ -77,6 +77,7 @@ async function callLogin(email, pass) {
     uid: 2,
     aid: 3,
     status: "success",
+    username: "Tom";
     VetOrCarer: "vet" // could be 'carer'
   };
 }
@@ -97,13 +98,16 @@ export function AccountReducer(state = initial_state, action) {
 
       callLogin(action.data.email, action.data.pass).then(
         res => {
+          console.log(JSON.stringify(res));
           state.loggedIn = res.passwordCorrect;
 
           if (state.loggedIn) {
 
             // Login success
             state.data = {};
-            state.data.id = res.id;
+            state.data.name = res.username;
+            state.data.userId = res.uid;
+            state.vetAccount = res.VetOrCarer == "vet";
 
             // If vet, load accounts
             if (state.vetAccount) {

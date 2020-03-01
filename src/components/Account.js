@@ -28,6 +28,10 @@ class Account extends React.Component {
               label="Change user"
             />
             <br/>
+
+            <p>
+            {JSON.stringify(store.getState())}
+            </p>
             <br/>
 
             <div style={{marginLeft: 50, marginRight: 50}}>
