@@ -338,6 +338,19 @@ function getUserInfo(con, uid, callback){
     });
 }
 
+function getCarerList(con, callback){
+    var sql = "SELECT (uid, name) FROM accounts";
+    con.query(sql, function(err, result){
+        if (err){
+            callback({status: 'failure'});
+        }
+        else{
+            var carer_list = JSON.parse(JSON.stringify(result));
+            callback({status: 'success', carers: carer_list});
+        }
+    })
+}
+
 // get list of subaccount names for vet
 function getVetList(con, uid, callback){
     var sql = "SELECT name FROM sub_accounts WHERE uid=" + uid;
@@ -439,7 +452,7 @@ function getUserContacts(con, uid, callback){
             var type = JSON.parse(JSON.stringify(result[0])).type;
             // if carer
             if (type){
-                var sql2 = "SELECT uid FROM animal_vet JOIN animals WHERE animal_vet.aid = animals.aid AND animals.owner_id=" + uid;
+                var sql2 = "SELECT accounts.uid, accounts.name FROM accounts JOIN animal_vet ON accounts.uid = animal_vet.uid JOIN animals ON animal_vet.aid = animals.aid WHERE animals.owner_id=" + uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     var contacts = JSON.parse(JSON.stringify(result2));
@@ -448,15 +461,11 @@ function getUserContacts(con, uid, callback){
             }
             // if vet
             else{
-            var sql2 = "SELECT owner_id FROM animals JOIN animal_vet WHERE animal_vet.aid = animals.aid AND animal_vet.uid=" + uid;
+            var sql2 = "SELECT accounts.uid, accounts.name FROM accounts JOIN animals ON accounts.uid = animals.owner_id JOIN animal_vet ON animal_vet.aid = animals.aid WHERE animal_vet.uid=" + uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
-                    var contacts1 = JSON.parse(JSON.stringify(result2));
-                    var contacts2 = [];
-                    for (i = 0; i < contacts1.length; i ++){
-                        contacts2.push({uid: contacts1[i].owner_id});
-                    }
-                    callback(contacts2);
+                    var contacts = JSON.parse(JSON.stringify(result2));
+                    callback(contacts);
                 });
             }
         }
@@ -587,7 +596,7 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 
 
 // TESTING
-//var connection = createConnection();
+var connection = createConnection();
 ////clearDB(connection);
 //createTables(connection);
 //showTables(connection, function(result){
@@ -642,11 +651,11 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 //    console.log(result);
 //});
 //
-//getUserContacts(connection, 1, function(result){
+//getUserContacts(connection, 4, function(result){
 //    console.log(result);
 //});
 //
-//getUserContacts(connection, 2, function(result){
+//getUserContacts(connection, 3, function(result){
 //    console.log(result);
 //});
 //
@@ -699,6 +708,7 @@ module.exports = {
     addAnimalToVetTeam,
     addSurvey,
     addQuestionnaire,
+    addQuestionnaireToAnimal,
     addChatLabel,
     getUserID,
     getUserInfo,
