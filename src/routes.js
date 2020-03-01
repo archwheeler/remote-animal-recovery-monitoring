@@ -71,6 +71,11 @@ function routeVetNewSurvey(s, cb) {
 	});
 }
 
+function routeVetNewQuestionnaire(s, cb) {
+	System.import('./components/VetNewQuestionnaire').then(component => {
+		cb(null, component.default || component);
+	});
+}
 
 function routeForgot(s, cb) {
 	System.import('./components/Forgot').then(component => {
@@ -96,6 +101,7 @@ export default (
 		<Route path="register" getComponent={routeRegister}/>
 		<Route path="vetmain" getComponent={routeVetMain}/>
 		<Route path="vetnewsurvey" getComponent={routeVetNewSurvey}/>
+		<Route path="vetnewquestionnaire" getComponent={routeVetNewQuestionnaire}/>
 		<Route path="vetnewanimal" getComponent={routeVetNewAnimal}/>
 		<Route path="vetinformationinput" getComponent={routeVetInformationInput}/>
 		<Route path="forgot" getComponent={routeForgot}/>

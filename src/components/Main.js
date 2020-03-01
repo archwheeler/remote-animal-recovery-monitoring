@@ -154,7 +154,7 @@ class Main extends React.Component {
 								avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-					{this.state.information.name} was presented to the Queen’s Veterinary School Hospital on {this.state.information.op_date} for further investigation into {this.state.information.injury_info} {this.state.information.procedure_details}.
+					{this.state.information.name} was presented to the Queen’s Veterinary School Hospital on {this.state.information.op_date} for further investigation into {this.state.information.injury_info} {this.state.information.procedure_info}.
 					</CardText>
 				</Card>
 				

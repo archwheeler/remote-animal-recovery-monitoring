@@ -22,7 +22,7 @@ class VetInformationInput extends React.Component {
 				op_date: "", //DATE
 				body_condition: null, //INT (out of 9)
 				injury_info: "", //TEXT
-				procedure_details: "", //TEXT
+				procedure_info: "", //TEXT
 				surgery_data: "", //TEXT
 				abnormalities: "", //TEXT
 				location: "", //VARCHAR
@@ -129,7 +129,7 @@ class VetInformationInput extends React.Component {
 		this.state.information.op_date = document.getElementById("opdate").value;
 		this.state.information.body_condition = document.getElementById("bodycondition").value;
 		this.state.information.injury_info = document.getElementById("injuryinfo").value;
-		this.state.information.procedure_details = document.getElementById("procedure").value;
+		this.state.information.procedure_info = document.getElementById("procedure").value;
 		this.state.information.surgery_data = document.getElementById("surgerydata").value;
 		this.state.information.abnormalities = document.getElementById("abnormalities").value;
 		this.state.information.location = document.getElementById("op_loc").value;
@@ -142,6 +142,7 @@ class VetInformationInput extends React.Component {
 		this.state.information.meds_length_of_course = document.getElementById("medlength").value;
 		console.log(this.state.information);
 		this.returnInformation();
+		window.location.assign("/#/VetMain");
 	
 	}
 

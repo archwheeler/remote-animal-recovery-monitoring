@@ -20,14 +20,17 @@ class VetInformationInput extends React.Component {
 				sex: "",
 				species: "",
 				bodyweight: null, //this should be an integer (perhaps kg?)
-				owner_name: "", // VARCHAR
+				owner_id: "", // VARCHAR
+				status:"",
+				first_letter_of_name: "",
+				owner_name:"",
 				op_name: "", //VARCHAR - name of the operation
 				op_date: "", //DATE
 				body_condition: null, //INT (out of 9)
 				injury_info: "", //TEXT
-				procedure_details: "", //TEXT
 				surgery_data: "", //TEXT
 				abnormalities: "", //TEXT
+				procedure_info: "", //TEXT
 				location: "", //VARCHAR
 				stitches_or_staples: null, //BOOLEAN - true if stitches
 				length_of_rest: null, //INT - how many days rest?
@@ -92,16 +95,10 @@ class VetInformationInput extends React.Component {
 		this.getAnimals(this.state.information.vetTeamID).then(listOfAnimals => this.setState({animals:listOfAnimals.animals})).catch(err => console.log(err));
 	}
 
-	handleChangeAnimal(event, index, value){
-		this.setState({animal:value});
-		console.log(value);
-
-		this.getInformation(value.aid).then(info => {
-		  info.op_date = new Date();
-		  info.next_appt = new Date();
-		  info.meds_start = new Date();
-		  return info;
-		}).then(info => this.state.information = info)
+	handleChangeAnimal(event, index, animal){
+		this.setState({animal:animal});
+		console.log(animal);
+		this.getInformation(animal.aid).then(information => this.setState({information:information}))
 			.catch(err => console.log(err));
 		console.log(this.state);
 	}
