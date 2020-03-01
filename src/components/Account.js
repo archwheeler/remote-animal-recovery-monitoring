@@ -1,6 +1,9 @@
 import React from 'react';
 import {store} from '../store';
 import {SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
+import {Card, CardTitle} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
@@ -13,23 +16,25 @@ class Account extends React.Component {
     if (store.getState().loggedIn) {
       if (store.getState().choseId) {
         return (
-          <div className="center">
-            <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}> Log out </button>
+          <Card className="center">
+            <CardTitle title="My Account"/>
+
+            <p>Name: {store.getState().data.name}</p>
             <br/>
 
-            My Account
+            <FlatButton
+              className="text"
+              onClick={() => store.dispatch(ChooseIdAction())}
+              label="Change user"
+            />
+            <br/>
             <br/>
 
-            Name: {store.getState().data.name}
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="Log Out" onClick={() => store.dispatch(LogoutAction())}/>
+            </div>
             <br/>
-
-            Change user:
-            <button className="text" onClick={() =>
-              store.dispatch(ChooseIdAction())}>
-              Click here
-            </button>
-            <br/>
-          </div>
+          </Card>
         );
       } else {
         if (store.getState().data.accounts.length == 0) {
@@ -38,8 +43,9 @@ class Account extends React.Component {
           return null;
         }
         return (
-          <div className="center">
-            Please select an account from below:
+          <Card className="center">
+            <br/>
+            <p>Please select an account from below:</p>
             <br/>
             {
               store.getState().data.accounts.map(item =>
@@ -48,17 +54,21 @@ class Account extends React.Component {
                 </div>
               )
             }
-          </div>
+            <br/>
+          </Card>
         );
       }
     } else {
       return (
-        <div className="center">
-          You are not logged in.
+        <Card className="center">
+          <CardTitle title="You are not logged in" />
           <br/>
 
-          <button className="blueButton" onClick={() => window.location.href = "/#/login"}> Log in </button>
-        </div>
+          <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="Log in" onClick={() => window.location.href = "/#/login"}/>
+          </div>
+          <br/>
+        </Card>
       );
     }
   }
