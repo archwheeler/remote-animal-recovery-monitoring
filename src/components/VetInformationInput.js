@@ -50,7 +50,7 @@ class VetInformationInput extends React.Component {
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.getInformation = this.getInformation.bind(this);
 		this.getAnimals = this.getAnimals.bind(this);
-	
+
 	}
 
 	getAnimals = async(vetTeamID) => {
@@ -67,7 +67,7 @@ class VetInformationInput extends React.Component {
 		console.log(body);
 		return body;
 	}
-	
+
 	getAnimals = async() => {
 		const response = await fetch('http://localhost:5000/getAnimals/' + store.getState().data.userId);
 		const body = await response.json();
@@ -81,7 +81,7 @@ class VetInformationInput extends React.Component {
             headers: {
                 'Content-Type': 'application/json',
             },
-            
+
             body: JSON.stringify(this.state.information)
         });
         const body = await response.json();
@@ -92,10 +92,16 @@ class VetInformationInput extends React.Component {
 		this.getAnimals(this.state.information.vetTeamID).then(listOfAnimals => this.setState({animals:listOfAnimals.animals})).catch(err => console.log(err));
 	}
 
-	handleChangeAnimal(event, index, animal){
-		this.setState({animal:animal});
-		console.log(animal);
-		this.getInformation(animal.aid).then(info => this.setState({information:info}))
+	handleChangeAnimal(event, index, value){
+		this.setState({animal:value});
+		console.log(value);
+
+		this.getInformation(value.aid).then(info => {
+		  info.op_date = new Date();
+		  info.next_appt = new Date();
+		  info.meds_start = new Date();
+		  return info;
+		}).then(info => this.state.information = info)
 			.catch(err => console.log(err));
 		console.log(this.state);
 	}
@@ -160,7 +166,7 @@ class VetInformationInput extends React.Component {
 		this.state.information.meds_length_of_course = document.getElementById("medlength").value;
 		console.log(this.state.information);
 		this.returnInformation(this.state.animal.aid);
-	
+
 	}
 
 	animalNameItems(animals) {
@@ -175,187 +181,240 @@ class VetInformationInput extends React.Component {
 
 
 	render() {
+	  console.log("next_appt: " + this.state.information.next_appt);
 		const nextapptdatetime = new Date(this.state.information.next_appt);
-		
-		return (
-			(store.getState().loggedIn && store.getState().vetAccount)?
-			
-			(this.state.animal.aid == null)?
-			<div>
-				<Card>
-					<CardTitle title="Please select an animal to update:" />
-					<SelectField
-					id="animal"
-					floatingLabelText="Name"
-					value={this.state.animal}
-					onChange={this.handleChangeAnimal}
-					>
-						{this.animalNameItems(this.state.animals)}
-          			</SelectField>
-				</Card>
-			</div>
-			:
-			<div>
-			<Card>
-				<CardTitle title="Discharge Information Input"/>
-				 <CardText>
-					<SelectField
-					id="sex"
-					floatingLabelText="Sex"
-					value={this.state.information.sex}
-					onChange={this.handleChangeSex}
-					>
-						<MenuItem value={"M"} primaryText="Male" />
-       					<MenuItem value={"F"} primaryText="Female" />
-          			</SelectField>
-					<br />
-					<SelectField
-					id="species"
-					floatingLabelText="Animal Type"
-					value={this.state.information.species}
-					onChange={this.handleChangeAnimalType}
-					>
-						<MenuItem value={"Dog"} primaryText="Dog" />
-       					<MenuItem value={"Cat"} primaryText="Cat" />
-          			</SelectField>
-					<br />
-					<TextField
-					id="bodyweight"
-					floatingLabelText="Bodyweight in kg"
-					defaultValue={this.state.information.bodyweight}
-					/><br />
-					<TextField
-					id="ownername"
-					floatingLabelText="Owner Name"
-					defaultValue={this.state.information.owner_name}
-					/><br />
-					<br />
-					<TextField
-					id="opname"
-					floatingLabelText="Operation Name"
-					defaultValue={this.state.information.op_name}
-					/><br />
-					<br />
-					<DatePicker 
-						id="opdate"
-						floatingLabelText="Operation Date"
-						defaultDate={new Date(this.state.information.op_date)}
-						/>
-					<br />
-					<TextField
-					id="bodycondition"
-					floatingLabelText="Body Condition"
-					defaultValue={this.state.information.body_condition}
-					/><br />
-					<br />
-					<TextField
-					id="injuryinfo"
-					floatingLabelText="Injury Info"
-					defaultValue={this.state.information.injury_info}
-					/><br />
-					<br />
-					<TextField
-					id="procedure"
-					floatingLabelText="Procedure Details"
-					defaultValue={this.state.information.procedure_details}
-					/><br />
-					<br />
-					<TextField
-					id="surgerydata"
-					floatingLabelText="Surgery Information"
-					defaultValue={this.state.information.surgery_data}
-					/><br />
-					<br />
-					<TextField
-					id="abnormalities"
-					floatingLabelText="Abnormalities"
-					defaultValue={this.state.information.abnormalities}
-					/><br />
-					<br />
-					<TextField
-					id="op_loc"
-					floatingLabelText="Operation Location"
-					defaultValue={this.state.information.location}
-					/><br />
-					<br />
-					<SelectField
-					id="stitchesstaples"
-					floatingLabelText="Stitches or Staples"
-					value={this.state.information.stitches_or_staples}
-					onChange={this.handleChangeStitchesStaples}
-					>
-						<MenuItem value={true} primaryText="Stitches" />
-       					<MenuItem value={false} primaryText="Staples" />
-          			</SelectField>
-					<br />
-					<TextField
-					id="length"
-					floatingLabelText="Length of rest"
-					defaultValue={this.state.information.length_of_rest}
-					/><br />
-					<br />
-					<SelectField
-					id="cageroom"
-					floatingLabelText="Cage or Room"
-					value={this.state.information.cage_or_room}
-					onChange={this.handleChangeCageRoom}
-					>
-						<MenuItem value={true} primaryText="Cage" />
-       					<MenuItem value={false} primaryText="Small Room" />
-          			</SelectField>
-					<br />
-					<DatePicker 
-						id="nextapptdate"
-						floatingLabelText="Next Appointment Date"
-						defaultDate={nextapptdatetime}
-						/>
-					<br />
-					<TimePicker
-						id="nextappttime"
-						format="24hr"
-						floatingLabelText="Next Appointment Time"
-						defaultTime={nextapptdatetime}
-					/>
-					<br />
-					<TextField
-					id="medname"
-					floatingLabelText="Medication Name"
-					defaultValue={this.state.information.meds_name}
-					/><br />
-					<br />
-					<TextField
-					id="medamount"
-					floatingLabelText="Medication amount per dose"
-					defaultValue={this.state.information.meds_amount}
-					/><br />
-					<br />
-					<TextField
-					id="medfreq"
-					floatingLabelText="Medication frequency per day"
-					defaultValue={this.state.information.meds_frequency}
-					/><br />
-					<br />
-					<DatePicker 
-						id="medstart"
-						floatingLabelText="Start of medication course"
-						defaultDate={new Date(this.state.information.meds_start)}
-						/>
-					<br />
-					<TextField
-					id="medlength"
-					floatingLabelText="Length of course of medication"
-					defaultValue={this.state.information.meds_length_of_course}
-					/><br />
-					<br />
 
-					<RaisedButton label="Submit" primary={true} onClick={this.handleSubmit}/>
-				</CardText>
-			</Card>
-		  </div>
-		  :<div>
-		  {window.location.assign("/")}
-		  </div>
-		);
+    if (store.getState().loggedIn && store.getState().vetAccount) {
+      if (this.state.animal.aid == null) {
+        return (
+          <Card>
+            <CardTitle title="Please select an animal to update:" />
+            <SelectField
+              id="animal"
+              floatingLabelText="Name"
+              value={this.state.animal}
+              onChange={this.handleChangeAnimal}
+            >
+              {this.animalNameItems(this.state.animals)}
+            </SelectField>
+          </Card>
+			  );
+      } else {
+        // animal aid != null
+        return (
+          <Card>
+            <CardTitle title="Discharge Information Input"/>
+            <SelectField
+              id="sex"
+              floatingLabelText="Sex"
+              value={this.state.information.sex}
+              onChange={this.handleChangeSex}
+            >
+              <MenuItem value={"M"} primaryText="Male" />
+              <MenuItem value={"F"} primaryText="Female" />
+            </SelectField>
+
+            <br />
+
+            <SelectField
+              id="species"
+              floatingLabelText="Animal Type"
+              value={this.state.information.species}
+              onChange={this.handleChangeAnimalType}
+            >
+              <MenuItem value={"Dog"} primaryText="Dog" />
+              <MenuItem value={"Cat"} primaryText="Cat" />
+            </SelectField>
+
+            <br />
+
+            <TextField
+              id="bodyweight"
+              floatingLabelText="Bodyweight in kg"
+              defaultValue={this.state.information.bodyweight}
+            />
+            <br />
+
+            <TextField
+              id="ownername"
+              floatingLabelText="Owner Name"
+              defaultValue={this.state.information.owner_name}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="opname"
+              floatingLabelText="Operation Name"
+              defaultValue={this.state.information.op_name}
+            />
+            <br />
+
+            <br />
+
+            <DatePicker
+              id="opdate"
+              floatingLabelText="Operation Date"
+              defaultDate={new Date(this.state.information.op_date)}
+            />
+            <br />
+
+            <TextField
+              id="bodycondition"
+              floatingLabelText="Body Condition"
+              defaultValue={this.state.information.body_condition}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="injuryinfo"
+              floatingLabelText="Injury Info"
+              defaultValue={this.state.information.injury_info}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="procedure"
+              floatingLabelText="Procedure Details"
+              defaultValue={this.state.information.procedure_details}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="surgerydata"
+              floatingLabelText="Surgery Information"
+              defaultValue={this.state.information.surgery_data}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="abnormalities"
+              floatingLabelText="Abnormalities"
+              defaultValue={this.state.information.abnormalities}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="op_loc"
+              floatingLabelText="Operation Location"
+              defaultValue={this.state.information.location}
+            />
+            <br />
+
+            <br />
+
+            <SelectField
+              id="stitchesstaples"
+              floatingLabelText="Stitches or Staples"
+              value={this.state.information.stitches_or_staples}
+              onChange={this.handleChangeStitchesStaples}
+            >
+              <MenuItem value={true} primaryText="Stitches" />
+              <MenuItem value={false} primaryText="Staples" />
+            </SelectField>
+            <br />
+
+            <TextField
+              id="length"
+              floatingLabelText="Length of rest"
+              defaultValue={this.state.information.length_of_rest}
+            />
+            <br />
+
+            <br />
+
+            <SelectField
+              id="cageroom"
+              floatingLabelText="Cage or Room"
+              value={this.state.information.cage_or_room}
+              onChange={this.handleChangeCageRoom}
+            >
+              <MenuItem value={true} primaryText="Cage" />
+              <MenuItem value={false} primaryText="Small Room" />
+              </SelectField>
+            <br />
+
+            <DatePicker
+              id="nextapptdate"
+              floatingLabelText="Next Appointment Date"
+              defaultDate={nextapptdatetime}
+            />
+            <br />
+
+            <TimePicker
+              id="nextappttime"
+              format="24hr"
+              floatingLabelText="Next Appointment Time"
+              defaultTime={nextapptdatetime}
+            />
+            <br />
+
+            <TextField
+              id="medname"
+              floatingLabelText="Medication Name"
+              defaultValue={this.state.information.meds_name}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="medamount"
+              floatingLabelText="Medication amount per dose"
+              defaultValue={this.state.information.meds_amount}
+            />
+            <br />
+
+            <br />
+
+            <TextField
+              id="medfreq"
+              floatingLabelText="Medication frequency per day"
+              defaultValue={this.state.information.meds_frequency}
+            />
+            <br />
+
+            <br />
+
+            <DatePicker
+              id="medstart"
+              floatingLabelText="Start of medication course"
+              defaultDate={new Date(this.state.information.meds_start)}
+            />
+            <br />
+
+            <TextField
+              id="medlength"
+              floatingLabelText="Length of course of medication"
+              defaultValue={this.state.information.meds_length_of_course}
+            />
+            <br />
+
+            <br />
+
+            <RaisedButton label="Submit" primary={true} onClick={this.handleSubmit}/>
+          </Card>
+        );
+      }
+    } else {
+      // Not logged in
+      return (
+        <Card>
+          {window.location.assign("/")}
+        </Card>
+		  );
+		}
 	}
 }
 

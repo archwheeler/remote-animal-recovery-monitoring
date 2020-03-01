@@ -479,10 +479,12 @@ function getOperationInfo(con, op_id, callback){
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length == 0){
+            console.log("LENGTH IS ZERO");
             callback(null);
         }
         else{
             var op_info = JSON.parse(JSON.stringify(result[0]));
+            console.log("OP_INFO: " + JSON.stringify(op_info));
             callback(op_info);
         }
     });

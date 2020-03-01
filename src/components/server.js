@@ -89,7 +89,7 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
                         response_object.owner_name = usResult.name;
 
                         response_object.op_name = opResult.op_name;
-                        response_object.op_date = opResult.op_date;
+                        response_object.op_date = new Date(opResult.op_date);
                         response_object.body_condition = opResult.body_condition;
 
                         //Potential problem with JSON parsing of TEXT fields??
@@ -102,7 +102,8 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
                         response_object.stitches_or_staples = opResult.stitch_staple;
                         response_object.length_of_rest = opResult.rest_len;
                         response_object.cage_or_room = opResult.cage_or_room;
-                        response_object.next_appt = opResult.next_appt;
+                        response_object.next_appt = opResult.next_appointment;
+                        console.log("next_appt: " + opResult.next_appointment);
 
                         response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
 
@@ -340,7 +341,7 @@ app.post('/addNewAnimal', (req, res) => {
                         res.send({aid: AnIdResult, status: 'success'});
                     });
             });
-            
+
     } catch(err){
         res.send({aid: -1, status: 'failure'});
     }
