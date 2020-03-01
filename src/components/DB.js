@@ -339,7 +339,7 @@ function getUserInfo(con, uid, callback){
 }
 
 function getCarerList(con, callback){
-    var sql = "SELECT (uid, name) FROM accounts";
+    var sql = "SELECT uid, name FROM accounts WHERE type=1";
     con.query(sql, function(err, result){
         if (err){
             callback({status: 'failure'});
@@ -348,7 +348,7 @@ function getCarerList(con, callback){
             var carer_list = JSON.parse(JSON.stringify(result));
             callback({status: 'success', carers: carer_list});
         }
-    })
+    });
 }
 
 // get list of subaccount names for vet
@@ -596,7 +596,10 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 
 
 // TESTING
-var connection = createConnection();
+//var connection = createConnection();
+//getCarerList(connection, function(result){
+//    console.log(result);
+//});
 ////clearDB(connection);
 //createTables(connection);
 //showTables(connection, function(result){
