@@ -53,21 +53,25 @@ class Account extends React.Component {
           return null;
         }
         return (
-          <Card className="center">
+          <div>
+            <Card className="center">
+              <br/>
+              <p>Please select an account from below:</p>
+              <br/>
+              {
+                store.getState().data.accounts.map(item =>
+                  <div>
+                    <input type="text" key={item} value={item} onClick={() => store.dispatch(SelectAccountAction(item))} readOnly/>
+                  </div>
+                )
+              }
+            </Card>
+
             <br/>
-            <p>Please select an account from below:</p>
+            <RaisedButton primary={true} fullWidth={true} label="Add new account" onClick={this.addVetToAccount}/>
             <br/>
-            {
-              store.getState().data.accounts.map(item =>
-                <div>
-                  <input type="text" key={item} value={item} onClick={() => store.dispatch(SelectAccountAction(item))} readOnly/>
-                </div>
-              )
-            }
             <br/>
-            <RaisedButton primary={true} fullWidth={true} label="+ Add new account" onClick={this.addVetToAccount}/>
-            <br/>
-          </Card>
+          </div>
         );
       }
     } else {
