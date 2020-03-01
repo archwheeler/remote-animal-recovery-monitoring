@@ -1,6 +1,13 @@
 import React from 'react';
 import {store} from '../store';
 import {LoginAction, LogoutAction} from './AccountAction';
+import Checkbox from 'material-ui/Checkbox';
+import {Card, CardTitle} from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
+import TextField from 'material-ui/TextField';
+import CircularProgress from 'material-ui/CircularProgress';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
@@ -12,54 +19,58 @@ class Account extends React.Component {
 	render() {
 	  if (store.getState().loggedIn) {
       return (
-        <div className="center">
-          You are already logged in.
+        <Card className="center">
+          <CardTitle title="You are already logged in." />
+          <br/>
+          <FlatButton className="blueButton" onClick={() => window.location.href = "/#/account"} label="My Account" />
           <br/>
 
-          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
-            My Account
-          </button>
-          <br/>
-
-          <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}>
-            Log out
-          </button>
-        </div>
+          <FlatButton className="blueButton" onClick={() => store.dispatch(LogoutAction())} label="Log out" />
+        </Card>
       );
     } else {
       return (
-        <div className="center">
+        <Card className="center">
           <form onSubmit={this.login}>
+            <br/>
+            <CardTitle title="Log in to the system below."/>
             <label id="feedback" className="center">
-            Log in to the system below.
             </label>
+            
+            <TextField type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
-            <input type="email" id="email_box" placeholder="Email" required/>
+            <TextField type="password" id="password_box" placeholder="Password" required/>
             <br/>
-
-            <input type="password" id="password_box" placeholder="Password" required/>
             <br/>
-
+            
             <label>
               <input type="checkbox" onClick={this.showPassword}/>
               Show password?
             </label>
             <br/>
 
-            <input type="submit" value="Log in"/>
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} type="submit" label="Log in"/>
+            </div>
             <br/>
+            
           </form>
 
-          <button className="text" onClick={() => window.location.href='/#/register'}>
-            Don't have an account? Register here
-          </button>
+          <FlatButton
+            className="text"
+            onClick={() => window.location.href='/#/register'}
+            label = "Don't have an account? Register here"
+          />
+            
           <br/>
 
-          <button className="text" onClick={() => window.location.href='/#/forgot'}>
-            Forgot password? Reset here
-          </button>
-        </div>
+          <FlatButton
+            className="text"
+            onClick={() => window.location.href='/#/forgot'}
+            label="Forgot password? Reset here"
+          />
+        </Card>
       );
     }
 	}
