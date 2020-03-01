@@ -22,7 +22,6 @@ import ChatSession from "./ChatSession";
 import {Tabs, Tab} from 'material-ui/Tabs';
 
 import './Chat.css';
-import ChatTab from './ChatTab';
 
 class VetChat extends React.Component {
     constructor() {
@@ -74,7 +73,11 @@ class VetChat extends React.Component {
                 <Tabs>
                     {this.state.rooms.map((room, index) => (
                         <Tab label={index} onActive={() => (this.connectToRoom(room.id))}>
-                            <ChatTab messages={messages} key={room.id} />
+                            <Card>
+                                <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
+                                    <ChatSession messages={this.state.messages} />
+                                </List>
+                            </Card> 
                         </Tab>
                     ))}
                 </Tabs>
@@ -92,6 +95,7 @@ class VetChat extends React.Component {
                         fullWidth={true}
                     />
                 </Card>
+
                 {showImageUploadDialog ? (
                     <ImageUploadDialog
                         handleInput={this.handleInput}
