@@ -88,6 +88,7 @@ export function AccountReducer(state = initial_state, action) {
     case "LOGIN":
       state.loggedIn = false;
       state.choseId = false;
+      state.vetAccount = false;
 
       callLogin(action.data.email, action.data.pass).then(
         res => {
@@ -97,7 +98,7 @@ export function AccountReducer(state = initial_state, action) {
 
             // Login success
             state.data = {};
-            state.data.name = res.username;
+            state.data.name = res.name;
             state.data.userId = res.uid;
             state.data.animalId = res.aid;
             state.data.accounts = [];
@@ -128,6 +129,8 @@ export function AccountReducer(state = initial_state, action) {
 
     case "LOGOUT":
       state.loggedIn = false;
+      state.choseId = false;
+      state.vetAccount = false;
       state.data = {};
 
       window.location.href = "/#/login";
@@ -141,6 +144,7 @@ export function AccountReducer(state = initial_state, action) {
           // Register successful
           state.loggedIn = true;
           state.choseId = true;
+          state.vetAccount = false;
 
           state.data = {
             userId: res.uid,
@@ -169,6 +173,8 @@ export function AccountReducer(state = initial_state, action) {
           // Register successful
           state.loggedIn = true;
           state.choseId = true;
+          state.vetAccount = true;
+
           state.data = {
             userId: res.vid,
             name: action.data.name,
