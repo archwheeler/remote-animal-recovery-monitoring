@@ -122,8 +122,11 @@ class VetChat extends React.Component {
                                     />
                                 ) : null}
                             </div>) : (
-                                <Card>
+                                <Card className="center">
                                     <CardTitle title="You are not associated with any users" />
+                                    <FlatButton onClick={() => window.location.href = "/#/VetMain"} label="Home" />
+                                    <br/>
+                                    <br/>
                                 </Card>
                             )}
                     </div>) : (
