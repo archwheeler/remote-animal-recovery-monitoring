@@ -162,9 +162,14 @@ function addAnimal(con, name, sex, species, bodyweight, owner_id, op_id, callbac
     var sql = "INSERT INTO animals (name, sex, species, bodyweight, owner_id, op_id) VALUES ?";
     values =  [[name, sex, species, bodyweight, owner_id, op_id]];
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
-        console.log("Added animal " + result.insertId);
-        callback(result.insertId);
+        if (err){
+            console.log(err);
+            callback(-1);
+        }
+        else{
+            console.log("Added animal " + result.insertId);
+            callback(result.insertId);
+        }
     });
 }
 
@@ -657,6 +662,7 @@ module.exports = {
     addChatLabel,
     getUserID,
     getUserInfo,
+    getCarerList,
     getUserContacts,
     getVetList,
     getAnimalInfo,

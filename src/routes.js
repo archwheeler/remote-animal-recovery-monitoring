@@ -22,6 +22,13 @@ function routeQuestionnaires(s, cb) {
 		cb(null, component.default || component);
 	});
 }
+
+function routeSurveys(s, cb) {
+	System.import('./components/Surveys').then(component => {
+		cb(null, component.default || component);
+	});
+}
+
 function routeChat(s, cb) {
 	System.import('./components/Chat').then(component => {
 		cb(null, component.default || component);
@@ -82,6 +89,7 @@ export default (
 		<IndexRoute component={Main}/>
 		<Route path="contact" getComponent={routeContact}/>
 		<Route path="questionnaires" getComponent={routeQuestionnaires}/>
+		<Route path="surveys" getComponent={routeSurveys}/>
 		<Route path="chat" getComponent={routeChat}/>
 		<Route path="account" getComponent={routeAccount}/>
 		<Route path="login" getComponent={routeLogin}/>

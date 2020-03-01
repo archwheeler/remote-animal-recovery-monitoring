@@ -1,18 +1,19 @@
 import React from 'react';
-import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardHeader, CardText, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
-class Questionnaire extends React.Component {
+class Survey extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
             loading: true,
-            link: props.link,
             key: props.key,
             animalID: props.animalID,
+            link: props.link,
             name: props.name,
         }
+        this.handleSubmit = this.handleSubmit.bind(this)
 	}
 	
 	stopLoading = () => {
@@ -24,7 +25,7 @@ class Questionnaire extends React.Component {
     }
 
     handleSubmit = async() =>  {
-        const response = await fetch('http://localhost:5000/questionnaireComplete/', {
+        const response = await fetch('http://localhost:5000/surveyComplete/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ class Questionnaire extends React.Component {
             
             body: JSON.stringify({
                 aid: this.state.animalID,
-                questionnaireId: this.state.key,          
+                surveyId: this.state.key,          
             })
         });
         const body = await response.json();
@@ -41,32 +42,6 @@ class Questionnaire extends React.Component {
 
 	render() {
 		return (
-            (this.state.link=="Printable_LOAD_Form.pdf")?
-            <div>
-                <Card>
-                <CardHeader title="Load Form"
-                            actAsExpander={true}
-                            showExpandableButton={true}
-                />
-                <CardText expandable={true}>
-                    Please fill in the form below. To send it to us after filling in click the print button and
-                    print to "Save as PDF". Then email this attachment to the <a
-                    href="mailto:hospital@vet.cam.ac.uk">Vet School</a>.
-                </CardText>
-                <CardMedia expandable={true}>
-                    <object data="Printable_LOAD_Form.pdf" type="application/pdf" width="100%" height="600"
-                            frameBorder="none">
-                        <div style={{margin: 15}}><p>Unfortunately this browser does not support PDFs. Please
-                            download the PDF using the button below, we recommend using Adobe Acrobat to fill in the
-                            form.</p>
-                        </div>
-                        <FlatButton label="Download PDF" href="Printable_LOAD_Form.pdf"/>
-
-                    </object>
-                </CardMedia>
-                </Card>
-            </div>
-            :
 			<div>
                 <Card expandable={true} onExpandChange={this.expandChange}>
                     <CardHeader 
@@ -92,9 +67,8 @@ class Questionnaire extends React.Component {
                     </CardActions>
                 </Card>
 			</div>
-           
 		);
 	}
 }
 
-export default Questionnaire;
+export default Survey;

@@ -3,19 +3,21 @@ import TextField from 'material-ui/TextField';
 import { Card, CardTitle, CardText, SelectField, DatePicker, TimePicker } from 'material-ui';
 import RaisedButton from 'material-ui/RaisedButton'
 import MenuItem from 'material-ui/MenuItem';
+import {store} from '../store';
 
 class VetInformationInput extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			information: {
-				vetTeamID: 1,
+				vetTeamID: store.getState().data.userId,
 				name: "",
 				firstLetterOfName: "",
 				sex: "",
 				species: "",
 				bodyweight: null, //this should be an integer (perhaps kg?)
-				owner_name: "", // VARCHAR
+				owner_id: "", // VARCHAR
+				owner_name: "",
 				op_name: "", //VARCHAR - name of the operation
 				op_date: "", //DATE
 				body_condition: null, //INT (out of 9)
@@ -35,6 +37,11 @@ class VetInformationInput extends React.Component {
 				meds_length_of_course: null,
 				
 			},
+			owners: [],
+			owner: {
+				uid: null,
+				name:"",
+			},
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChangeSex = this.handleChangeSex.bind(this);
@@ -44,8 +51,21 @@ class VetInformationInput extends React.Component {
 	
 	}
 
-	returnInformation = async(animalID) => {
-        const response = await fetch('http://localhost:5000/addNewAnimal/'+ animalID, {
+	getNames = async() => {
+		const response = await fetch('http://localhost:5000/getUsers/');
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+		return body;
+	}
+
+	componentDidMount() {
+        this.getNames().then(ownersList => this.setState({owners:ownersList.users.carers}))
+			.catch(err => console.log(err));
+			console.log(this.state.owners);
+	}
+
+	returnInformation = async() => {
+        const response = await fetch('http://localhost:5000/addNewAnimal', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,13 +115,16 @@ class VetInformationInput extends React.Component {
 			}
 		});
 	}
+
+	handleChangeName = (event, index, owner) => this.setState({owner});
+
 	handleSubmit(event) {
 		const namestr = document.getElementById("name").value;
-		const timestr = document.getElementById("nextappttime").value;
 		this.state.information.name = namestr;
 		this.state.information.firstLetterOfName = namestr.substring(0,1);
 		this.state.information.bodyweight = document.getElementById("bodyweight").value;
-		this.state.information.owner_name = document.getElementById("ownername").value;
+		this.state.information.owner_name = this.state.owner.name;
+		this.state.information.owner_id = this.state.owner.uid;
 		this.state.information.op_name = document.getElementById("opname").value;
 		this.state.information.op_date = document.getElementById("opdate").value;
 		this.state.information.body_condition = document.getElementById("bodycondition").value;
@@ -118,18 +141,38 @@ class VetInformationInput extends React.Component {
 		this.state.information.meds_start = document.getElementById("medstart").value;
 		this.state.information.meds_length_of_course = document.getElementById("medlength").value;
 		console.log(this.state.information);
-		this.returnInformation(1234);
+		this.returnInformation();
 	
+	}
+
+	ownerNameItems(owners) {
+		return owners.map((owner) => (
+			<MenuItem
+				key={owner.uid}
+				value={owner}
+				primaryText={owner.name}
+			/>
+		));
 	}
 
 
 	render() {
 		return (
-			
+			(store.getState().loggedIn && store.getState().vetAccount)?
 			<div>
 			<Card>
 				<CardTitle title="Discharge Information Input"/>
 				 <CardText>
+					<SelectField
+						id="ownername"
+						floatingLabelText="Owner Name"
+						value={this.state.owner}
+						onChange={this.handleChangeName}
+					>
+						{this.ownerNameItems(this.state.owners)}
+
+					</SelectField>
+					<br />
 				 	<TextField
 					id="name"
 					floatingLabelText="Animal Name"
@@ -140,8 +183,8 @@ class VetInformationInput extends React.Component {
 					value={this.state.information.sex}
 					onChange={this.handleChangeSex}
 					>
-						<MenuItem value={"Male"} primaryText="Male" />
-       					<MenuItem value={"Female"} primaryText="Female" />
+						<MenuItem value={"M"} primaryText="Male" />
+       					<MenuItem value={"F"} primaryText="Female" />
           			</SelectField>
 					<br />
 					<SelectField
@@ -158,11 +201,6 @@ class VetInformationInput extends React.Component {
 					id="bodyweight"
 					floatingLabelText="Bodyweight"
 					/><br />
-					<TextField
-					id="ownername"
-					floatingLabelText="Owner Name"
-					/><br />
-					<br />
 					<TextField
 					id="opname"
 					floatingLabelText="Operation Name"
@@ -268,6 +306,9 @@ class VetInformationInput extends React.Component {
 					<RaisedButton label="Submit" primary={true} onClick={this.handleSubmit}/>
 				</CardText>
 			</Card>
+		  </div>
+		  :<div>
+		  {window.location.assign("/")}
 		  </div>
 		);
 	}

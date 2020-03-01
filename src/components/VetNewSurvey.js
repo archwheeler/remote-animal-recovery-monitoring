@@ -1,13 +1,16 @@
 import React from 'react';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {TextField, RaisedButton, SelectField, MenuItem } from 'material-ui';
+import {store} from '../store';
 
 
 const categories = [
-	'Leg',
-	'Arm',
-	'Lower back',
-	'Thigh',
+	'Wrist',
+	'Elbow',
+	'Shoulder',
+	'Hip',
+	'Knee',
+	'Hock',
   ];
 
 class VetNewSurvey extends React.Component {
@@ -16,7 +19,7 @@ class VetNewSurvey extends React.Component {
 		this.state = {
 			values: [],
 			survey:{
-				vetTeamID: 1, //User ID of the vet team
+				vetTeamID: null, //User ID of the vet team
 				link: "", //Link to the survey
 				location: "", //Location being targeted
 			}
@@ -38,7 +41,7 @@ class VetNewSurvey extends React.Component {
 	};
 	
 	handleSubmit(event) {
-		//TODO: vetTeamID
+		this.state.survey.vetTeamID = store.getState().data.userId;
 		this.state.survey.link = document.getElementById("link").value;
 		this.state.survey.location = document.getElementById("category").value;
 		
@@ -65,6 +68,7 @@ class VetNewSurvey extends React.Component {
 		const {values} = this.state;
 
 		return (
+			(store.getState().loggedIn && store.getState().vetAccount)?
 			<div>
 				<Card>
 					<CardHeader title= "Create New Survey"
@@ -91,6 +95,9 @@ class VetNewSurvey extends React.Component {
 
 					</CardText>
 				</Card>
+			</div>
+			:<div>
+			{window.location.assign("/")}
 			</div>
 		);
 	}
