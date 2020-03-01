@@ -21,7 +21,7 @@ class Account extends React.Component {
           <br/>
 
           <div style={{marginLeft: 50, marginRight: 50}}>
-              <RaisedButton primary={true} fullWidth={true} label="My Account" onClick={() => store.dispatch(GoToAccountAction())}/>
+              <RaisedButton primary={true} fullWidth={true} label="My Account" onClick={() => window.href.location = "/#/account"}/>
           </div>
           <br/>
         </Card>
@@ -39,6 +39,8 @@ class Account extends React.Component {
 
             <TextField type="password" id="password_box" placeholder="Password" required/>
             <br/>
+
+            <TextField type="hidden" id="vet_name_box" placeholder="Vet name" required/>
             <br/>
 
             <label>
@@ -47,7 +49,7 @@ class Account extends React.Component {
             </label>
 
             <label>
-              <input type="checkbox" id="vet_checkbox"/>
+              <input type="checkbox" onClick={this.toggleVetName}/>
               Create a vet account?
             </label>
             <br/>
@@ -71,9 +73,10 @@ class Account extends React.Component {
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var email = document.getElementById("email_box").value;
+    var vetName = document.getElementById("vet_name_box").value;
 
-    if (document.getElementById("vet_checkbox").checked) {
-      store.dispatch(RegisterVetAction(username, password, email));
+    if (document.getElementById("vet_name_box").type == "text") {
+      store.dispatch(RegisterVetAction(username, password, email, vetName));
     } else {
       store.dispatch(RegisterAction(username, password, email));
     }
@@ -85,6 +88,15 @@ class Account extends React.Component {
       passBox.type = "text";
     } else {
       passBox.type = "password";
+    }
+  }
+
+  toggleVetName() {
+    var vetBox = document.getElementById("vet_name_box");
+    if (vetBox.type == "hidden") {
+      vetBox.type = "text";
+    } else {
+      vetBox.type = "hidden";
     }
   }
 }

@@ -208,6 +208,7 @@ app.get('/getListOfVets/:vetTeamID', (req, res) => {
     try{
         DB.getVetList(connection, req.params.vetTeamID, function(result){
             // for each element in list of vets, send names
+            console.log(result);
             var arr = [];
             for (i = 0; i < result.length; i++){
                 arr.push(result[i].name);
@@ -469,7 +470,7 @@ app.post('/registerVetTeam', (req, res) => {
     }
 });
 
-app.post('addVetToTeam/:vetTeamID', (req, res) =>{
+app.post('/addVetToTeam/:vetTeamID', (req, res) =>{
 
     try{
         DB.addVetToTeam(connection, req.params.vetTeamID, req.body.name, function(add_result){

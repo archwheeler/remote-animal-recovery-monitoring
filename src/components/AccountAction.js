@@ -26,13 +26,14 @@ export function RegisterAction(username, password, email) {
   };
 }
 
-export function RegisterVetAction(username, password, email) {
+export function RegisterVetAction(username, password, email, vetName) {
   return {
     type: "REGISTER_VET",
     data: {
       name: username,
       pass: password,
       email: email,
+      vetName: vetName
     }
   };
 }
@@ -55,6 +56,16 @@ export function ForgotAction(email) {
     type: "FORGOT_PASSWORD",
     data: {
       email: email
+    }
+  };
+}
+
+export function AddVetToAccount(vetId, name) {
+  return {
+    type: "ADD_VET_TO_ACCOUNT",
+    data: {
+      id: vetId,
+      name: name
     }
   };
 }

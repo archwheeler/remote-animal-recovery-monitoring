@@ -1,6 +1,6 @@
 import React from 'react';
 import {store} from '../store';
-import {SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
+import {AddVetToAccount, SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
 import {Card, CardTitle} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -15,6 +15,27 @@ class Account extends React.Component {
   render() {
     if (store.getState().loggedIn) {
       if (store.getState().choseId) {
+        var button;
+        if (store.getState().vetAccount) {
+          button = (
+             <div>
+               <FlatButton
+                className="text"
+                onClick={() => store.dispatch(ChooseIdAction())}
+                label="Change user"
+              />
+              <br/>
+
+              <FlatButton
+                className="text"
+                onClick={this.addVetToAccount}
+                label="Add accounts"
+              />
+              <br/>
+            </div>
+          );
+        }
+
         return (
           <Card className="center">
             <CardTitle title="My Account"/>
@@ -22,12 +43,7 @@ class Account extends React.Component {
             <p>Name: {store.getState().data.name}</p>
             <br/>
 
-            <FlatButton
-              className="text"
-              onClick={() => store.dispatch(ChooseIdAction())}
-              label="Change user"
-            />
-            <br/>
+            {button}
 
             <p>
             {JSON.stringify(store.getState())}
@@ -59,6 +75,8 @@ class Account extends React.Component {
               )
             }
             <br/>
+            <RaisedButton primary={true} fullWidth={true} label="+ Add new account" onClick={this.addVetToAccount}/>
+            <br/>
           </Card>
         );
       }
@@ -74,6 +92,17 @@ class Account extends React.Component {
           <br/>
         </Card>
       );
+    }
+  }
+
+  addVetToAccount(e) {
+    // Stop rerouting
+    e.preventDefault();
+
+    var vet = prompt("Enter name for new vet account: ");
+    if (vet != null && vet != "") {
+      console.log(vet);
+      store.dispatch(AddVetToAccount(store.getState().data.userId, vet));
     }
   }
 }
