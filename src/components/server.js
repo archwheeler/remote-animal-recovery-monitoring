@@ -494,7 +494,7 @@ app.post('/loginData', (req, res) => {
     try{
         DB.authenticateUser(connection, req.body.email, req.body.password, function(result){
             var type = (result.type == 1)? 'carer' : 'vet';
-            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, status: 'success', VetOrCarer : type});
+            res.send({passwordCorrect: result.status, uid: result.uid, aid: result.aid, username: result.name, status: 'success', VetOrCarer : type});
         });
     }catch(err){
             res.send({passwordCorrect: false, status: 'failure'});

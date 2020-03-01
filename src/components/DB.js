@@ -332,7 +332,7 @@ function getVetList(con, uid, callback){
 
 // check if uid-password pair is correct - return  true or false
 function authenticateUser(con, email, password, callback){
-    var sql = "SELECT password, uid, type FROM accounts WHERE email='" + email + "'";
+    var sql = "SELECT password, uid, name, type FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length  == 0){
@@ -342,16 +342,17 @@ function authenticateUser(con, email, password, callback){
             var pass = JSON.parse(JSON.stringify(result[0])).password;
             var res_uid = JSON.parse(JSON.stringify(result[0])).uid;
             var res_type = JSON.parse(JSON.stringify(result[0])).type;
+            var res_name  = JSON.parse(JSON.stringify(result[0])).name;
             if (pass == password){
                 var sql2 = "SELECT aid FROM animals WHERE owner_id=" + res_uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     if (result2.length == 0){
-                        callback({status: true, uid: res_uid, type: res_type, aid: -1});
+                        callback({status: true, uid: res_uid, type: res_type, name: res_name, aid: -1});
                     }
                     else{
                         var res_aid = JSON.parse(JSON.stringify(result2[0])).aid;
-                        callback({status: true, uid: res_uid, type: res_type, aid: res_aid});
+                        callback({status: true, uid: res_uid, type: res_type, name: res_name, aid: res_aid});
                     }
                 });
 
