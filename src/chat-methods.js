@@ -12,14 +12,14 @@ function handleInput(event) {
 
 function connectToChatkit() {
 
-  const userId = "" + store.getState().data.userId;
+  const userId = "Vet";
 
   if (userId === null || userId.trim() === '') {
     alert('Invalid userId');
     return;
   }
 
-  const instance = "0fa440f3-996e-4157-beb1-efdc519b3973";
+  const instance = "bc55c891-bd0f-475b-8ec6-7216d20ab4cf";
 
   const tokenProvider = new Chatkit.TokenProvider({
     url: 'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/' + instance + '/token',
