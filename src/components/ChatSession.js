@@ -10,10 +10,10 @@ const ChatSession = props => {
             {messages.map(message => {
             const time = format(new Date(`${message.updatedAt}`), 'HH:mm');
 
-            const arr = message.parts.map(p => {
+            const arr = message.parts.map((p, index) => {
                 if (p.partType === "inline") {
                     return (
-                        <span>{p.payload.content}</span>
+                        <span key={index}>{p.payload.content}</span>
                     );
                 }
 
@@ -22,7 +22,7 @@ const ChatSession = props => {
                 }
 
                 return (
-                    <div className="media">
+                    <div className="media" key={index}>
                         <img className="image-attachment" src={p.payload._downloadURL} alt="attachment" />
                     </div>
                 );
