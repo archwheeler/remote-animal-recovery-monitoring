@@ -9,11 +9,14 @@ import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-class Account extends React.Component {
+class Login extends React.Component {
 
-  constructor() {
-    super();
-    const rerenderer = store.subscribe(() => this.forceUpdate());
+  componentDidMount() {
+    this.unsub = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsub();
   }
 
 	render() {
@@ -36,14 +39,14 @@ class Account extends React.Component {
             <CardTitle title="Log in to the system below."/>
             <label id="feedback" className="center">
             </label>
-            
+
             <TextField type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
             <TextField type="password" id="password_box" placeholder="Password" required/>
             <br/>
             <br/>
-            
+
             <label>
               <input type="checkbox" onClick={this.showPassword}/>
               Show password?
@@ -54,7 +57,7 @@ class Account extends React.Component {
               <RaisedButton primary={true} fullWidth={true} type="submit" label="Log in"/>
             </div>
             <br/>
-            
+
           </form>
 
           <FlatButton
@@ -62,7 +65,7 @@ class Account extends React.Component {
             onClick={() => window.location.href='/#/register'}
             label = "Don't have an account? Register here"
           />
-            
+
           <br/>
 
           <FlatButton
@@ -96,4 +99,4 @@ class Account extends React.Component {
   }
 }
 
-export default Account;
+export default Login;

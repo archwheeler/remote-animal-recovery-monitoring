@@ -7,9 +7,12 @@ import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
-  constructor(props) {
-    super(props);
-    store.subscribe(() => this.forceUpdate());
+  componentDidMount() {
+    this.unsub = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsub();
   }
 
   render() {

@@ -60,7 +60,6 @@ async function callLogin(email, pass) {
 }
 
 async function fetchAccounts(id) {
-  console.log("ID: " + id);
   return await fetch('http://localhost:5000/getListOfVets/' + id).then(
     res => res.json()
   );

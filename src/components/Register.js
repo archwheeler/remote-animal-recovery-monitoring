@@ -6,11 +6,14 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
-class Account extends React.Component {
+class Register extends React.Component {
 
-  constructor() {
-    super();
-    const rerenderer = store.subscribe(() => this.forceUpdate());
+  componentDidMount() {
+    this.unsub = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsub();
   }
 
 	render() {
@@ -101,4 +104,4 @@ class Account extends React.Component {
   }
 }
 
-export default Account;
+export default Register;
