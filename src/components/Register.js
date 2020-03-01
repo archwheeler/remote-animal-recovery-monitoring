@@ -1,5 +1,5 @@
 import React from 'react';
-import {RegisterAction} from './AccountAction';
+import {RegisterAction, RegisterVetAction} from './AccountAction';
 import {store} from '../store';
 
 class Account extends React.Component {
@@ -61,13 +61,19 @@ class Account extends React.Component {
     }
   }
 
-  register() {
+  register(e) {
+    // Stops rerouting to /?#/
+    e.preventDefault();
+
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var email = document.getElementById("email_box").value;
-    var vet = document.getElementById("vet_checkbox").checked;
 
-    store.dispatch(RegisterAction(username, password, email, vet));
+    if (document.getElementById("vet_checkbox").checked) {
+      store.dispatch(RegisterVetAction(username, password, email));
+    } else {
+      store.dispatch(RegisterAction(username, password, email));
+    }
   }
 
   showPassword() {

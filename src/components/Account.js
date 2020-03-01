@@ -29,16 +29,12 @@ class Account extends React.Component {
               Click here
             </button>
             <br/>
-
-            Testing purposes:
-            <br/>
-            {JSON.stringify(store.getState())}
           </div>
         );
       } else {
-        if (store.getState().accounts.length == 0) {
+        if (store.getState().data.accounts.length == 0) {
           alert("No accounts found- if this is unexpected, go to 'Change user' in accounts");
-          store.dispatch(SelectAccountAction());
+          store.dispatch(SelectAccountAction(""));
           return null;
         }
         return (
@@ -46,7 +42,7 @@ class Account extends React.Component {
             Please select an account from below:
             <br/>
             {
-              store.getState().accounts.map(item =>
+              store.getState().data.accounts.map(item =>
                 <div>
                   <input type="text" key={item} value={item} onClick={() => store.dispatch(SelectAccountAction(item))} readOnly/>
                 </div>

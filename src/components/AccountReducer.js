@@ -5,10 +5,11 @@ export const initial_state = {
   data: {
     name: "",
     email: "",
-    userId: -1
-  },
-  accounts: []
-}
+    userId: -1,
+    accounts: []
+  }
+};
+
 
 // API calls
 /*
@@ -68,10 +69,10 @@ async function fetchAccounts(id) {
 
 //        IT'S HARDCODING TIME :)
 async function callRegister(user, pass, email) {
-  return {success: "success", uid: 0};
+  return {status: "success", uid: 0};
 }
 async function callRegisterVet(user, pass, email) {
-  return {success: "success", uid: 1};
+  return {status: "success", uid: 1};
 }
 async function callLogin(email, pass) {
   return {
@@ -95,8 +96,8 @@ export function AccountReducer(state = initial_state, action) {
       state.loggedIn = false;
       state.choseId = false;
 
-      callLogin(action.data.email, action.data.pass)
-        .then(res => {
+      callLogin(action.data.email, action.data.pass).then(
+        res => {
           state.loggedIn = res.passwordCorrect;
 
           if (state.loggedIn) {
@@ -107,10 +108,9 @@ export function AccountReducer(state = initial_state, action) {
 
             fetchAccounts(state.data.id).then(
               res => {
-                state.accounts = res.vets;
+                state.data.accounts = res.vets;
                 window.location.assign("/#/account");
               }
-
             );
 
           } else {
@@ -126,13 +126,14 @@ export function AccountReducer(state = initial_state, action) {
 
     case "LOGOUT":
       state.loggedIn = false;
-      state = initial_state;
+      state.data = {};
+
       window.location.href = "/#/login";
-      return initial_state;
+      return state;
 
     case "REGISTER":
-      var funcCall = action.data.vet ? callRegisterVet : callRegister;
-      funcCall(action.data.name, action.data.pass, action.data.email).then(res => {
+
+      callRegister(action.data.name, action.data.pass, action.data.email).then(res => {
         if (res.status == "success") {
 
           // Register successful
@@ -140,7 +141,8 @@ export function AccountReducer(state = initial_state, action) {
           state.data = {
             userId: res.uid,
             name: action.data.name,
-            email: action.data.email
+            email: action.data.email,
+            accounts: []
           };
 
           window.location.href = "/#/account";
@@ -151,9 +153,35 @@ export function AccountReducer(state = initial_state, action) {
           alert("Registration failed");
 
         }
-
-        return state;
       });
+
+      return state;
+
+    case "REGISTER_VET":
+
+      callRegisterVet(action.data.name, action.data.pass, action.data.email).then(res => {
+        if (res.status == "success") {
+
+          // Register successful
+          state.loggedIn = true;
+          state.data = {
+            userId: res.uid,
+            name: action.data.name,
+            email: action.data.email,
+            accounts: []
+          };
+
+          window.location.href = "/#/account";
+
+        } else {
+
+          // Register failed
+          alert("Registration failed");
+
+        }
+      });
+
+      return state;
 
     case "CHOOSE_ID":
       state.choseId = false;
@@ -161,7 +189,7 @@ export function AccountReducer(state = initial_state, action) {
 
     case "SELECT_ID":
       state.choseId = true;
-      state.data.name = action.id;
+      state.data.name = action.name;
       return state;
 
     case "FORGOT_PASSWORD":

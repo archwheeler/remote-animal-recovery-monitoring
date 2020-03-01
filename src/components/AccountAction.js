@@ -15,22 +15,32 @@ export function LogoutAction() {
   };
 }
 
-export function RegisterAction(username, password, email, vet) {
+export function RegisterAction(username, password, email) {
   return {
     type: "REGISTER",
     data: {
       name: username,
       pass: password,
       email: email,
-      vet: vet
     }
   };
 }
 
-export function SelectAccountAction(ID) {
+export function RegisterVetAction(username, password, email) {
+  return {
+    type: "REGISTER_VET",
+    data: {
+      name: username,
+      pass: password,
+      email: email,
+    }
+  };
+}
+
+export function SelectAccountAction(name) {
   return {
     type: "SELECT_ID",
-    id: ID
+    name: name
   };
 }
 

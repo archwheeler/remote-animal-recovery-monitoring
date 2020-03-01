@@ -73,7 +73,10 @@ class Account extends React.Component {
     }
   }
 
-  login() {
+  login(e) {
+    // to prevent SOME browsers rerouting to /?#/
+    e.preventDefault();
+
     var email = document.getElementById("email_box").value;
     var password = document.getElementById("password_box").value;
     var feedback = document.getElementById("feedback");
