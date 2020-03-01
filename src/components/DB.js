@@ -144,22 +144,19 @@ function addVetTeam(con, email, password, vet_team_name, callback){
 }
 
 // add name as vet subaccounts
-function addVetToTeam(con, email, name){
-    con.query("SELECT uid FROM accounts WHERE email = '" + email + "'", function (err, result){
-        if (err) throw err;
-        if (result.length != 0){
-            var uid = JSON.parse(JSON.stringify(result[0])).uid;
-            var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + uid + ", '" + name + "')";
-            con.query(sql, function(err, result){
-                if (err) throw err;
-                console.log("Added " + name + " to account " + email)
-            });
+function addVetToTeam(con, vet_id, name, callback){
+    var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + vet_id + ", '" + name + "')";
+    con.query(sql, function(err, result){
+        if (err) {
+            callback({status:'success'});
         }
-        else {
-            console.log("Failed"); // TODO: change
+        else{
+            console.log("Added " + name + " to account " + email);
+            callback({status: 'failure'});
         }
     });
 }
+
 
 // add animal
 // arguments: connection, name:string, sex:string(f/m), species:string, bodyweight:int, owner_id:int, op_id:int)

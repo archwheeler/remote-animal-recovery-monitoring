@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-//const DB = require('./DB.js');
-//const connection = DB.createConnection();
+const DB = require('./DB.js');
+const connection = DB.createConnection();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -441,13 +441,16 @@ app.post('/registerUser', (req, res) => {
             DB.addCarer(connection, req.body.email, req.body.password, req.body.username, function(add_result){
                 if (add_result != -1){
                     res.send({uid: add_result, status: 'success'});
+                    console.log(add_result);
                 }
                 else{
                     res.send({uid: -1, status: 'failure'});
+                    console.log(-1);
                 }
             });
         }catch(err){
             res.send({uid: -1, status: 'failure'});
+            console.log(err);
         }
 });
 
@@ -467,6 +470,21 @@ app.post('/registerVetTeam', (req, res) => {
         res.send({vid: -1, status: 'failure'});
     }
 });
+
+
+app.post('addVetToTeam/:vetTeamID', (req, res) =>{
+
+    try{
+        DB.addVetToTeam(connection, req.params.vetTeamID, req.body.name, function(add_result){
+            res.send(add_result);
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
+});
+
 
 app.post('/loginData', (req, res) => {
     //This method expects the email and password
