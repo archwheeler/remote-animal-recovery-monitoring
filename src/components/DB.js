@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 
-//var con = createConnection();
-//con.query("CREATE DATABASE app", (err,result)=>console.log("done"));
-//createTables(con);
+// var con = createConnection();
+// con.query("CREATE DATABASE app", (err,result)=>console.log("done"));
+// createTables(con);
 
 // function to establish the database connection : returns the connection (for querying)
 function createConnection(){
