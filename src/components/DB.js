@@ -158,7 +158,7 @@ function addVetToTeam(con, vet_id, name, callback){
             callback({status:'failure'});
         }
         else{
-            console.log("Added " + name + " to account " + email);
+            console.log("Added " + name + " to account " + vet_id);
             callback({status: 'success'});
         }
     });
