@@ -16,11 +16,11 @@ Format: look at AccountReducer- it has a 'initial_state' variable
 Also use:
 
   componentDidMount() {
-    const sub = store.subscribe(() => this.forceUpdate());
+    this.unsub = store.subscribe(() => this.forceUpdate());
   }
 
   componentWillUnmount() {
-    sub();
+    this.unsub();
   }
 
 This means the page will update itself when the store updates.
