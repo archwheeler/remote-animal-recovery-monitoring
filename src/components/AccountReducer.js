@@ -10,7 +10,6 @@ export const initial_state = {
   }
 };
 
-
 // API calls
 /*
 async function callRegister(user, pass, email) {
@@ -87,7 +86,9 @@ async function fetchAccounts(id) {
   return {vets: ["Tom", "Agni"]};
 }
 
+
 // Reducer
+
 
 // previous state, action => next state
 export function AccountReducer(state = initial_state, action) {

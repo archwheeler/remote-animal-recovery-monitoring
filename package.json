@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "history": "^3.0.0",
     "install": "^0.13.0",
+    "jsonwebtoken": "^8.5.1",
     "material-ui": "^0.20.0",
     "mysql": "^2.18.1",
     "node": "^13.8.0",
