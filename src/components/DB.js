@@ -1,9 +1,5 @@
 var mysql = require('mysql');
 
-// var con = createConnection();
-// con.query("CREATE DATABASE app", (err,result)=>console.log("done"));
-// createTables(con);
-
 // function to establish the database connection : returns the connection (for querying)
 function createConnection(){
     var con = mysql.createConnection({
@@ -74,7 +70,7 @@ function createTables(con){
         console.log("survey-target relation table created");
     });
 
-    // survey-location relation table
+    // survey-animal relation table
     sql = "CREATE TABLE IF NOT EXISTS survey_animal (survey_id  INT, aid INT, done BOOLEAN, FOREIGN KEY (survey_id) REFERENCES survey(survey_id), FOREIGN KEY (aid) REFERENCES animals(aid))";
     con.query(sql, function(err, result){
         if (err) throw err;
@@ -86,6 +82,13 @@ function createTables(con){
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
+    });
+
+    // questionnaire-animal relation table
+    sql = "CREATE TABLE IF NOT EXISTS questionnaire_animal (qid  INT, aid INT, done BOOLEAN, FOREIGN KEY (qid) REFERENCES questionnaires(questionnaire_id), FOREIGN KEY (aid) REFERENCES animals(aid))";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("questionnaire-animal relation table created")
     });
 
     // chat client table
@@ -152,15 +155,14 @@ function addVetToTeam(con, vet_id, name, callback){
     var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + vet_id + ", '" + name + "')";
     con.query(sql, function(err, result){
         if (err) {
-            callback({status:'success'});
+            callback({status:'failure'});
         }
         else{
             console.log("Added " + name + " to account " + email);
-            callback({status: 'failure'});
+            callback({status: 'success'});
         }
     });
 }
-
 
 // add animal
 // arguments: connection, name:string, sex:string(f/m), species:string, bodyweight:int, owner_id:int, op_id:int)
@@ -256,6 +258,23 @@ function addQuestionnaire(con, time_to_send, link, name, callback){
         }
         console.log("Added questionnaire " + result.insertId);
     });
+}
+
+function addQuestionnaireToAnimal(con, aid, qid_list, callback){
+    for (i = 0; i < qid_list.length; i ++){
+        var sql1 = "SELECT * FROM questionnaire_animal WHERE aid=" + aid + " AND qid=" + qid_list[i];
+        con.query(sql1, function(err, result){
+            if (err) throw err;
+            if (result.length == 0){
+                var sql2 = "INSERT INTO questionnaire_animal (aid, qid, done) VALUES ?";
+                var values  = [[aid, qid_list[i], false]];
+                con.query(sql2, [values], function(err, result2){
+                    if (err) throw err;
+                });
+            }
+        });
+    }
+    callback();
 }
 
 // add operation
@@ -530,6 +549,20 @@ function completeSurvey(con, aid, survey_id, callback){
     });
 }
 
+// record completion of questionnaire
+function completeQuestionnaire(con, aid, qid, callback){
+    var sql = "UPDATE questionnaire_animal SET done = true WHERE aid=" + aid + " AND qid=" + qid;
+    con.query(sql, function(err, result){
+        if (err) {
+            callback({status: 'failure'});
+        }
+        else {
+            callback({status: 'success'});
+        }
+        console.log("Owner of animal " + aid + " completed survey " + survey_id);
+    });
+}
+
 // update  animal info
 function updateAnimal(con, aid, name, sex, species, bodyweight, owner_id, op_id, callback){
     var sql = "UPDATE animals SET name = '" + name + "', sex = '" + sex + "', species = '" + species + "', bodyweight = " + bodyweight + ", owner_id=" + owner_id + ", op_id="  + op_id + " WHERE aid=" + aid;
@@ -685,5 +718,3 @@ module.exports = {
     updateAnimal,
     updateOperation
 };
-
-
