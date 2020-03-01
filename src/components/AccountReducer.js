@@ -1,16 +1,17 @@
 export const initial_state = {
   loggedIn: false,
   choseId: false,
+  vetAccount: false,
   data: {
     name: "",
     email: "",
-    userId: -1
-  },
-  accounts: []
-}
+    userId: -1,
+    animalId: -1,
+    accounts: []
+  }
+};
 
 // API calls
-/*
 async function callRegister(user, pass, email) {
   const response = await fetch('http://localhost:5000/registerUser', {
     method: 'POST',
@@ -27,14 +28,30 @@ async function callRegister(user, pass, email) {
   return body;
 }
 
-async function callLogin(user, pass) {
+async function callRegisterVet(user, pass, email) {
+  const response = await fetch('http://localhost:5000/registerVetTeam', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      'username': user,
+      'password': pass,
+      'email': email
+    })
+  });
+  const body = await response.json();
+  return body;
+}
+
+async function callLogin(email, pass) {
   const response = await fetch('http://localhost:5000/loginData', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      'username': user,
+      'email': email,
       'password': pass
     })
   });
@@ -43,22 +60,25 @@ async function callLogin(user, pass) {
 }
 
 async function fetchAccounts(id) {
-    return await fetch('http://localhost:5000/getListOfVets/' + state.data.userId).then(
-      res => res.json()
-    );
+  return await fetch('http://localhost:5000/getListOfVets/' + id).then(
+    res => res.json()
+  );
 }
-*/
 
-//        IT'S HARDCODING TIME :)
-async function callRegister(user, pass, email) {
-  return {success: "success", uid: 7};
+async function addVetToAccount(id, name) {
+  const response = await fetch('http://localhost:5000/addVetToTeam/' + id, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      'name': name
+    })
+  });
+  const body = await response.json();
+  return body;
 }
-async function callLogin(user, pass) {
-  return {passwordCorrect: user == "tom" && pass == "hello", id: 3, };
-}
-async function fetchAccounts(id) {
-  return {vets: ["Tom", "Agni"]};
-}
+
 
 // Reducer
 
@@ -68,32 +88,39 @@ export function AccountReducer(state = initial_state, action) {
     case "LOGIN":
       state.loggedIn = false;
       state.choseId = false;
+      state.vetAccount = false;
 
-      callLogin(action.data.name, action.data.pass)
-        .then(res => {
+      callLogin(action.data.email, action.data.pass).then(
+        res => {
           state.loggedIn = res.passwordCorrect;
 
           if (state.loggedIn) {
 
             // Login success
-            action.label.innerHTML = JSON.stringify(state);
-
             state.data = {};
-            state.data.id = res.id;
+            state.data.name = res.name;
+            state.data.userId = res.uid;
+            state.data.animalId = res.aid;
+            state.data.accounts = [];
+            state.vetAccount = res.VetOrCarer == "vet";
 
-            fetchAccounts(state.data.id).then(
-              res => {
-                state.accounts = res.vets;
-                //window.location.assign("/#/account");
-              }
-              
-            );
+            // If vet, load accounts
+            if (state.vetAccount) {
+              fetchAccounts(state.data.userId).then(
+                res => {
+                  state.data.accounts = res.vets;
+                  window.location.href = "/#/account";
+                }
+              );
+            } else {
+              state.choseId = true;
+              window.location.href = "/#/account";
+            }
 
           } else {
 
             // Login failed
             action.label.innerHTML = "Wrong username or password.";
-
           }
         }
       );
@@ -102,9 +129,12 @@ export function AccountReducer(state = initial_state, action) {
 
     case "LOGOUT":
       state.loggedIn = false;
-      state = initial_state;
+      state.choseId = false;
+      state.vetAccount = false;
+      state.data = {};
+
       window.location.href = "/#/login";
-      return initial_state;
+      return state;
 
     case "REGISTER":
 
@@ -113,10 +143,14 @@ export function AccountReducer(state = initial_state, action) {
 
           // Register successful
           state.loggedIn = true;
+          state.choseId = true;
+          state.vetAccount = false;
+
           state.data = {
             userId: res.uid,
             name: action.data.name,
-            email: action.data.email
+            email: action.data.email,
+            accounts: []
           };
 
           window.location.href = "/#/account";
@@ -127,9 +161,40 @@ export function AccountReducer(state = initial_state, action) {
           alert("Registration failed");
 
         }
-
-        return state;
       });
+
+      return state;
+
+    case "REGISTER_VET":
+
+      callRegisterVet(action.data.name, action.data.pass, action.data.email).then(res => {
+        if (res.status == "success") {
+
+          // Register successful
+          state.loggedIn = true;
+          state.choseId = true;
+          state.vetAccount = true;
+
+          state.data = {
+            userId: res.vid,
+            name: action.data.name,
+            email: action.data.email,
+            accounts: [action.vetName]
+          };
+
+          addVetToAccount(state.data.userId, action.data.vetName).then(r => {
+            window.location.href = "/#/account";
+          });
+
+        } else {
+
+          // Register failed
+          alert("Registration failed");
+
+        }
+      });
+
+      return state;
 
     case "CHOOSE_ID":
       state.choseId = false;
@@ -137,13 +202,18 @@ export function AccountReducer(state = initial_state, action) {
 
     case "SELECT_ID":
       state.choseId = true;
-      state.data.name = action.id;
+      state.data.name = action.name;
       return state;
 
     case "FORGOT_PASSWORD":
       // action.data.email is the email
       alert("Password reset. Please check your emails. <TODO>");
       window.location.href = "/#/login";
+      return state;
+
+    case "ADD_VET_TO_ACCOUNT":
+      addVetToAccount(action.data.id, action.data.name);
+      state.data.accounts = [...state.data.accounts, action.data.name];
       return state;
 
     // Something else happened

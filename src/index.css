@@ -3,30 +3,36 @@ body {
   padding: 0;
 }
 
-
 .center {
   text-align: center;
 }
 
-label {
-  display: inline-block;
-  white-space: nowrap;
+.center label {
+  display: block;
+  text-align: center;
+  line-height: 150%;
+  font-size: .85em;
 }
 
 input[type=checkbox] {
+  width: 20px;
+  position: relative;
+  bottom: .08em;
   display: inline-block;
 }
 
 input, .blueButton {
-  width: 40%;
-  padding: 12px 20px;
+  width: 500px;
+  max-width: 100%;
+
+  padding: 12px 8px;
   margin: 8px 0;
   border-radius: 8px;
   box-shadow: none;
   transition-duration: 0.5s;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=email] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;

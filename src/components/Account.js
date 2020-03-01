@@ -1,69 +1,101 @@
 import React from 'react';
 import {store} from '../store';
-import {SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
+import {AddVetToAccount, SelectAccountAction, LogoutAction, ChooseIdAction} from "./AccountAction";
+import {Card, CardTitle} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
-  constructor(props) {
-    super(props);
-    store.subscribe(() => this.forceUpdate());
+  componentDidMount() {
+    this.unsub = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsub();
   }
 
   render() {
     if (store.getState().loggedIn) {
       if (store.getState().choseId) {
+
+        // If vet account, give choice to switch accounts
+        var button;
+        if (store.getState().vetAccount) {
+          button = (
+            <FlatButton
+              className="text"
+              onClick={() => store.dispatch(ChooseIdAction())}
+              label="Change user"
+            />
+          );
+        }
+
         return (
-          <div className="center">
-            <button className="blueButton" onClick={() => store.dispatch(LogoutAction())}> Log out </button>
-            <br/>
+          <Card className="center">
+            <CardTitle title="My Account"/>
 
-            My Account
-            <br/>
+            <p> Name: {store.getState().data.name} </p>
 
-            Name: {store.getState().data.name}
-            <br/>
+            {button}
 
-            Change user:
-            <button className="text" onClick={() =>
-              store.dispatch(ChooseIdAction())}>
-              Click here
-            </button>
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="Log Out" onClick={() => store.dispatch(LogoutAction())}/>
+            </div>
             <br/>
-
-            Testing purposes:
-            <br/>
-            {JSON.stringify(store.getState())}
-          </div>
+          </Card>
         );
+
       } else {
-        if (store.getState().accounts.length == 0) {
+        if (store.getState().data.accounts.length == 0) {
           alert("No accounts found- if this is unexpected, go to 'Change user' in accounts");
-          store.dispatch(SelectAccountAction());
+          store.dispatch(SelectAccountAction(""));
           return null;
         }
         return (
-          <div className="center">
-            Please select an account from below:
+          <div>
+            <Card className="center">
+              <br/>
+              <p>Please select an account from below:</p>
+              <br/>
+              {
+                store.getState().data.accounts.map(item =>
+                  <div>
+                    <input type="text" key={item} value={item} onClick={() => store.dispatch(SelectAccountAction(item))} readOnly/>
+                  </div>
+                )
+              }
+            </Card>
+
             <br/>
-            {
-              store.getState().accounts.map(item =>
-                <div>
-                  <input type="text" key={item} value={item} onClick={() => store.dispatch(SelectAccountAction(item))} readOnly/>
-                </div>
-              )
-            }
+            <RaisedButton primary={true} fullWidth={true} label="Add new account" onClick={this.addVetToAccount}/>
+            <br/>
+            <br/>
           </div>
         );
       }
     } else {
       return (
-        <div className="center">
-          You are not logged in.
+        <Card className="center">
+          <CardTitle title="You are not logged in" />
           <br/>
 
-          <button className="blueButton" onClick={() => window.location.href = "/#/login"}> Log in </button>
-        </div>
+          <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="Log in" onClick={() => window.location.href = "/#/login"}/>
+          </div>
+          <br/>
+        </Card>
       );
+    }
+  }
+
+  addVetToAccount(e) {
+    // Stop rerouting
+    e.preventDefault();
+
+    var vet = prompt("Enter name for new vet account: ");
+    if (vet != null && vet != "") {
+      store.dispatch(AddVetToAccount(store.getState().data.userId, vet));
     }
   }
 }

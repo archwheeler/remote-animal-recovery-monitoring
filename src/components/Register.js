@@ -1,66 +1,88 @@
 import React from 'react';
-import {RegisterAction} from './AccountAction';
+import {RegisterAction, RegisterVetAction} from './AccountAction';
 import {store} from '../store';
+import {Card, CardTitle} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
-class Account extends React.Component {
+class Register extends React.Component {
 
-  constructor() {
-    super();
-    const rerenderer = store.subscribe(() => this.forceUpdate());
+  componentDidMount() {
+    this.unsub = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsub();
   }
 
 	render() {
     if (store.getState().loggedIn) {
       return (
-        <div className="center">
-          You are already logged in.
+        <Card className="center">
+          <CardTitle title="You are already logged in." />
           <br/>
 
-          <button className="blueButton" onClick={() => window.location.href = "/#/account"}>
-            My Account
-          </button>
-        </div>
+          <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="My Account" onClick={() => window.href.location = "/#/account"}/>
+          </div>
+          <br/>
+        </Card>
       );
     } else {
       return (
-        <div className="center">
+        <Card className="center">
+          <CardTitle title="Register" />
           <form onSubmit={this.register}>
-            Register
+            <TextField type="email" id="email_box" placeholder="Email" required/>
             <br/>
 
-            <input type="text" id="email_box" placeholder="Email" required/>
+            <TextField type="text" id="username_box" placeholder="Username" required/>
             <br/>
 
-            <input type="text" id="username_box" placeholder="Username" required/>
+            <TextField type="password" id="password_box" placeholder="Password" required/>
             <br/>
 
-            <input type="password" id="password_box" placeholder="Password" required/>
+            <TextField type="hidden" id="vet_name_box" placeholder="Vet name" required/>
             <br/>
 
             <label>
               <input type="checkbox" onClick={this.showPassword}/>
               Show password?
             </label>
+
+            <label>
+              <input type="checkbox" onClick={this.toggleVetName}/>
+              Create a vet account?
+            </label>
             <br/>
 
-            <input type="submit" value="Register" />
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} type="submit" label="Register"/>
+            </div>
             <br/>
           </form>
 
-          <button className="text" onClick={() => window.location.href = "/#/login"}>
-            Already have an account? Log in here
-          </button>
-        </div>
+          <FlatButton className="text" onClick={() => window.location.href = "/#/login"} label="Already have an account?" />
+        </Card>
       );
     }
   }
 
-  register() {
+  register(e) {
+    // Stops rerouting to /?#/
+    e.preventDefault();
+
     var username = document.getElementById("username_box").value;
     var password = document.getElementById("password_box").value;
     var email = document.getElementById("email_box").value;
+    var vetName = document.getElementById("vet_name_box").value;
 
-    store.dispatch(RegisterAction(username, password, email));
+    if (document.getElementById("vet_name_box").type == "text") {
+      store.dispatch(RegisterVetAction(username, password, email, vetName));
+    } else {
+      store.dispatch(RegisterAction(username, password, email));
+    }
   }
 
   showPassword() {
@@ -71,6 +93,15 @@ class Account extends React.Component {
       passBox.type = "password";
     }
   }
+
+  toggleVetName() {
+    var vetBox = document.getElementById("vet_name_box");
+    if (vetBox.type == "hidden") {
+      vetBox.type = "text";
+    } else {
+      vetBox.type = "hidden";
+    }
+  }
 }
 
-export default Account;
+export default Register;

@@ -1,6 +1,10 @@
 import React from 'react';
 import {store} from '../store';
 import {ForgotAction, GoToAccountAction} from './AccountAction';
+import {Card, CardTitle} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 class Account extends React.Component {
 
@@ -12,37 +16,40 @@ class Account extends React.Component {
 	render() {
 	  if (store.getState().loggedIn) {
       return (
-        <div className="center">
-          You are already logged in.
+        <Card className="center">
+          <CardTitle title="You are already logged in." />
           <br/>
 
-          <button className="blueButton" onClick={() => store.dispatch(GoToAccountAction())}>
-            My Account
-          </button>
+          <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="My Account" onClick={() => store.dispatch(GoToAccountAction())}/>
+          </div>
           <br/>
-        </div>
+        </Card>
       );
     } else {
       return (
-        <div className="center">
-          If you have forgotten your password, put your email address
-          in the box below to reset it.
+        <Card className="center">
           <br/>
-          You will get an email with instructions on how to access your
-          account.
+          <p>If you have forgotten your password, put your email address
+          in the box below to reset it.</p>
+          <p>You will get an email with instructions on how to access your
+          account.</p>
           <br/>
 
           <form onSubmit={this.forgotPassword}>
-            <input id="email_box" type="text" placeholder="Email" required/>
+            <TextField id="email_box" type="email" placeholder="Email" required/>
+            <br/>
             <br/>
 
-            <input type="submit" value="Reset Password"/>
+            <div style={{marginLeft: 50, marginRight: 50}}>
+              <RaisedButton primary={true} fullWidth={true} label="Reset Password" type="submit"/>
+            </div>
           </form>
+          <br/>
 
-          <button className="text" onClick={() => window.location.href = "/#/login"}>
-            Return to login
-          </button>
-        </div>
+          <FlatButton className="text" onClick={() => window.location.href = "/#/login"} label="Return to login" />
+          <br/>
+        </Card>
       );
     }
 	}

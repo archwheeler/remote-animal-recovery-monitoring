@@ -1,9 +1,9 @@
-export function LoginAction(username, password, feedback) {
+export function LoginAction(email, password, feedback) {
   return {
     type: "LOGIN",
     label: feedback,
     data: {
-      name: username,
+      email: email,
       pass: password
     }
   };
@@ -21,15 +21,27 @@ export function RegisterAction(username, password, email) {
     data: {
       name: username,
       pass: password,
-      email: email
+      email: email,
     }
   };
 }
 
-export function SelectAccountAction(ID) {
+export function RegisterVetAction(username, password, email, vetName) {
+  return {
+    type: "REGISTER_VET",
+    data: {
+      name: username,
+      pass: password,
+      email: email,
+      vetName: vetName
+    }
+  };
+}
+
+export function SelectAccountAction(name) {
   return {
     type: "SELECT_ID",
-    id: ID
+    name: name
   };
 }
 
@@ -44,6 +56,16 @@ export function ForgotAction(email) {
     type: "FORGOT_PASSWORD",
     data: {
       email: email
+    }
+  };
+}
+
+export function AddVetToAccount(vetId, name) {
+  return {
+    type: "ADD_VET_TO_ACCOUNT",
+    data: {
+      id: vetId,
+      name: name
     }
   };
 }

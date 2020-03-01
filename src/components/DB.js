@@ -70,7 +70,7 @@ function createTables(con){
         console.log("survey-target relation table created");
     });
 
-    // survey-location relation table
+    // survey-animal relation table
     sql = "CREATE TABLE IF NOT EXISTS survey_animal (survey_id  INT, aid INT, done BOOLEAN, FOREIGN KEY (survey_id) REFERENCES survey(survey_id), FOREIGN KEY (aid) REFERENCES animals(aid))";
     con.query(sql, function(err, result){
         if (err) throw err;
@@ -78,10 +78,17 @@ function createTables(con){
     });
 
     // table of questionnaires
-    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link TEXT)";
+    sql = "CREATE TABLE IF NOT EXISTS questionnaires (questionnaire_id INT AUTO_INCREMENT PRIMARY KEY, time INT, link TEXT, name VARCHAR(255))";
     con.query(sql, function (err, result) {
         if (err) throw err;
         console.log("questionnaires table created");
+    });
+
+    // questionnaire-animal relation table
+    sql = "CREATE TABLE IF NOT EXISTS questionnaire_animal (qid  INT, aid INT, done BOOLEAN, FOREIGN KEY (qid) REFERENCES questionnaires(questionnaire_id), FOREIGN KEY (aid) REFERENCES animals(aid))";
+    con.query(sql, function(err, result){
+        if (err) throw err;
+        console.log("questionnaire-animal relation table created")
     });
 
     // chat client table
@@ -129,29 +136,30 @@ function showTables(con, callback){
 // ADD FUNCTIONS
 
 // add vet to system
-function addVetTeam(con, email, password, vet_team_name){
+function addVetTeam(con, email, password, vet_team_name, callback){
     var sql = "INSERT INTO accounts (email, password, type, name) VALUES ?";
     var values = [[email, password, 0, vet_team_name]]; // 0 represents vet type
     con.query(sql, [values], function(err, result){
-        if (err) throw err;
-        console.log("Added vet team " + vet_team_name);
+        if (err){
+            callback(-1);
+        }
+        else{
+            console.log("Added vet team " + vet_team_name);
+            callback(result.insertId);
+        }
     });
 }
 
 // add name as vet subaccounts
-function addVetToTeam(con, email, name){
-    con.query("SELECT uid FROM accounts WHERE email = '" + email + "'", function (err, result){
-        if (err) throw err;
-        if (result.length != 0){
-            var uid = JSON.parse(JSON.stringify(result[0])).uid;
-            var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + uid + ", '" + name + "')";
-            con.query(sql, function(err, result){
-                if (err) throw err;
-                console.log("Added " + name + " to account " + email)
-            });
+function addVetToTeam(con, vet_id, name, callback){
+    var sql = "INSERT INTO sub_accounts (uid, name) VALUES (" + vet_id + ", '" + name + "')";
+    con.query(sql, function(err, result){
+        if (err) {
+            callback({status:'failure'});
         }
-        else {
-            console.log("Failed"); // TODO: change
+        else{
+            console.log("Added " + name + " to account " + vet_id);
+            callback({status: 'success'});
         }
     });
 }
@@ -179,12 +187,12 @@ function addCarer(con, email, password, name, callback){
     var values = [[email, password, 1, name]]; // 1 represents carer type
     con.query(sql, [values], function(err, result){
         if (err) {
-            callback("Failed!");
+            callback(-1);
         }
         else{
-            callback("Success!");
+            callback(result.insertId);
+            console.log("Added user " + name);
         }
-        console.log("Added user " + name);
     });
 }
 
@@ -239,9 +247,9 @@ function addSurvey(con, uid, creation_date, link, target_location, callback){
 }
 
 // add questionnaire
-function addQuestionnaire(con, time_to_send, link, callback){
-    var sql = "INSERT INTO questionnaires (time, link) VALUES ?";
-    var values = [[time_to_send, link]];
+function addQuestionnaire(con, time_to_send, link, name, callback){
+    var sql = "INSERT INTO questionnaires (time, link, name) VALUES ?";
+    var values = [[time_to_send, link, name]];
     con.query(sql, [values], function(err, result){
         if (err){
             callback(-1);
@@ -251,6 +259,23 @@ function addQuestionnaire(con, time_to_send, link, callback){
         }
         console.log("Added questionnaire " + result.insertId);
     });
+}
+
+function addQuestionnaireToAnimal(con, aid, qid_list, callback){
+    for (i = 0; i < qid_list.length; i ++){
+        var sql1 = "SELECT * FROM questionnaire_animal WHERE aid=" + aid + " AND qid=" + qid_list[i];
+        con.query(sql1, function(err, result){
+            if (err) throw err;
+            if (result.length == 0){
+                var sql2 = "INSERT INTO questionnaire_animal (aid, qid, done) VALUES ?";
+                var values  = [[aid, qid_list[i], false]];
+                con.query(sql2, [values], function(err, result2){
+                    if (err) throw err;
+                });
+            }
+        });
+    }
+    callback();
 }
 
 // add operation
@@ -314,6 +339,19 @@ function getUserInfo(con, uid, callback){
     });
 }
 
+function getCarerList(con, callback){
+    var sql = "SELECT uid, name FROM accounts WHERE type=1";
+    con.query(sql, function(err, result){
+        if (err){
+            callback({status: 'failure'});
+        }
+        else{
+            var carer_list = JSON.parse(JSON.stringify(result));
+            callback({status: 'success', carers: carer_list});
+        }
+    });
+}
+
 // get list of subaccount names for vet
 function getVetList(con, uid, callback){
     var sql = "SELECT name FROM sub_accounts WHERE uid=" + uid;
@@ -331,7 +369,7 @@ function getVetList(con, uid, callback){
 
 // check if uid-password pair is correct - return  true or false
 function authenticateUser(con, email, password, callback){
-    var sql = "SELECT password, uid FROM accounts WHERE email='" + email + "'";
+    var sql = "SELECT password, uid, name, type FROM accounts WHERE email='" + email + "'";
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length  == 0){
@@ -340,16 +378,18 @@ function authenticateUser(con, email, password, callback){
         else{
             var pass = JSON.parse(JSON.stringify(result[0])).password;
             var res_uid = JSON.parse(JSON.stringify(result[0])).uid;
+            var res_type = JSON.parse(JSON.stringify(result[0])).type;
+            var res_name  = JSON.parse(JSON.stringify(result[0])).name;
             if (pass == password){
                 var sql2 = "SELECT aid FROM animals WHERE owner_id=" + res_uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     if (result2.length == 0){
-                        callback({status: true, uid: res_uid, aid: -1})
+                        callback({status: true, uid: res_uid, type: res_type, name: res_name, aid: -1});
                     }
                     else{
                         var res_aid = JSON.parse(JSON.stringify(result2[0])).aid;
-                        callback({status: true, uid: res_uid, aid: res_aid});
+                        callback({status: true, uid: res_uid, type: res_type, name: res_name, aid: res_aid});
                     }
                 });
 
@@ -413,7 +453,7 @@ function getUserContacts(con, uid, callback){
             var type = JSON.parse(JSON.stringify(result[0])).type;
             // if carer
             if (type){
-                var sql2 = "SELECT uid FROM animal_vet JOIN animals WHERE animal_vet.aid = animals.aid AND animals.owner_id=" + uid;
+                var sql2 = "SELECT accounts.uid, accounts.name FROM accounts JOIN animal_vet ON accounts.uid = animal_vet.uid JOIN animals ON animal_vet.aid = animals.aid WHERE animals.owner_id=" + uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
                     var contacts = JSON.parse(JSON.stringify(result2));
@@ -422,15 +462,11 @@ function getUserContacts(con, uid, callback){
             }
             // if vet
             else{
-            var sql2 = "SELECT owner_id FROM animals JOIN animal_vet WHERE animal_vet.aid = animals.aid AND animal_vet.uid=" + uid;
+            var sql2 = "SELECT accounts.uid, accounts.name FROM accounts JOIN animals ON accounts.uid = animals.owner_id JOIN animal_vet ON animal_vet.aid = animals.aid WHERE animal_vet.uid=" + uid;
                 con.query(sql2, function(err, result2){
                     if (err) throw err;
-                    var contacts1 = JSON.parse(JSON.stringify(result2));
-                    var contacts2 = [];
-                    for (i = 0; i < contacts1.length; i ++){
-                        contacts2.push({uid: contacts1[i].owner_id});
-                    }
-                    callback(contacts2);
+                    var contacts = JSON.parse(JSON.stringify(result2));
+                    callback(contacts);
                 });
             }
         }
@@ -523,6 +559,20 @@ function completeSurvey(con, aid, survey_id, callback){
     });
 }
 
+// record completion of questionnaire
+function completeQuestionnaire(con, aid, qid, callback){
+    var sql = "UPDATE questionnaire_animal SET done = true WHERE aid=" + aid + " AND qid=" + qid;
+    con.query(sql, function(err, result){
+        if (err) {
+            callback({status: 'failure'});
+        }
+        else {
+            callback({status: 'success'});
+        }
+        console.log("Owner of animal " + aid + " completed survey " + survey_id);
+    });
+}
+
 // update  animal info
 function updateAnimal(con, aid, name, sex, species, bodyweight, owner_id, op_id, callback){
     var sql = "UPDATE animals SET name = '" + name + "', sex = '" + sex + "', species = '" + species + "', bodyweight = " + bodyweight + ", owner_id=" + owner_id + ", op_id="  + op_id + " WHERE aid=" + aid;
@@ -548,6 +598,9 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 
 // TESTING
 //var connection = createConnection();
+//getCarerList(connection, function(result){
+//    console.log(result);
+//});
 ////clearDB(connection);
 //createTables(connection);
 //showTables(connection, function(result){
@@ -602,11 +655,11 @@ function updateOperation(con, op_id, op_name, op_date, condition, injury_text, s
 //    console.log(result);
 //});
 //
-//getUserContacts(connection, 1, function(result){
+//getUserContacts(connection, 4, function(result){
 //    console.log(result);
 //});
 //
-//getUserContacts(connection, 2, function(result){
+//getUserContacts(connection, 3, function(result){
 //    console.log(result);
 //});
 //
@@ -659,6 +712,7 @@ module.exports = {
     addAnimalToVetTeam,
     addSurvey,
     addQuestionnaire,
+    addQuestionnaireToAnimal,
     addChatLabel,
     getUserID,
     getUserInfo,
@@ -679,5 +733,3 @@ module.exports = {
     updateAnimal,
     updateOperation
 };
-
-
