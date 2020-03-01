@@ -80,28 +80,6 @@ async function addVetToAccount(id, name) {
   return body;
 }
 
-/*
-//        IT'S HARDCODING TIME :)
-async function callRegister(user, pass, email) {
-  return {status: "success", uid: 0};
-}
-async function callRegisterVet(user, pass, email) {
-  return {status: "success", uid: 1};
-}
-async function callLogin(email, pass) {
-  return {
-    passwordCorrect: email == "t@cam.ac.uk" && pass == "hello",
-    uid: 2,
-    aid: 3,
-    status: "success",
-    username: "Tom";
-    VetOrCarer: "vet" // could be 'carer'
-  };
-}
-async function fetchAccounts(id) {
-  return {vets: ["Tom", "Agni"]};
-}
-*/
 
 // Reducer
 
@@ -114,7 +92,6 @@ export function AccountReducer(state = initial_state, action) {
 
       callLogin(action.data.email, action.data.pass).then(
         res => {
-          console.log(JSON.stringify(res));
           state.loggedIn = res.passwordCorrect;
 
           if (state.loggedIn) {
@@ -132,12 +109,12 @@ export function AccountReducer(state = initial_state, action) {
               fetchAccounts(state.data.userId).then(
                 res => {
                   state.data.accounts = res.vets;
-                  window.location.assign("/#/account");
+                  window.location.href = "/#/account";
                 }
               );
             } else {
               state.choseId = true;
-              window.location.assign("/#/account");
+              window.location.href = "/#/account";
             }
 
           } else {
@@ -192,6 +169,7 @@ export function AccountReducer(state = initial_state, action) {
 
           // Register successful
           state.loggedIn = true;
+          state.choseId = true;
           state.data = {
             userId: res.vid,
             name: action.data.name,
@@ -230,6 +208,7 @@ export function AccountReducer(state = initial_state, action) {
 
     case "ADD_VET_TO_ACCOUNT":
       addVetToAccount(action.data.id, action.data.name);
+      state.data.accounts = [...state.data.accounts, action.data.name];
       return state;
 
     // Something else happened
