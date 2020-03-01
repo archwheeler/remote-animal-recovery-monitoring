@@ -1,5 +1,6 @@
 import Chatkit from '@pusher/chatkit-client';
 import axios from 'axios';
+import {store} from "./store";
 
 function handleInput(event) {
   const { value, name } = event.target;
@@ -11,44 +12,47 @@ function handleInput(event) {
 
 function connectToChatkit() {
 
-  const { userId } = this.state;
+  const userId = "" + store.getState().data.userId;
 
   if (userId === null || userId.trim() === '') {
     alert('Invalid userId');
     return;
   }
-      const tokenProvider = new Chatkit.TokenProvider({
-        url: 'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/bc55c891-bd0f-475b-8ec6-7216d20ab4cf/token',
-      });
 
-      const chatManager = new Chatkit.ChatManager({
-        instanceLocator: 'v1:us1:bc55c891-bd0f-475b-8ec6-7216d20ab4cf',
-        userId,
-        tokenProvider,
-      });
+  const instance = "0fa440f3-996e-4157-beb1-efdc519b3973";
 
-      return chatManager
-        .connect({
-          onAddedToRoom: room => {
-            const { rooms } = this.state;
-            this.setState({
-              rooms: [...rooms, room],
-            });
-          },
-        })
-        .then(currentUser => {
-          this.setState(
-            {
-              currentUser,
-              showLogin: false,
-              rooms: currentUser.rooms,
-            }
-          );
-          connectToRoom.call(this);
+  const tokenProvider = new Chatkit.TokenProvider({
+    url: 'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/' + instance + '/token',
+  });
+
+  const chatManager = new Chatkit.ChatManager({
+    instanceLocator: 'v1:us1:' + instance,
+    userId,
+    tokenProvider,
+  });
+
+  return chatManager
+    .connect({
+      onAddedToRoom: room => {
+        const { rooms } = this.state;
+        this.setState({
+          rooms: [...rooms, room],
         });
+      },
+    })
+    .then(currentUser => {
+      this.setState(
+        {
+          currentUser,
+          showLogin: false,
+          rooms: currentUser.rooms,
+        }
+      );
+      connectToRoom.call(this, currentUser.rooms[0].id);
+    });
 }
 
-function connectToRoom(id = '41ac18aa-8570-436c-a737-9e310afbaf3d') {
+function connectToRoom(id) {
   const { currentUser } = this.state;
 
   this.setState({
@@ -169,7 +173,7 @@ function sendFile(event) {
   });
 }
 
-export { 
+export {
   handleInput,
   connectToChatkit,
   connectToRoom,
@@ -177,4 +181,5 @@ export {
   onDrop,
   sendFile,
   openImageUploadDialog,
-  closeImageUploadDialog,}
+  closeImageUploadDialog,
+}
