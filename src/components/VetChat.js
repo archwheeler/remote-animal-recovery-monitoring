@@ -3,6 +3,7 @@ import List from 'material-ui/List/List';
 import {Card} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import {
     handleInput,
@@ -62,12 +63,26 @@ class VetChat extends React.Component {
             <div>
                 <Tabs>
                     {this.state.rooms.map((room, index) => (
-                        <Tab label={room.name} onActive={() => (this.connectToRoom(room.id))} key={room.id}>
-                            <Card>
-                                <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
-                                    <ChatSession messages={this.state.messages} />
-                                </List>
-                            </Card> 
+                        <Tab 
+                        label={room.name}
+                        onActive={() => {
+                            this.setState({currentRoom: null});
+                            this.connectToRoom(room.id);
+                        }}
+                        key={room.id}>
+                            {this.state.currentRoom ? (
+                                <Card>
+                                    <List className="chat-messages" style={{maxHeight: '60vh', overflow: 'auto'}}>
+                                        <ChatSession messages={this.state.messages} />
+                                    </List>
+                                </Card>
+                            ) : (
+                                <Card style={{padding: "15px"}}>
+                                    <div style={{display: 'flex', justifyContent: 'center'}}>
+                                        <CircularProgress/>
+                                    </div>
+                                </Card>
+                            )}
                         </Tab>
                     ))}
                 </Tabs>
