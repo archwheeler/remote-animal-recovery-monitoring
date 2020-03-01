@@ -32,8 +32,7 @@ class Account extends React.Component {
           <Card className="center">
             <CardTitle title="My Account"/>
 
-            <p>Name: {store.getState().data.name}</p>
-            <br/>
+            <p> Name: {store.getState().data.name} </p>
 
             {button}
 
