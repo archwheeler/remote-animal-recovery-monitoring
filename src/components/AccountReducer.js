@@ -11,7 +11,6 @@ export const initial_state = {
 };
 
 // API calls
-/*
 async function callRegister(user, pass, email) {
   const response = await fetch('http://localhost:5000/registerUser', {
     method: 'POST',
@@ -64,8 +63,7 @@ async function fetchAccounts(id) {
       res => res.json()
     );
 }
-*/
-
+/*
 //        IT'S HARDCODING TIME :)
 async function callRegister(user, pass, email) {
   return {status: "success", uid: 0};
@@ -85,7 +83,7 @@ async function callLogin(email, pass) {
 async function fetchAccounts(id) {
   return {vets: ["Tom", "Agni"]};
 }
-
+*/
 
 // Reducer
 
@@ -107,12 +105,18 @@ export function AccountReducer(state = initial_state, action) {
             state.data = {};
             state.data.id = res.id;
 
-            fetchAccounts(state.data.id).then(
-              res => {
-                state.data.accounts = res.vets;
-                window.location.assign("/#/account");
-              }
-            );
+            // If vet, load accounts
+            if (state.vetAccount) {
+              fetchAccounts(state.data.id).then(
+                res => {
+                  state.data.accounts = res.vets;
+                  window.location.assign("/#/account");
+                }
+              );
+            } else {
+              state.choseId = true;
+              window.location.assign("/#/account");
+            }
 
           } else {
 
@@ -139,6 +143,8 @@ export function AccountReducer(state = initial_state, action) {
 
           // Register successful
           state.loggedIn = true;
+          state.choseId = true;
+
           state.data = {
             userId: res.uid,
             name: action.data.name,
