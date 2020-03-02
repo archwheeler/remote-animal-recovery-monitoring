@@ -1,10 +1,10 @@
 import React from 'react';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
-import Questionnaire from './Questionnaire';
-import {store} from "../store"
+import Survey from './Survey';
+import {store} from "../store";
 
-class Questionnaires extends React.Component {
+class Surveys extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -34,9 +34,9 @@ class Questionnaires extends React.Component {
 				meds_length_of_course: 0,
 			},
 			loading: true,
-			questionnaire: {
-				noOfQuestionnaires: 0,
-				questionnaires: []}
+			survey: {
+				noOfSurveys: 0,
+				surveys: []}
 			};
 			this.componentDidMount = this.componentDidMount.bind(this);
 	}
@@ -48,8 +48,8 @@ class Questionnaires extends React.Component {
 		return body;
 	}
 
-	getQuestionnaires = async(animalID) => {
-		const response = await fetch('http://localhost:5000/checkForQuestionnaires/' + animalID);
+	getSurveys = async(animalID) => {
+		const response = await fetch('http://localhost:5000/checkForSurveys/' + animalID);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
 		return body;
@@ -58,7 +58,7 @@ class Questionnaires extends React.Component {
 	componentDidMount() {
         this.getInformation(store.getState().data.animalId).then(info => this.setState({information:info}))
 			.catch(err => console.log(err));
-		this.getQuestionnaires(store.getState().data.animalId).then(info => this.setState({questionnaire:info}))
+		this.getSurveys(store.getState().data.animalId).then(info => this.setState({survey:info}))
 			.catch(err => console.log(err));
 	}
 
@@ -72,11 +72,11 @@ class Questionnaires extends React.Component {
 									avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-						Please complete the following outcome questionnaire(s) to help monitor your dog's progress:
+						Please complete the following feedback survey(s) to help monitor your dog's progress:
 					</CardText>					
 				</Card>
-				{this.state.questionnaire.questionnaires.map((q, index) => (
-					<Questionnaire key={q.questionnaire_id} animalID={store.getState().animalId} link={q.link} name={q.name}/>		
+				{this.state.survey.surveys.map((q, index) => (
+					<Survey key={q.survey_id} animalID={store.getState().animalId} link={q.link} location={q.location}/>		
 				))}
 			</div>
 			:
@@ -87,4 +87,4 @@ class Questionnaires extends React.Component {
 	}
 }
 
-export default Questionnaires;
+export default Surveys;

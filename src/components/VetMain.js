@@ -1,12 +1,14 @@
 import React from 'react';
 import {Card, CardHeader, CardText, CardActions} from 'material-ui/Card';
 import { FlatButton, CardTitle } from 'material-ui';
+import {store} from "../store"
 
 
 
 class VetMain extends React.Component {
 	render() {
 		return (
+			(store.getState().loggedIn && store.getState().vetAccount)?
 			<div>
 				<Card>
 					<CardTitle title= "Chats"
@@ -16,6 +18,16 @@ class VetMain extends React.Component {
 					</CardText>
 					<CardActions>
 						<FlatButton label="Chats" href="/#/VetChat"/>
+					</CardActions>
+				</Card>
+				<Card>
+					<CardTitle title= "Create New Questionnaire"
+					/>
+					<CardText>
+						Please click the button below to create a new survey.
+					</CardText>
+					<CardActions>
+						<FlatButton label="Create" href="/#/VetNewQuestionnaire"/>
 					</CardActions>
 				</Card>
 				<Card>
@@ -40,6 +52,9 @@ class VetMain extends React.Component {
 					</CardActions>
 				</Card>
 			</div>
+			:<div>
+			{window.location.assign("/")}
+            </div>
 		);
 	}
 }

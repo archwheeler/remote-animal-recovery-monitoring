@@ -44,8 +44,18 @@ export default class AppShell extends React.Component {
 					open={this.state.open}
 					onRequestChange={this.handleRequestChange}
 					>
-					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>
-					{(store.getState().loggedIn)?<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/chat"/>} onClick={this.handleToggleDrawer}/>:null}
+					{(store.getState().vetAccount)?
+					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/VetMain"/>} onClick={this.handleToggleDrawer}/>
+					:
+					<MenuItem primaryText="Home" leftIcon={<ContentLink/>} containerElement={<Link to="/"/>} onClick={this.handleToggleDrawer}/>}
+
+					{(store.getState().loggedIn)?
+					(store.getState().vetAccount)?
+					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/VetChat"/>} onClick={this.handleToggleDrawer}/>
+					:
+					<MenuItem primaryText="Chat" leftIcon={<ContentLink/>} containerElement={<Link to="/Chat"/>} onClick={this.handleToggleDrawer}/>
+					:null}
+
 					<MenuItem primaryText="My Account" leftIcon={<ContentLink/>} containerElement={<Link to="/account"/>} onClick={this.handleToggleDrawer}/>
 					<MenuItem primaryText="Contact" leftIcon={<ContentLink/>} containerElement={<Link to="/Contact"/>} onClick={this.handleToggleDrawer}/>
 					

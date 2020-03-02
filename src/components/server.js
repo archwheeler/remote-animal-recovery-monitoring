@@ -42,6 +42,7 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
         sex: ,
         species: ,
         bodyweight: , //this should be an integer (perhaps kg?)
+        owner_id: , //Name of the owner
         owner_name: , // VARCHAR
         op_name: , //VARCHAR - name of the operation
         op_date: , //DATE
@@ -80,37 +81,45 @@ app.get('/getAnimalInfo/:animalId', (req, res) => {
                 //table?
                 DB.getOperationInfo(connection,AnResult.op_id, function(opResult){
 
-                    //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
-                    //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
-                    response_object.op_name = opResult.op_name;
-                    response_object.op_date = opResult.op_date;
-                    response_object.body_condition = opResult.body_condition;
+                    DB.getUserInfo(connection,AnResult.owner_id,function(usResult) {
 
-                    //Potential problem with JSON parsing of TEXT fields??
-                    response_object.injury_info = opResult.injury;
-                    response_object.surgery_data = opResult.surgery;
-                    response_object.abnormalities = opResult.abnormalities;
-                    response_object.procedure_info = opResult.procedure_info;
+                        //The result should contain id, name, op_date, {LONG TEXT FIELDS - injury, surgery, procedure info},
+                        //location, stitches/staples, length of rest, cage/small room confinement, next appointment (DATETIME)
+                        response_object.owner_id = AnResult.owner_id;
+                        response_object.owner_name = usResult.name;
 
-                    response_object.location = opResult.location;
-                    response_object.stitches_or_staples = opResult.stitch_staple;
-                    response_object.length_of_rest = opResult.rest_len;
-                    response_object.cage_or_room = opResult.cage_or_room;
-                    response_object.next_appt = opResult.next_appt;
+                        response_object.op_name = opResult.op_name;
+                        response_object.op_date = new Date(opResult.op_date);
+                        response_object.body_condition = opResult.body_condition;
 
-                    response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
+                        //Potential problem with JSON parsing of TEXT fields??
+                        response_object.injury_info = opResult.injury;
+                        response_object.surgery_data = opResult.surgery;
+                        response_object.abnormalities = opResult.abnormalities;
+                        response_object.procedure_info = opResult.procedure_info;
 
-                    opResult.meds = JSON.parse(opResult.meds);
+                        response_object.location = opResult.location;
+                        response_object.stitches_or_staples = opResult.stitch_staple;
+                        response_object.length_of_rest = opResult.rest_len;
+                        response_object.cage_or_room = opResult.cage_or_room;
+                        response_object.next_appt = opResult.next_appointment;
+                        console.log("next_appt: " + opResult.next_appointment);
 
-                    response_object.meds_name = opResult.meds.name;
-                    response_object.meds_amount = opResult.meds.amount;
-                    response_object.meds_frequency = opResult.meds.frequency;
-                    response_object.meds_start = opResult.meds.start;
-                    response_object.meds_length_of_course = opResult.meds.length_of_course;
+                        response_object.weeks_after_surgery = dateDiffInWeeks(new Date(opResult.op_date), new Date());
+
+                        opResult.meds = JSON.parse(opResult.meds);
+
+                        response_object.meds_name = opResult.meds.name;
+                        response_object.meds_amount = opResult.meds.amount;
+                        response_object.meds_frequency = opResult.meds.frequency;
+                        response_object.meds_start = opResult.meds.start;
+                        response_object.meds_length_of_course = opResult.meds.length_of_course;
 
 
-                    delete response_object.op_id;
-                    res.send(response_object);
+                        delete response_object.op_id;
+                        res.send(response_object);
+
+                    });
 
                 });
             }
@@ -172,7 +181,8 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
             else{
                 const arr = [];
                 for (i=0; i < survey_list.length; i++){
-                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link});
+                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link, location: survey_list[i].location});
+                    console.log(survey_list[i]);
                 }
                 res.send(
                     {noOfSurveys : survey_list.length, surveys : arr, status: 'success'}
@@ -193,6 +203,21 @@ app.get('/getAnimals/:vetTeamID', (req, res) => {
     try{
         DB.getAnimalsOfVetTeam(connection, req.params.vetTeamID, function(result){
             res.send({animals: result, status:'success'});
+        });
+    }
+    catch(err){
+        res.send({status: 'failure'});
+    }
+
+});
+
+//Returns a list like [{aid: , name: },{aid: , name: }, ...] - in future if no vetTeamID return failure
+app.get('/getUsers', (req, res) => {
+    console.log(req.params.vetTeamID);
+
+    try{
+        DB.getCarerList(connection, function(result){
+            res.send({users: result, status:'success'});
         });
     }
     catch(err){
@@ -310,12 +335,14 @@ app.post('/addNewAnimal', (req, res) => {
             req.body.injury_info, req.body.surgery_data, req.body.procedure_details, req.body.abnormalities,
             req.body.location, req.body.stitches_or_staples, req.body.length_of_rest, req.body.cage_or_room,
             req.body.next_appt, meds, function(OpIdResult){
+                console.log(OpIdResult);
                 DB.addAnimal(connection, req.body.name, req.body.sex, req.body.species, req.body.bodyweight,
                     req.body.owner_id, OpIdResult, function(AnIdResult){
                         DB.addAnimalToVetTeam(connection, AnIdResult, req.body.vetTeamID);
                         res.send({aid: AnIdResult, status: 'success'});
                     });
             });
+
     } catch(err){
         res.send({aid: -1, status: 'failure'});
     }

@@ -10,7 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
 import FlatButton from 'material-ui/FlatButton';
 import { Badge } from 'material-ui';
-import {store} from "../store"
+import {store} from "../store";
 
 
 class Main extends React.Component {
@@ -25,6 +25,7 @@ class Main extends React.Component {
 				species: "",
 				bodyweight: "", //this should be an integer (perhaps kg?)
 				owner_name: "", // VARCHAR
+				owner_id:"",
 				op_name: "", //VARCHAR - name of the operation
 				op_date: "2000-01-01", //DATE
 				body_condition: 0, //INT (out of 9)
@@ -47,7 +48,10 @@ class Main extends React.Component {
 			stepIndex: 0,
 			questionnaire: {
 				noOfQuestionnaires : 0,
-				questionnaires: []}
+				questionnaires: []},
+			survey: {
+				noOfSurveys : 0,
+				surveys: []}
 		};
 		this.componentDidMount = this.componentDidMount.bind(this);
 	}
@@ -66,12 +70,21 @@ class Main extends React.Component {
 		return body;
 	}
 
+	getSurveys = async(animalID) => {
+		const response = await fetch('http://localhost:5000/checkForSurveys/' + animalID);
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+		return body;
+	}
+
 
 	
 	componentDidMount() {
-        this.getInformation("123").then(info => this.setState({information:info}))
+        this.getInformation(store.getState().data.animalId).then(info => this.setState({information:info}))
 			.catch(err => console.log(err));
-		this.getQuestionnares("123").then(info => this.setState({questionnaire:info}))
+		this.getQuestionnares(store.getState().data.animalId).then(info => this.setState({questionnaire:info}))
+			.catch(err => console.log(err));
+		this.getSurveys(store.getState().data.animalId).then(info => this.setState({survey:info}))
 			.catch(err => console.log(err));
 	}
 
@@ -122,8 +135,17 @@ class Main extends React.Component {
 		const {finished, stepIndex} = this.state;
 		return (
 			(store.getState().loggedIn)?
-			(store.getState().vet)?
-			window.location.href="/#/VetMain"
+			(store.getState().vetAccount)?
+			<div>
+			{window.location.assign("/#/VetMain")}
+			</div>
+			:
+			(store.getState().data.animalId==-1)?
+			<Card>
+				<CardHeader
+					title="Your animal hasn't been added to the app yet, please wait for a vet to add them"
+					/>
+			</Card>
 			:
 			<div>
 				<Card>
@@ -132,7 +154,7 @@ class Main extends React.Component {
 								avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
 					/>
 					<CardText>
-					{this.state.information.name} was presented to the Queen’s Veterinary School Hospital on {this.state.information.op_date} for further investigation into {this.state.information.injury_info} {this.state.information.procedure_details}.
+					{this.state.information.name} was presented to the Queen’s Veterinary School Hospital on {this.state.information.op_date} for further investigation into {this.state.information.injury_info} {this.state.information.procedure_info}.
 					</CardText>
 				</Card>
 				
@@ -143,17 +165,40 @@ class Main extends React.Component {
 						primary={true}
 						style={{padding: 0}}
 						badgeStyle={{top: -10, right: -28}}>
-						Questionnaires
+						Outcome Questionnaires
 
 					</Badge>}
 								actAsExpander={true}
 								showExpandableButton={true}
 					/>
 					<CardText expandable={true}>
-						You have a questionnaire to fill in! Please click the button below.
+						You have an outcome questionnaire to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
 						<FlatButton label="Questionnaires" href={`/#/Questionnaires/`}/>
+					</CardActions>
+				</Card>
+				:null
+				}
+
+				{(this.state.survey.noOfSurveys>0)?		
+				<Card>
+					<CardHeader title={<Badge
+						badgeContent={this.state.survey.noOfSurveys}
+						primary={true}
+						style={{padding: 0}}
+						badgeStyle={{top: -10, right: -28}}>
+						Feedback Surveys
+
+					</Badge>}
+								actAsExpander={true}
+								showExpandableButton={true}
+					/>
+					<CardText expandable={true}>
+						You have a feedback survey to fill in! Please click the button below.
+					</CardText>
+					<CardActions expandable={true}>
+						<FlatButton label="Surveys" href={`/#/Surveys/`}/>
 					</CardActions>
 				</Card>
 				:null
