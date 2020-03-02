@@ -11,7 +11,7 @@ class Survey extends React.Component {
             key: props.key,
             animalID: props.animalID,
             link: props.link,
-            name: props.name,
+            location: props.location,
         }
         this.handleSubmit = this.handleSubmit.bind(this)
 	}
@@ -36,6 +36,10 @@ class Survey extends React.Component {
                 surveyId: this.state.key,          
             })
         });
+        console.log(JSON.stringify({
+            aid: this.state.animalID,
+            surveyId: this.state.key,          
+        }));
         const body = await response.json();
         this.setState({ responseToPost: body.uid });
     }
@@ -45,7 +49,7 @@ class Survey extends React.Component {
 			<div>
                 <Card expandable={true} onExpandChange={this.expandChange}>
                     <CardHeader 
-                        title={this.state.name}
+                        title={this.state.location + " Survey"}
                         actAsExpander={true}
                         showExpandableButton={true}
                     />

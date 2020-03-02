@@ -57,7 +57,7 @@ class VetNewQuestionnaire extends React.Component {
 			(store.getState().loggedIn && store.getState().vetAccount)?
 			<div>
 				<Card>
-					<CardHeader title= "Create New Survey"
+					<CardHeader title= "Create New Outcome Questionnaire"
 					/>
 					<CardText>
 						To add a new questionnaire please click <a href="https://docs.google.com/forms/u/0/">here</a> and create a new form. Once you have created the form click the send button and then the link button to get a shareable link to the form. Then copy and paste the link below and click submit.

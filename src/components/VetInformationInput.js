@@ -140,7 +140,7 @@ class VetInformationInput extends React.Component {
 		});
 	}
 	handleSubmit(event) {
-		const namestr = document.getElementById("name").value;
+		const namestr = this.state.animal.name;
 		const timestr = document.getElementById("nextappttime").value;
 		this.state.information.name = namestr;
 		this.state.information.firstLetterOfName = namestr.substring(0,1);
@@ -163,6 +163,7 @@ class VetInformationInput extends React.Component {
 		this.state.information.meds_length_of_course = document.getElementById("medlength").value;
 		console.log(this.state.information);
 		this.returnInformation(this.state.animal.aid);
+		window.location.assign("/#/VetMain");
 
 	}
 

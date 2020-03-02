@@ -76,7 +76,7 @@ class Surveys extends React.Component {
 					</CardText>					
 				</Card>
 				{this.state.survey.surveys.map((q, index) => (
-					<Survey key={q.survey_id} animalID={store.getState().animalId} link={q.link} name={q.name}/>		
+					<Survey key={q.survey_id} animalID={store.getState().animalId} link={q.link} location={q.location}/>		
 				))}
 			</div>
 			:

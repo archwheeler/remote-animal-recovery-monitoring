@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardMedia, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardHeader, CardText, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -23,21 +23,6 @@ class Questionnaire extends React.Component {
         if (!newExpandedState) this.setState({loading: true});
     }
 
-    handleSubmit = async() =>  {
-        const response = await fetch('http://localhost:5000/questionnaireComplete/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            
-            body: JSON.stringify({
-                aid: this.state.animalID,
-                questionnaireId: this.state.key,          
-            })
-        });
-        const body = await response.json();
-        this.setState({ responseToPost: body.uid });
-    }
 
 	render() {
 		return (
@@ -87,9 +72,6 @@ class Questionnaire extends React.Component {
                                     onLoad={this.stopLoading}>
                         </iframe>
                     </CardMedia>
-                    <CardActions>
-                        <FlatButton label="Completed?" primary={true} onClick={this.handleSubmit} />
-                    </CardActions>
                 </Card>
 			</div>
            

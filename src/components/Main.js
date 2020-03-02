@@ -198,7 +198,7 @@ class Main extends React.Component {
 						You have a feedback survey to fill in! Please click the button below.
 					</CardText>
 					<CardActions expandable={true}>
-						<FlatButton label="Surveys" href={`/#/Surveus/`}/>
+						<FlatButton label="Surveys" href={`/#/Surveys/`}/>
 					</CardActions>
 				</Card>
 				:null

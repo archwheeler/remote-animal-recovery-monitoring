@@ -501,7 +501,7 @@ function getSurveyReceivers(con, survey_id, callback){
 
 //get surveys of an animal
 function getSurveysOfAnimal(con, aid, callback){
-    var sql = "SELECT survey.survey_id, survey.link, survey_animal.done FROM survey JOIN survey_animal WHERE survey.survey_id = survey_animal.survey_id AND survey_animal.aid = " +  aid;
+    var sql = "SELECT survey.survey_id, survey.link, survey_animal.done, survey_location.location FROM survey JOIN survey_location ON survey.survey_id = survey_location.survey_id JOIN survey_animal WHERE survey.survey_id = survey_animal.survey_id AND survey_animal.aid = " +  aid;
     con.query(sql, function(err, result){
         if (err) throw err;
         if (result.length == 0){

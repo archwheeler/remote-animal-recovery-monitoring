@@ -181,7 +181,8 @@ app.get('/checkForSurveys/:animalID', (req, res) => {
             else{
                 const arr = [];
                 for (i=0; i < survey_list.length; i++){
-                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link});
+                    arr.push({survey_id : survey_list[i].survey_id, done : survey_list[i].done, link: survey_list[i].link, location: survey_list[i].location});
+                    console.log(survey_list[i]);
                 }
                 res.send(
                     {noOfSurveys : survey_list.length, surveys : arr, status: 'success'}
