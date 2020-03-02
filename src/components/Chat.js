@@ -44,7 +44,7 @@ class Chat extends React.Component {
             fileUploadMessage: "",
             information: {
 				name: "",
-				firstLetterOfName: "",
+				first_letter_of_name: "",
 				sex: "",
 				species: "",
 				bodyweight: "", //this should be an integer (perhaps kg?)
@@ -118,7 +118,7 @@ class Chat extends React.Component {
                 <Card>
 					<CardHeader title = {this.state.information.name}
 									subtitle={"Sex: " + ((this.state.information.sex=="M")?"Male":"Female") + ", Animal Type: "+ this.state.information.species}
-									avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
+									avatar={<Avatar>{this.state.information.first_letter_of_name}</Avatar>}
 					/>
                 </Card>
                 {this.state.currentRoom ? (

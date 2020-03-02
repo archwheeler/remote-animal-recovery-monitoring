@@ -12,7 +12,7 @@ class VetInformationInput extends React.Component {
 			information: {
 				vetTeamID: store.getState().data.userId,
 				name: "",
-				firstLetterOfName: "",
+				first_letter_of_name: "",
 				sex: "",
 				species: "",
 				bodyweight: null, //this should be an integer (perhaps kg?)
@@ -121,7 +121,7 @@ class VetInformationInput extends React.Component {
 	handleSubmit(event) {
 		const namestr = document.getElementById("name").value;
 		this.state.information.name = namestr;
-		this.state.information.firstLetterOfName = namestr.substring(0,1);
+		this.state.information.first_letter_of_name = namestr.substring(0,1);
 		this.state.information.bodyweight = document.getElementById("bodyweight").value;
 		this.state.information.owner_name = this.state.owner.name;
 		this.state.information.owner_id = this.state.owner.uid;

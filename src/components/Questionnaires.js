@@ -10,7 +10,7 @@ class Questionnaires extends React.Component {
 		this.state = {
 			information: {
 				name: "",
-				firstLetterOfName: "",
+				first_letter_of_name: "",
 				sex: "",
 				species: "",
 				bodyweight: "", //this should be an integer (perhaps kg?)
@@ -69,7 +69,7 @@ class Questionnaires extends React.Component {
 				<Card>
 					<CardHeader title = {this.state.information.name}
 									subtitle={"Sex: " + ((this.state.information.sex=="M")?"Male":"Female") + ", Animal Type: "+ this.state.information.species}
-									avatar={<Avatar>{this.state.information.firstLetterOfName}</Avatar>}
+									avatar={<Avatar>{this.state.information.first_letter_of_name}</Avatar>}
 					/>
 					<CardText>
 						Please complete the following outcome questionnaire(s) to help monitor your dog's progress:

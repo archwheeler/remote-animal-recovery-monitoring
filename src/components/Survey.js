@@ -34,12 +34,8 @@ class Survey extends React.Component {
             body: JSON.stringify({
                 aid: this.state.animalID,
                 surveyId: this.state.key,          
-            })
+            })       
         });
-        console.log(JSON.stringify({
-            aid: this.state.animalID,
-            surveyId: this.state.key,          
-        }));
         const body = await response.json();
         this.setState({ responseToPost: body.uid });
     }

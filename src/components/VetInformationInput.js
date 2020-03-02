@@ -179,8 +179,8 @@ class VetInformationInput extends React.Component {
 
 
 	render() {
-	  console.log("next_appt: " + this.state.information.next_appt);
-		const nextapptdatetime = new Date(this.state.information.next_appt);
+	console.log("next_appt: " + this.state.information.next_appt);
+	const nextapptdatetime = new Date(this.state.information.next_appt);
 
     if (store.getState().loggedIn && store.getState().vetAccount) {
       if (this.state.animal.aid == null) {
