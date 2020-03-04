@@ -24,7 +24,7 @@ class VetMain extends React.Component {
 					<CardTitle title= "Create New Questionnaire"
 					/>
 					<CardText>
-						Please click the button below to create a new survey.
+						Please click the button below to create a new questionnaire.
 					</CardText>
 					<CardActions>
 						<FlatButton label="Create" href="/#/VetNewQuestionnaire"/>
